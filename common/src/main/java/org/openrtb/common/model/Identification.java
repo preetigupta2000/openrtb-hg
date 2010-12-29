@@ -65,6 +65,20 @@ public class Identification {
 
     public Identification() { }
 
+    /**
+     * Creates a minimal identification object. The associated
+     * {@link #timestamp} is assumed to be equal to
+     * {@link System#currentTimeMillis()}.
+     *
+     * @param organization
+     *            used to identify the ownership of the organization sending the
+     *            request or response..
+     */
+    public Identification(String organization) {
+        setOrganization(organization);
+        setTimestamp(System.currentTimeMillis());
+    }
+
     public Identification(String organization, long timestamp, String token) {
         this.organization = organization;
         this.timestamp = timestamp;
