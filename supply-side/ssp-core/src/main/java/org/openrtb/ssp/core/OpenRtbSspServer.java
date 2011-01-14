@@ -15,14 +15,14 @@ import org.openrtb.common.model.Status;
 import org.openrtb.ssp.OpenRtbSsp;
 
 public class OpenRtbSspServer {
-	
+
 	private OpenRtbSsp ssp;
-	
+
 	private AdvertiserBlocklistRequestTranslator reqTrans =
            new AdvertiserBlocklistRequestTranslator();
 	private AdvertiserBlocklistResponseTranslator resTrans =
            new AdvertiserBlocklistResponseTranslator();
-	   
+
 	public OpenRtbSspServer(OpenRtbSsp ssp)
 	{
 		this.ssp = ssp;
@@ -36,7 +36,7 @@ public class OpenRtbSspServer {
 		String jsonResponse = null;
 		Identification identification = new Identification(ssp.getOrganization(),System.currentTimeMillis(),"");
 		String dsp = null;
-		
+
 		//process request
 		try {
 			//translate and verify request
@@ -45,15 +45,15 @@ public class OpenRtbSspServer {
 			request.verify(ssp.getSharedSecret(dsp),reqTrans); //throw new IllegalArgumentException("Invalid MD5 checksum");
 			requestToken = request.getIdentification().getToken(); 
 			status.setRequestToken(requestToken);
-			
+
 			//obtain block lists
 			List<Advertiser> advertisers = request.getAdvertisers();
 			advertisers = ssp.setBlocklists(advertisers);
 			response.setAdvertisers(advertisers);
-			
+
 			//set success code
 			status.setResponseCode(Status.SUCCESS_CODE, Status.SUCCESS_MESSAGE);
-						
+
 		} catch (IllegalArgumentException e) {
 			status.setResponseCode(Status.AUTH_ERROR_CODE, e.getMessage());
 		} catch (JsonMappingException e) {
@@ -68,7 +68,7 @@ public class OpenRtbSspServer {
 		}
 		//set status
 		response.setStatus(status);
-		//set response identification  
+		//set response identification
 		response.setIdentification(identification);
 		//translate response and add a MD5 token
 		try {
@@ -78,7 +78,7 @@ public class OpenRtbSspServer {
 			//what to do in this case? ... HTTP error?
 			e.printStackTrace();
 			jsonResponse = null;
-		}		
+		}
 		return jsonResponse;
 	}
 
