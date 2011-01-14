@@ -31,7 +31,7 @@
  */
 package org.openrtb.ssp.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
 import java.util.List;
