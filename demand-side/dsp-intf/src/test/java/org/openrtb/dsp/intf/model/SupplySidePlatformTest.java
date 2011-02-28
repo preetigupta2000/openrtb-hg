@@ -41,20 +41,52 @@ import org.junit.Test;
 public class SupplySidePlatformTest {
 
     private static final String ORGANIZATION = "an organization identifier";
-    private static final String SERVICE_URL = "http://blah.blah.com/foo/bar";
+	private static final String ADVERTISER_SERVICE_URL = "http://blah.blah.com/foo/bar/adv";
+	private static final String PUBLISHER_SERVICE_URL = "http://blah.blah.com/foo/bar/pub";
     private static final byte[] SECRET = "can't guess me".getBytes();
 
-    @Test(expected = IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
     public void createSsp_noOrganization() {
-        new SupplySidePlatform(null, SERVICE_URL, SECRET);
+        new SupplySidePlatform(null, ADVERTISER_SERVICE_URL, SECRET);
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void createSsp_noService() {
         new SupplySidePlatform(ORGANIZATION, null, SECRET);
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void createSsp_noSecret() {
-        new SupplySidePlatform(ORGANIZATION, SERVICE_URL, null);
+        new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, null);
     }
 
+	@Test //checking that the positive scenario is fine
+	public void createSsp2() {
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, SECRET);
+	}
+
+    @Test(expected = IllegalArgumentException.class)
+    public void createSsp2_noOrganization() {
+        new SupplySidePlatform(null, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, SECRET);
+    }
+
+	@Test(expected = IllegalArgumentException.class)
+	public void createSsp2_noSecret() {
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, null);
+	}
+
+	@Test
+	public void createSsp2_noAdvService() {
+		new SupplySidePlatform(ORGANIZATION, null, PUBLISHER_SERVICE_URL, SECRET);
+	}
+
+	@Test
+	public void createSsp2_noPubService() {
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, null, SECRET);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void createSsp2_noServices() {
+		new SupplySidePlatform(ORGANIZATION, null, null, SECRET);
+	}
 }

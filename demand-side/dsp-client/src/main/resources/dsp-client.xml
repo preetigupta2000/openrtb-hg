@@ -9,4 +9,8 @@
   <bean id="dsp.client.IdentificationService" 
         class="org.openrtb.dsp.client.StaticIdentificationService"/>
 
+  <bean id="dsp.client.PublisherService"
+		  class="org.openrtb.dsp.client.StaticPublisherService"/>
+
+
 </beans>

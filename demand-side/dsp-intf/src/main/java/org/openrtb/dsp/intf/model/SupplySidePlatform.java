@@ -38,7 +38,8 @@ package org.openrtb.dsp.intf.model;
 public class SupplySidePlatform {
 
     String organization;
-    String batchServiceUrl;
+	String advertiserBatchServiceUrl;
+	String publisherBatchServiceUrl;
     byte[] sharedSecret;
 
     /**
@@ -47,6 +48,7 @@ public class SupplySidePlatform {
      * {@link IllegalArgumentException} is thrown to alert the caller of the
      * condition.
      */
+	@Deprecated
     public SupplySidePlatform(String organization, String batchServiceUrl, byte[] sharedSecret) {
         if (organization == null || batchServiceUrl == null || sharedSecret == null) {
             throw new IllegalArgumentException("organization ["+organization+"], " +
@@ -55,9 +57,31 @@ public class SupplySidePlatform {
                                                "for valid supply-side platform definitions");
         }
         this.organization = organization;
-        this.batchServiceUrl = batchServiceUrl;
+        this.advertiserBatchServiceUrl = batchServiceUrl;
         this.sharedSecret = sharedSecret;
     }
+
+	/**
+	 * Constructor for a supply-side platform object. Organization and sharedSecret are required to
+	 * be non- <tt>null</tt>. Either advertiserBatchServiceUrl or publisherBatchServiceUrl is required to be
+	 * non-<tt>null</tt>. If above conditions are not met, an {@link IllegalArgumentException} is thrown to alert the caller of the condition.
+	 */
+	public SupplySidePlatform(String organization, String advertiserBatchServiceUrl, String publisherBatchServiceUrl, byte[] sharedSecret) {
+		if (organization == null
+				|| sharedSecret == null
+				|| (publisherBatchServiceUrl == null
+					&& advertiserBatchServiceUrl == null)) {
+			throw new IllegalArgumentException("organization ["+organization+"] and " +
+											   "secret ["+sharedSecret+"] are required and " +
+											   "either advertiser service url ["+advertiserBatchServiceUrl+"] or " +
+											   "publisher service url ["+publisherBatchServiceUrl+"] is required " +
+											   "for valid supply-side platform definitions");
+		}
+		this.organization = organization;
+		this.sharedSecret = sharedSecret;
+		this.advertiserBatchServiceUrl = advertiserBatchServiceUrl;
+		this.publisherBatchServiceUrl = publisherBatchServiceUrl;
+	}
 
     public String getOrganization() {
         return organization;
@@ -67,8 +91,16 @@ public class SupplySidePlatform {
         return sharedSecret;
     }
 
-    public String getBatchServiceUrl() {
-        return batchServiceUrl;
-    }
+	@Deprecated
+	public String getBatchServiceUrl() {
+		return advertiserBatchServiceUrl;
+	}
 
+	public String getAdvertiserBatchServiceUrl() {
+		return advertiserBatchServiceUrl;
+	}
+
+	public String getPublisherBatchServiceUrl() {
+		return publisherBatchServiceUrl;
+	}
 }

@@ -31,11 +31,6 @@
  */
 package org.openrtb.dsp.core;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
@@ -53,6 +48,11 @@ import org.openrtb.dsp.intf.service.AdvertiserService;
 import org.openrtb.dsp.intf.service.IdentificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 
 /**
  * There are multiple ways to request {@link Blocklist}s from SSPs. This class
@@ -143,13 +143,13 @@ public class AdvertiserBlocklistRequester {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Organization Name ["+ssp.getOrganization()+"]");
-            logger.debug("Organization Endpoint ["+ssp.getBatchServiceUrl()+"]");
+            logger.debug("Organization Endpoint ["+ssp.getAdvertiserBatchServiceUrl()+"]");
             logger.debug("Organization Secret ["+new String(ssp.getSharedSecret())+"]");
             logger.debug("Organization Request: " + request);
         }
 
         HttpClient client = new HttpClient();
-        PostMethod post = new PostMethod(ssp.getBatchServiceUrl());
+        PostMethod post = new PostMethod(ssp.getAdvertiserBatchServiceUrl());
         try {
             post.setRequestEntity(new StringRequestEntity(request, "application/json", null));
         } catch (UnsupportedEncodingException e) {
@@ -163,7 +163,7 @@ public class AdvertiserBlocklistRequester {
             if (statusCode != HttpStatus.SC_OK) {
                 logger.error("Request for blocklists failed w/ code ["+statusCode+"] " +
                              "for supply-side platform ["+ssp.getOrganization()+"] " +
-                             "w/ url ["+ssp.getBatchServiceUrl()+"]");
+                             "w/ url ["+ssp.getAdvertiserBatchServiceUrl()+"]");
                 return null;
             }
             response = RESPONSE_TRANSFORM.fromJSON(new InputStreamReader(post.getResponseBodyAsStream()));
@@ -172,7 +172,7 @@ public class AdvertiserBlocklistRequester {
             }
         } catch (HttpException e) {
             logger.error("Unable to send JSON request to ["+ssp.getOrganization()+"] " +
-                         "at ["+ssp.getBatchServiceUrl()+"]", e);
+                         "at ["+ssp.getAdvertiserBatchServiceUrl()+"]", e);
             return null;
         } catch (IOException e) {
             logger.error("Unable to process JSON response from ["+ssp.getOrganization()+"]", e);

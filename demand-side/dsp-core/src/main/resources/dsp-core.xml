@@ -9,4 +9,10 @@
     <constructor-arg ref="dsp.client.IdentificationService"/>
   </bean>
 
+	<bean id="dsp.core.PublisherPreferencesRequester"
+		  class="org.openrtb.dsp.core.PublisherPreferencesRequester">
+	  <constructor-arg ref="dsp.client.PublisherService"/>
+	  <constructor-arg ref="dsp.client.IdentificationService"/>
+	</bean>
+
 </beans>
