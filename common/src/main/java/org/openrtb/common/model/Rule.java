@@ -43,47 +43,47 @@ import java.util.List;
  *
  * @author jdrahos
  */
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_DEFAULT)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"operator", "type", "values"})
 public class Rule {
 	@JsonProperty
-	private String operator;
+	private Operator operator;
 	@JsonProperty
-	private String type;
+	private OperandType type;
 	@JsonProperty
 	private List<Object> values;
 
-	protected Rule(){
+	protected Rule() {
 		values = new LinkedList<Object>();
 	}
 
-	public Rule(String operator, String type, Collection<Object> values){
+	public Rule(Operator operator, OperandType type, Collection<Object> values) {
 		this();
 		setOperator(operator);
 		setType(type);
 		setValues(values);
 	}
 
-	public String getOperator() {
+	public Operator getOperator() {
 		return operator;
 	}
 
-	public void setOperator(String operator) {
-		if(operator == null || operator.length() == 0)
-			throw new IllegalArgumentException("operator passed to Rule#setOperator() must be non-null and at least one character long");
-
+	public void setOperator(Operator operator) {
+		if (operator == null) {
+			throw new IllegalArgumentException("operator passed to Rule#setOperator() must be non-null");
+		}
 		this.operator = operator;
 	}
 
-	public String getType() {
+	public OperandType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
-		if(type == null || type.length() == 0)
-			throw new IllegalArgumentException("type passed to Rule#setType() must be non-null and at least one character long");
-
+	public void setType(OperandType type) {
+		if (type == null) {
+			throw new IllegalArgumentException("type passed to Rule#setType() must be non-null");
+		}
 		this.type = type;
 	}
 
@@ -97,21 +97,20 @@ public class Rule {
 		this.values.addAll(values);
 	}
 
-	private void checkValues(Collection<Object> values){
-		if(values == null || values.size() == 0){
+	private void checkValues(Collection<Object> values) {
+		if (values == null || values.size() == 0) {
 			throw new IllegalArgumentException("Values passed to Rule#setValues() must be non-null and contain at least one item");
 		}
 
-		for(Object val: values){
-			if(!String.class.equals(val.getClass())
-					&& !Integer.class.equals(val.getClass())){
+		for (Object val : values) {
+			if (!String.class.equals(val.getClass()) && !Integer.class.equals(val.getClass())) {
 				throw new IllegalArgumentException("Values passed to Rule#setValues() must be either of type String or Integer");
 			}
 		}
 	}
 
 	public void addValue(String value) {
-		if(value == null || value.length() == 0) {
+		if (value == null || value.length() == 0) {
 			throw new IllegalArgumentException("Value passed to Rule#addValue() must be non-null and at least one character long");
 		}
 
@@ -119,7 +118,7 @@ public class Rule {
 	}
 
 	public void addValue(Integer value) {
-		if(value == null) {
+		if (value == null) {
 			throw new IllegalArgumentException("Value passed to Rule#addValue() must be non-null");
 		}
 

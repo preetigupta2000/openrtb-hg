@@ -42,18 +42,19 @@ import static org.junit.Assert.assertNotNull;
  * @author jdrahos
  */
 public class RuleTest {
-	private static final String OPERATOR = "include";
-	private static final String TYPE = "Url";
+	private static final Operator OPERATOR = Operator.include;
+	private static final OperandType TYPE = OperandType.URL;
 	private static Collection<Object> VALUES = new LinkedList<Object>();
+
 	static {
 		VALUES.add("TEST");
 		VALUES.add(1);
 	}
-	
+
 	private Rule test = new Rule();
 
 	@Test
-	public void create(){
+	public void create() {
 		Rule rule = new Rule(OPERATOR, TYPE, VALUES);
 		assertNotNull("Operator is required", rule.getOperator());
 		assertNotNull("Type is required", rule.getType());
@@ -61,95 +62,71 @@ public class RuleTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void createInvalid_OperatorIsNull(){
-		String operator = null;
+	public void createInvalid_OperatorIsNull() {
+		Operator operator = null;
 		new Rule(operator, TYPE, VALUES);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void createInvalid_OperatorIsEmpty(){
-		String operator = "";
-		new Rule(operator, TYPE, VALUES);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void createInvalid_TypeIsNull(){
-		String type = null;
+	public void createInvalid_TypeIsNull() {
+		OperandType type = null;
 		new Rule(OPERATOR, type, VALUES);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void createInvalid_TypeIsEmpty(){
-		String type = "";
-		new Rule(OPERATOR, type, VALUES);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void createInvalid_ValuesIsNull(){
+	public void createInvalid_ValuesIsNull() {
 		Collection<Object> values = null;
 		new Rule(OPERATOR, TYPE, values);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void createInvalid_ValuesOtherThanStringOrInteger(){
+	public void createInvalid_ValuesOtherThanStringOrInteger() {
 		Collection<Object> values = new LinkedList<Object>();
 		values.add(1L);
 		new Rule(OPERATOR, TYPE, values);
 	}
 
 	@Test
-	public void setOperator(){
+	public void setOperator() {
 		test.setOperator(OPERATOR);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void setOperator_Null(){
-		String operator = null;
-		test.setOperator(operator);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void setOperator_Empty(){
-		String operator = "";
+	public void setOperator_Null() {
+		Operator operator = null;
 		test.setOperator(operator);
 	}
 
 	@Test
-	public void setType(){
+	public void setType() {
 		test.setType(TYPE);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void setType_Null(){
-		String type = null;
-		test.setType(type);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void setType_Empty(){
-		String type = "";
+	public void setType_Null() {
+		OperandType type = null;
 		test.setType(type);
 	}
 
 	@Test
-	public void setValues(){
+	public void setValues() {
 		test.setValues(VALUES);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void setValues_Null(){
+	public void setValues_Null() {
 		Collection<Object> values = null;
 		test.setValues(values);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void setValues_SizeIs0(){
+	public void setValues_SizeIs0() {
 		Collection<Object> values = new LinkedList<Object>();
 		test.setValues(values);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void setValues_OtherThanStringOrInteger(){
+	public void setValues_OtherThanStringOrInteger() {
 		Collection<Object> values = new LinkedList<Object>();
 		values.add(1L);
 		test.setValues(values);

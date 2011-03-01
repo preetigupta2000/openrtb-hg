@@ -32,6 +32,8 @@
 package org.openrtb.common.json;
 
 import org.junit.Test;
+import org.openrtb.common.model.OperandType;
+import org.openrtb.common.model.Operator;
 import org.openrtb.common.model.PublisherPreference;
 import org.openrtb.common.model.Rule;
 
@@ -52,44 +54,33 @@ import static org.junit.Assert.assertNotNull;
  */
 public class PublisherPreferenceTranslatorTest {
 	private static final List<Object> VALUES1 = new LinkedList<Object>();
+
 	static {
 		VALUES1.add("test1.co");
 		VALUES1.add("test2.co");
 	}
-	private static final Rule RULE1 = new Rule("include","URL", VALUES1);
+
+	private static final Rule RULE1 = new Rule(Operator.include, OperandType.URL, VALUES1);
 
 	private static final List<Object> VALUES2 = new LinkedList<Object>();
+
 	static {
 		VALUES2.add(5);
 		VALUES2.add(10);
 	}
-	private static final Rule RULE2 = new Rule("include","creativeCategories", VALUES2);
+
+	private static final Rule RULE2 = new Rule(Operator.include, OperandType.creativeCategories, VALUES2);
 
 	private static final List<Rule> RULES = new LinkedList<Rule>();
+
 	static {
 		RULES.add(RULE1);
 		RULES.add(RULE2);
 	}
 
-	private static final PublisherPreference PUBLISHER_PREFERENCE = new PublisherPreference("test1","test2","tests.co", RULES);
+	private static final PublisherPreference PUBLISHER_PREFERENCE = new PublisherPreference("test1", "test2", "tests.co", RULES);
 
-	private static final String PRETTY_VALUE ="{\n" +
-		"  \"publisherID\" : \""+PUBLISHER_PREFERENCE.getPublisherID()+"\",\n" +
-		"  \"siteID\" : \""+PUBLISHER_PREFERENCE.getSiteID()+"\",\n" +
-		"  \"siteTLD\" : \""+PUBLISHER_PREFERENCE.getSiteTLD()+"\",\n" +
-		"  \"rules\": [\n" +
-		"    {\n" +
-		"      \"operator\": \""+ RULE1.getOperator() +"\",\n" +
-		"      \"type\": \""+ RULE1.getType() +"\",\n" +
-		"      \"values\": [\""+VALUES1.get(0) +"\",\""+VALUES1.get(1) +"\"]\n"+
-		"    },\n"+
-		"    {\n" +
-		"      \"operator\": \""+ RULE2.getOperator() +"\",\n" +
-		"      \"type\": \""+ RULE2.getType() +"\",\n" +
-		"      \"values\": ["+VALUES2.get(0) +", "+VALUES2.get(1) +"]\n"+
-		"    }\n"+
-		"  ]\n" +
-		"}\n";
+	private static final String PRETTY_VALUE = "{\n" + "  \"publisherID\" : \"" + PUBLISHER_PREFERENCE.getPublisherID() + "\",\n" + "  \"siteID\" : \"" + PUBLISHER_PREFERENCE.getSiteID() + "\",\n" + "  \"siteTLD\" : \"" + PUBLISHER_PREFERENCE.getSiteTLD() + "\",\n" + "  \"rules\": [\n" + "    {\n" + "      \"operator\": \"" + RULE1.getOperator() + "\",\n" + "      \"type\": \"" + RULE1.getType() + "\",\n" + "      \"values\": [\"" + VALUES1.get(0) + "\",\"" + VALUES1.get(1) + "\"]\n" + "    },\n" + "    {\n" + "      \"operator\": \"" + RULE2.getOperator() + "\",\n" + "      \"type\": \"" + RULE2.getType() + "\",\n" + "      \"values\": [" + VALUES2.get(0) + ", " + VALUES2.get(1) + "]\n" + "    }\n" + "  ]\n" + "}\n";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 	private PublisherPreferenceTranslator test = new PublisherPreferenceTranslator();
@@ -115,23 +106,20 @@ public class PublisherPreferenceTranslatorTest {
 	}
 
 	public static void validateObject(final PublisherPreference expected, final PublisherPreference actual) {
-		assertEquals("unable to deserialize the publisher id",
-					 expected.getPublisherID(), actual.getPublisherID());
-		assertEquals("unable to deserialize the site id",
-					 expected.getSiteID(), actual.getSiteID());
-		assertEquals("unable to deserialize the site TLD",
-					 expected.getSiteTLD(), actual.getSiteTLD());
+		assertEquals("unable to deserialize the publisher id", expected.getPublisherID(), actual.getPublisherID());
+		assertEquals("unable to deserialize the site id", expected.getSiteID(), actual.getSiteID());
+		assertEquals("unable to deserialize the site TLD", expected.getSiteTLD(), actual.getSiteTLD());
 
-		if(actual.getRules() != null){
+		if (actual.getRules() != null) {
 			assertNotNull(expected.getRules());
 		}
 
-		if(expected.getRules() != null){
+		if (expected.getRules() != null) {
 			assertNotNull(actual.getRules());
-			assertEquals("unable to deserialize preference types", actual.getRules().size(),expected.getRules().size());
+			assertEquals("unable to deserialize preference types", actual.getRules().size(), expected.getRules().size());
 
 			Map<String, Rule> expectedRules = convertListToMap(expected.getRules());
-			for(Rule actualRule: actual.getRules()){
+			for (Rule actualRule : actual.getRules()) {
 				Rule expectedRule = expectedRules.get(getKey(actualRule));
 				assertNotNull("unexpected rule value in returned request", expectedRule);
 				RuleTranslatorTest.validateObject(expectedRule, actualRule);
@@ -142,15 +130,15 @@ public class PublisherPreferenceTranslatorTest {
 	private static Map<String, Rule> convertListToMap(Collection<Rule> list) {
 		Map<String, Rule> retval = new HashMap<String, Rule>();
 
-		for(Rule rule : list) {
+		for (Rule rule : list) {
 			retval.put(getKey(rule), rule);
 		}
 
 		return retval;
 	}
 
-	private static String getKey(Rule rule){
-		return rule.getOperator()+"_"+rule.getType();
+	private static String getKey(Rule rule) {
+		return rule.getOperator() + "_" + rule.getType();
 	}
 
 
@@ -160,5 +148,6 @@ public class PublisherPreferenceTranslatorTest {
 		}
 	}
 
-	private static class TestClass extends PublisherPreference{}
+	private static class TestClass extends PublisherPreference {
+	}
 }

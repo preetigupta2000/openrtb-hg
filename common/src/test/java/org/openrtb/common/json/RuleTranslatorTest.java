@@ -1,6 +1,8 @@
 package org.openrtb.common.json;
 
 import org.junit.Test;
+import org.openrtb.common.model.OperandType;
+import org.openrtb.common.model.Operator;
 import org.openrtb.common.model.Rule;
 
 import java.io.IOException;
@@ -18,16 +20,14 @@ import static org.junit.Assert.fail;
  */
 public class RuleTranslatorTest {
 	private static final List<Object> VALUES = new LinkedList<Object>();
+
 	static {
 		VALUES.add("test1.co");
 		VALUES.add(2);
 	}
-	private static final Rule RULE = new Rule("include","URL", VALUES);
-	private static final String PRETTY_VALUE = "{" +
-		"  \"operator\": \""+ RULE.getOperator() +"\"," +
-		"  \"type\": \""+ RULE.getType() +"\"," +
-		"  \"values\": [\""+VALUES.get(0) +"\","+VALUES.get(1) +"]"+
-		"}";
+
+	private static final Rule RULE = new Rule(Operator.include, OperandType.URL, VALUES);
+	private static final String PRETTY_VALUE = "{" + "  \"operator\": \"" + RULE.getOperator() + "\"," + "  \"type\": \"" + RULE.getType() + "\"," + "  \"values\": [\"" + VALUES.get(0) + "\"," + VALUES.get(1) + "]" + "}";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 	private RuleTranslator test = new RuleTranslator();
@@ -53,37 +53,37 @@ public class RuleTranslatorTest {
 	}
 
 	public static void validateObject(final Rule expected, final Rule actual) {
-		assertEquals("unable to deserialize the operator",
-					 expected.getOperator(), actual.getOperator());
-		assertEquals("unable to deserialize the type",
-					 expected.getType(), actual.getType());
+		assertEquals("unable to deserialize the operator", expected.getOperator(), actual.getOperator());
+		assertEquals("unable to deserialize the type", expected.getType(), actual.getType());
 
-		if(actual.getValues() != null){
+		if (actual.getValues() != null) {
 			assertNotNull(expected.getValues());
 		}
 
-		if(expected.getValues() != null){
+		if (expected.getValues() != null) {
 			assertNotNull(actual.getValues());
-			assertEquals("unable to deserialize values", actual.getValues().size(),expected.getValues().size());
+			assertEquals("unable to deserialize values", actual.getValues().size(), expected.getValues().size());
 
 			findExtraItems:
-			for(Object actualVal: actual.getValues()){
-				for(Object expectedVal: expected.getValues()){
-					if(expectedVal.equals(actualVal))
+			for (Object actualVal : actual.getValues()) {
+				for (Object expectedVal : expected.getValues()) {
+					if (expectedVal.equals(actualVal)) {
 						continue findExtraItems;
+					}
 				}
 
-				fail("found extra value: "+ actualVal );
+				fail("found extra value: " + actualVal);
 			}
 
 			findMissingItems:
-			for(Object expectedVal: expected.getValues()){
-				for(Object actualVal: actual.getValues()){
-					if(expectedVal.equals(actualVal))
+			for (Object expectedVal : expected.getValues()) {
+				for (Object actualVal : actual.getValues()) {
+					if (expectedVal.equals(actualVal)) {
 						continue findMissingItems;
+					}
 				}
 
-				fail("found missing value: "+ expectedVal );
+				fail("found missing value: " + expectedVal);
 			}
 		}
 	}
@@ -94,5 +94,6 @@ public class RuleTranslatorTest {
 		}
 	}
 
-	private static class TestClass extends Rule{}
+	private static class TestClass extends Rule {
+	}
 }

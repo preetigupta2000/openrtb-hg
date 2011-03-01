@@ -6,5 +6,5 @@ package org.openrtb.common.model;
  * @author isrsal
  */
 public enum Operator {
-	Equal, NotEqual
+	include, exclude
 }
