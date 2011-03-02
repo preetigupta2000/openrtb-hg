@@ -31,51 +31,87 @@
  */
 package org.openrtb.ssp.client;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.openrtb.common.model.Advertiser;
-import org.openrtb.common.model.Blocklist;
+import org.openrtb.common.model.Operator;
+import org.openrtb.common.model.PreferenceType;
+import org.openrtb.common.model.Publisher;
+import org.openrtb.common.model.PublisherPreference;
+import org.openrtb.common.model.Rule;
 import org.openrtb.ssp.SupplySideService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
- * A sample reference implementation in order to demonstrate
- * the role of SSP implementor.   
+ * A sample reference implementation in order to demonstrate the role of SSP implementor.
  *
  * @since 1.0.1
  */
 public class SupplySideServiceRefImpl implements SupplySideService {
 
-	private Map<String,List<Blocklist>> blocklistDB = new HashMap<String,List<Blocklist>>();
+	private Map<String, Map<String, PublisherPreference>> publisherPreferencesDB = new HashMap<String, Map<String, PublisherPreference>>();
 	private String secret = "RTB";
 	private String org = "The SSP";
-	
+
 	public SupplySideServiceRefImpl() {
-		List<Blocklist> list1 = new LinkedList<Blocklist>();
-		list1.add(new Blocklist("3422","Joe's News"));
-		list1.add(new Blocklist("2342","Big Portal","1","Finance section"));
-		list1.add(new Blocklist("23423","Smith Blog","223","Technology Section"));
-		list1.add(new Blocklist("423","Smith Blog","23","Cars Section"));
-		list1.add(new Blocklist("34223","Jones Blog"));
-		blocklistDB.put("acmeluxuryfurniture.com", list1);
-		
-		List<Blocklist> list2 = new LinkedList<Blocklist>();
-		list2.add(new Blocklist("34223","Joe's Blog"));
-		blocklistDB.put("luxurycarbrand.com", list2);
+		//Publisher no. 1 - All sites
+		List<Rule> rules1 = new ArrayList<Rule>();
+		rules1.add(new Rule(Operator.include, PreferenceType.URL, Arrays.asList((Object) "abc.com")));
+		rules1.add(new Rule(Operator.exclude, PreferenceType.creativeAttribute, Arrays.asList((Object) "1", "2")));
+		Map<String, PublisherPreference> publisherSiteMap1 = new HashMap<String, PublisherPreference>();
+		//ID 0 means all sites for publisher
+		publisherSiteMap1.put("0", new PublisherPreference("3422", "0", null, rules1));
+		publisherPreferencesDB.put("3422", publisherSiteMap1);
+
+		//Publisher no. 2 - Site no 1
+		List<Rule> rules2 = new ArrayList<Rule>();
+		rules2.add(new Rule(Operator.exclude, PreferenceType.URL, Arrays.asList((Object) "abc.com")));
+		rules2.add(new Rule(Operator.include, PreferenceType.creativeAttribute, Arrays.asList((Object) "1", "2", "9")));
+		Map<String, PublisherPreference> publisherSiteMap2 = new HashMap<String, PublisherPreference>();
+		publisherSiteMap2.put("1", new PublisherPreference("2342", "1", "joe.com", rules2));
+
+		//Publisher no. 3 - Site no 2
+		List<Rule> rules3 = new ArrayList<Rule>();
+		rules3.add(new Rule(Operator.include, PreferenceType.URL, Arrays.asList((Object) "cnn.com")));
+		rules3.add(new Rule(Operator.include, PreferenceType.creativeAttribute, Arrays.asList((Object) "1", "2")));
+		publisherSiteMap2.put("2", new PublisherPreference("2342", "2", "joeads.com", rules3));
+		publisherPreferencesDB.put("2342", publisherSiteMap2);
 	}
-	
+
 	@Override
-	public Collection<Advertiser> setBlocklists(Collection<Advertiser> advertisers) {
-		
-		for (Advertiser a : advertisers)
-		{
-			String url = a.getLandingPage();
-			a.setBlocklist(blocklistDB.get(url));
+	public Collection<PublisherPreference> getPublisherPreferences(final Collection<Publisher> publishers) {
+		List<PublisherPreference> publisherPreferences = new ArrayList<PublisherPreference>();
+		if (publishers == null || publishers.size() == 0) {
+			return publisherPreferences;
 		}
-		return advertisers;
+		//if publisher ID==0, return all preferences
+		Publisher firstPublisher = publishers.iterator().next();
+		if ("0".equals(firstPublisher.getPublisherID())) {
+			List<PreferenceType> preferenceTypes = firstPublisher.getPreferenceTypes();
+			for (Map<String, PublisherPreference> publisherPreferenceMap : publisherPreferencesDB.values()) {
+				for (PublisherPreference publisherPreference : publisherPreferenceMap.values()) {
+					publisherPreferences.add(getForPreferenceTypes(publisherPreference, preferenceTypes));
+				}
+			}
+		} else {
+			for (Publisher publisher : publishers) {
+				List<PreferenceType> preferenceTypes = publisher.getPreferenceTypes();
+				Map<String, PublisherPreference> sites = publisherPreferencesDB.get(publisher.getPublisherID());
+				if (publisher.getSiteID().equals("0")) {
+					for (PublisherPreference publisherPreference : sites.values()) {
+						publisherPreferences.add(getForPreferenceTypes(publisherPreference, preferenceTypes));
+					}
+				} else {
+					publisherPreferences.add(getForPreferenceTypes(sites.get(publisher.getSiteID()), preferenceTypes));
+				}
+			}
+		}
+		return publisherPreferences;
 	}
 
 	@Override
@@ -86,6 +122,18 @@ public class SupplySideServiceRefImpl implements SupplySideService {
 	@Override
 	public String getOrganization() {
 		return org;
+	}
+
+	private static PublisherPreference getForPreferenceTypes(PublisherPreference currentPublisherPreference, List<PreferenceType> preferenceTypes) {
+		PublisherPreference publisherPreference = new PublisherPreference(currentPublisherPreference.getPublisherID(), currentPublisherPreference.getSiteID());
+		publisherPreference.setSiteTLD(currentPublisherPreference.getSiteTLD());
+		Set<PreferenceType> preferenceTypeSet = new HashSet<PreferenceType>(preferenceTypes);
+		for (Rule rule : currentPublisherPreference.getRules()) {
+			if (preferenceTypeSet.contains(rule.getType())) {
+				publisherPreference.addRule(rule);
+			}
+		}
+		return publisherPreference;
 	}
 
 }

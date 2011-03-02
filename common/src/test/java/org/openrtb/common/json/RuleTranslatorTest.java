@@ -1,8 +1,8 @@
 package org.openrtb.common.json;
 
 import org.junit.Test;
-import org.openrtb.common.model.OperandType;
 import org.openrtb.common.model.Operator;
+import org.openrtb.common.model.PreferenceType;
 import org.openrtb.common.model.Rule;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class RuleTranslatorTest {
 		VALUES.add(2);
 	}
 
-	private static final Rule RULE = new Rule(Operator.include, OperandType.URL, VALUES);
+	private static final Rule RULE = new Rule(Operator.include, PreferenceType.URL, VALUES);
 	private static final String PRETTY_VALUE = "{" + "  \"operator\": \"" + RULE.getOperator() + "\"," + "  \"type\": \"" + RULE.getType() + "\"," + "  \"values\": [\"" + VALUES.get(0) + "\"," + VALUES.get(1) + "]" + "}";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");

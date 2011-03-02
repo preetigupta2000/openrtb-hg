@@ -43,7 +43,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class RuleTest {
 	private static final Operator OPERATOR = Operator.include;
-	private static final OperandType TYPE = OperandType.URL;
+	private static final PreferenceType TYPE = PreferenceType.URL;
 	private static Collection<Object> VALUES = new LinkedList<Object>();
 
 	static {
@@ -69,7 +69,7 @@ public class RuleTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createInvalid_TypeIsNull() {
-		OperandType type = null;
+		PreferenceType type = null;
 		new Rule(OPERATOR, type, VALUES);
 	}
 
@@ -104,7 +104,7 @@ public class RuleTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setType_Null() {
-		OperandType type = null;
+		PreferenceType type = null;
 		test.setType(type);
 	}
 

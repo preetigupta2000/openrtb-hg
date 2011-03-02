@@ -31,33 +31,37 @@
  */
 package org.openrtb.ssp;
 
+import org.openrtb.common.model.Publisher;
+import org.openrtb.common.model.PublisherPreference;
+
 import java.util.Collection;
 
-import org.openrtb.common.model.Advertiser;
-
 /**
- * The contract between the message handling code located in the 'ssp-core' 
- * and an SSP's specific internal representation of that data.
+ * The contract between the message handling code located in the 'ssp-core' and an SSP's specific internal
+ * representation of that data.
  *
  * @since 1.0.1
  */
 public interface SupplySideService {
 	/**
-	 * Looks up blocklists for the requested advertisers 
-	 * @param advertisers
-	 * @return advertisers with initialized blocklists
+	 * Looks up preferences for the requested publishers
+	 *
+	 * @param publishers
+	 * @return publishers' preferences
 	 */
-	Collection<Advertiser> setBlocklists(Collection<Advertiser> advertisers);
-	
+	Collection<PublisherPreference> getPublisherPreferences(Collection<Publisher> publishers);
+
 	/**
 	 * Returns a secret shared with the DSP organization
+	 *
 	 * @param dsp The DSP organization identifier. Cannot be null.
 	 * @return the shared secret
 	 */
 	byte[] getSharedSecret(String dsp);
-	
+
 	/**
 	 * Returns the SSP organization identifier
+	 *
 	 * @return the organization identifier
 	 */
 	String getOrganization();

@@ -43,7 +43,7 @@ import java.util.List;
  *
  * @author jdrahos
  */
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_DEFAULT)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"publisherID", "siteID", "siteTLD", "rules"})
 public class PublisherPreference {
@@ -56,15 +56,15 @@ public class PublisherPreference {
 	@JsonProperty
 	List<Rule> rules;
 
-	protected PublisherPreference(){
+	protected PublisherPreference() {
 		rules = new LinkedList<Rule>();
 	}
 
-	public PublisherPreference(String publisherID, String siteID){
-		this(publisherID,siteID, null, null);
+	public PublisherPreference(String publisherID, String siteID) {
+		this(publisherID, siteID, null, null);
 	}
 
-	public PublisherPreference(String publisherID, String siteID, String siteTLD, List<Rule> rules){
+	public PublisherPreference(String publisherID, String siteID, String siteTLD, List<Rule> rules) {
 		this();
 		setPublisherID(publisherID);
 		setSiteID(siteID);
@@ -77,8 +77,9 @@ public class PublisherPreference {
 	}
 
 	public void setPublisherID(String publisherID) {
-		if(publisherID == null || publisherID.length() == 0 )
+		if (publisherID == null || publisherID.length() == 0) {
 			throw new IllegalArgumentException("publisherID passed to PublisherPreference#setPublisherID() must be non-null and at least one character long");
+		}
 
 		this.publisherID = publisherID;
 	}
@@ -88,8 +89,9 @@ public class PublisherPreference {
 	}
 
 	public void setSiteID(String siteID) {
-		if(siteID == null || siteID.length() == 0)
+		if (siteID == null || siteID.length() == 0) {
 			throw new IllegalArgumentException("siteID passed to PublisherPreference#setSiteID() must be non-null and at least one character long");
+		}
 
 		this.siteID = siteID;
 	}
@@ -107,18 +109,54 @@ public class PublisherPreference {
 	}
 
 	public void setRules(Collection<Rule> rules) {
-		if(rules == null){
+		if (rules == null) {
 			this.rules.clear();
-		} else{
+		} else {
 			this.rules.addAll(rules);
 		}
 	}
 
-	public void addRule(Rule rule){
-		if(rule == null){
+	public void addRule(Rule rule) {
+		if (rule == null) {
 			throw new IllegalArgumentException("Rule passed to PublisherPreference#addRule() must be non-null");
 		}
 
 		rules.add(rule);
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		PublisherPreference that = (PublisherPreference) o;
+
+		if (publisherID != null ? !publisherID.equals(that.publisherID) : that.publisherID != null) {
+			return false;
+		}
+		if (rules != null ? !rules.equals(that.rules) : that.rules != null) {
+			return false;
+		}
+		if (siteID != null ? !siteID.equals(that.siteID) : that.siteID != null) {
+			return false;
+		}
+		if (siteTLD != null ? !siteTLD.equals(that.siteTLD) : that.siteTLD != null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = publisherID != null ? publisherID.hashCode() : 0;
+		result = 31 * result + (siteID != null ? siteID.hashCode() : 0);
+		result = 31 * result + (siteTLD != null ? siteTLD.hashCode() : 0);
+		result = 31 * result + (rules != null ? rules.hashCode() : 0);
+		return result;
 	}
 }

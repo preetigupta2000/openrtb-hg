@@ -31,58 +31,55 @@
  */
 package org.openrtb.ssp.core;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.openrtb.common.json.AdvertiserBlocklistRequestTranslator;
-import org.openrtb.common.json.AdvertiserBlocklistResponseTranslator;
-import org.openrtb.common.model.Advertiser;
-import org.openrtb.common.model.AdvertiserBlocklistRequest;
-import org.openrtb.common.model.AdvertiserBlocklistResponse;
+import org.openrtb.common.json.PublisherPreferencesRequestTranslator;
+import org.openrtb.common.json.PublisherPreferencesResponseTranslator;
 import org.openrtb.common.model.Identification;
+import org.openrtb.common.model.Publisher;
+import org.openrtb.common.model.PublisherPreference;
+import org.openrtb.common.model.PublisherPreferencesRequest;
+import org.openrtb.common.model.PublisherPreferencesResponse;
 import org.openrtb.common.model.Status;
 import org.openrtb.ssp.SupplySideService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.Collection;
+
 /**
- * The stateless processing of batch Open RTB JSON requests resulting in JSON responses.
- * Besides translation of JSON to internal model objects it verifies the requests and
- * signs the responses. Its dependency on an SSP implementor is defined by the 
- * {@link SupplySideService} interface. 
+ * The stateless processing of batch Open RTB JSON requests resulting in JSON responses. Besides translation of JSON to
+ * internal model objects it verifies the requests and signs the responses. Its dependency on an SSP implementor is
+ * defined by the {@link SupplySideService} interface.
  *
  * @since 1.0.1
  */
 public class SupplySideServer {
 
-    private static final Logger log = LoggerFactory.getLogger(SupplySideServer.class);
+	private static final Logger log = LoggerFactory.getLogger(SupplySideServer.class);
 	private SupplySideService ssp;
 
-	private AdvertiserBlocklistRequestTranslator reqTrans =
-           new AdvertiserBlocklistRequestTranslator();
-	private AdvertiserBlocklistResponseTranslator resTrans =
-           new AdvertiserBlocklistResponseTranslator();
+	private PublisherPreferencesRequestTranslator reqTrans = new PublisherPreferencesRequestTranslator();
+	private PublisherPreferencesResponseTranslator resTrans = new PublisherPreferencesResponseTranslator();
 
-	public SupplySideServer(SupplySideService ssp)
-	{
+	public SupplySideServer(SupplySideService ssp) {
 		this.ssp = ssp;
 	}
-	
+
 	/**
 	 * Processes Open RTB JSON requests. Returns JSON-formatted responses.
+	 *
 	 * @param jsonRequest
 	 */
 	public String process(String jsonRequest) {
-		AdvertiserBlocklistRequest request = null;
-		AdvertiserBlocklistResponse response = new AdvertiserBlocklistResponse();
+		PublisherPreferencesRequest request = null;
+		Identification identification = new Identification(ssp.getOrganization(), System.currentTimeMillis());
+		PublisherPreferencesResponse response = new PublisherPreferencesResponse(identification);
 		Status status = new Status("n/a");
 		String requestToken = null;
 		String jsonResponse = null;
-		Identification identification = new Identification(ssp.getOrganization(),System.currentTimeMillis());
+
 		String dsp = null;
 
 		//process request
@@ -90,15 +87,16 @@ public class SupplySideServer {
 			//translate and verify request
 			request = reqTrans.fromJSON(jsonRequest);
 			dsp = request.getIdentification().getOrganization();
-			if (dsp==null || !request.verify(ssp.getSharedSecret(dsp),reqTrans)) throw new IllegalArgumentException("Invalid MD5 checksum");
-			requestToken = request.getIdentification().getToken(); 
+			if (dsp == null || !request.verify(ssp.getSharedSecret(dsp), reqTrans)) {
+				throw new IllegalArgumentException("Invalid MD5 checksum");
+			}
+			requestToken = request.getIdentification().getToken();
 			status.setRequestToken(requestToken);
 
 			//obtain block lists
-			Collection<Advertiser> advertisers = request.getAdvertisers();
-			advertisers = ssp.setBlocklists(advertisers);
-			response.setAdvertisers(advertisers);
-
+			Collection<Publisher> publishers = request.getPublishers();
+			Collection<PublisherPreference> publisherPreferences = ssp.getPublisherPreferences(publishers);
+			response.setPublisherPreferences(publisherPreferences);
 			//set success code
 			status.setResponseCode(Status.SUCCESS_CODE, Status.SUCCESS_MESSAGE);
 
@@ -116,16 +114,15 @@ public class SupplySideServer {
 		}
 		//set status
 		response.setStatus(status);
-		//set response identification
-		response.setIdentification(identification);
 		//translate response and add a MD5 token
 		try {
-			if (dsp!=null)
+			if (dsp != null) {
 				response.sign(ssp.getSharedSecret(dsp), resTrans);
+			}
 			jsonResponse = resTrans.toJSON(response);
 		} catch (Exception e) {
 			//what to do in this case? ... HTTP error?
-			log.error("Response signing/translation failed",e);
+			log.error("Response signing/translation failed", e);
 			jsonResponse = null;
 		}
 		return jsonResponse;

@@ -32,6 +32,7 @@
 package org.openrtb.common.json;
 
 import org.junit.Test;
+import org.openrtb.common.model.PreferenceType;
 import org.openrtb.common.model.Publisher;
 
 import java.io.IOException;
@@ -48,15 +49,9 @@ import static org.junit.Assert.fail;
  */
 public class PublisherTranslatorTest {
 
-	private static final Publisher PUBLISHER = new Publisher("test1","test2","tests.co", Arrays.asList(new String[]{"URL", "creativeAttribute"}),100L);
+	private static final Publisher PUBLISHER = new Publisher("test1", "test2", "tests.co", Arrays.asList(PreferenceType.URL, PreferenceType.creativeAttribute), 100L);
 
-	private static final String PRETTY_VALUE ="{" +
-		"  \"publisherID\" : \""+PUBLISHER.getPublisherID()+"\",\n" +
-		"  \"siteID\" : \""+PUBLISHER.getSiteID()+"\",\n" +
-		"  \"siteTLD\" : \""+PUBLISHER.getSiteTLD()+"\",\n" +
-		"  \"preferenceTypes\" : [\""+ PUBLISHER.getPreferenceTypes().get(0) +"\", \""+PUBLISHER.getPreferenceTypes().get(1)+"\"]," +
-		"  \"sinceThisTimestamp\" : "+PUBLISHER.getTimestamp()+"\n" +
-		"}";
+	private static final String PRETTY_VALUE = "{" + "  \"publisherID\" : \"" + PUBLISHER.getPublisherID() + "\",\n" + "  \"siteID\" : \"" + PUBLISHER.getSiteID() + "\",\n" + "  \"siteTLD\" : \"" + PUBLISHER.getSiteTLD() + "\",\n" + "  \"preferenceTypes\" : [\"" + PUBLISHER.getPreferenceTypes().get(0) + "\", \"" + PUBLISHER.getPreferenceTypes().get(1) + "\"]," + "  \"sinceThisTimestamp\" : " + PUBLISHER.getTimestamp() + "\n" + "}";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 
@@ -83,41 +78,39 @@ public class PublisherTranslatorTest {
 	}
 
 	public static void validateObject(final Publisher expected, final Publisher actual) {
-		assertEquals("unable to deserialize the publisher id",
-					 expected.getPublisherID(), actual.getPublisherID());
-		assertEquals("unable to deserialize the site id",
-					 expected.getSiteID(), actual.getSiteID());
-		assertEquals("unable to deserialize the site TLD",
-					 expected.getSiteTLD(), actual.getSiteTLD());
-		assertEquals("unable to deserialize the timestamp",
-					 expected.getTimestamp(), actual.getTimestamp());
+		assertEquals("unable to deserialize the publisher id", expected.getPublisherID(), actual.getPublisherID());
+		assertEquals("unable to deserialize the site id", expected.getSiteID(), actual.getSiteID());
+		assertEquals("unable to deserialize the site TLD", expected.getSiteTLD(), actual.getSiteTLD());
+		assertEquals("unable to deserialize the timestamp", expected.getTimestamp(), actual.getTimestamp());
 
-		if(actual.getPreferenceTypes() != null){
+		if (actual.getPreferenceTypes() != null) {
 			assertNotNull(expected.getPreferenceTypes());
 		}
 
-		if(expected.getPreferenceTypes() != null){
+		if (expected.getPreferenceTypes() != null) {
 			assertNotNull(actual.getPreferenceTypes());
-			assertEquals("unable to deserialize preference types", actual.getPreferenceTypes().size(),expected.getPreferenceTypes().size());
+			assertEquals("unable to deserialize preference types", actual.getPreferenceTypes().size(), expected.getPreferenceTypes().size());
 
 			findExtraItems:
-			for(Object actualVal: actual.getPreferenceTypes()){
-				for(String expectedVal: expected.getPreferenceTypes()){
-					if(expectedVal.equals(actualVal))
+			for (Object actualVal : actual.getPreferenceTypes()) {
+				for (PreferenceType expectedVal : expected.getPreferenceTypes()) {
+					if (expectedVal.equals(actualVal)) {
 						continue findExtraItems;
+					}
 				}
 
-				fail("found extra preference type: "+ actualVal );
+				fail("found extra preference type: " + actualVal);
 			}
 
 			findMissingItems:
-			for(Object expectedVal: expected.getPreferenceTypes()){
-				for(String actualVal: actual.getPreferenceTypes()){
-					if(expectedVal.equals(actualVal))
+			for (Object expectedVal : expected.getPreferenceTypes()) {
+				for (PreferenceType actualVal : actual.getPreferenceTypes()) {
+					if (expectedVal.equals(actualVal)) {
 						continue findMissingItems;
+					}
 				}
 
-				fail("found missing preference type: "+ expectedVal );
+				fail("found missing preference type: " + expectedVal);
 			}
 		}
 	}

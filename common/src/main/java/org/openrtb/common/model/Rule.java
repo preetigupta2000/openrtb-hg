@@ -50,7 +50,7 @@ public class Rule {
 	@JsonProperty
 	private Operator operator;
 	@JsonProperty
-	private OperandType type;
+	private PreferenceType type;
 	@JsonProperty
 	private List<Object> values;
 
@@ -58,7 +58,7 @@ public class Rule {
 		values = new LinkedList<Object>();
 	}
 
-	public Rule(Operator operator, OperandType type, Collection<Object> values) {
+	public Rule(Operator operator, PreferenceType type, Collection<Object> values) {
 		this();
 		setOperator(operator);
 		setType(type);
@@ -76,11 +76,11 @@ public class Rule {
 		this.operator = operator;
 	}
 
-	public OperandType getType() {
+	public PreferenceType getType() {
 		return type;
 	}
 
-	public void setType(OperandType type) {
+	public void setType(PreferenceType type) {
 		if (type == null) {
 			throw new IllegalArgumentException("type passed to Rule#setType() must be non-null");
 		}
@@ -123,5 +123,37 @@ public class Rule {
 		}
 
 		this.values.add(value);
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		Rule rule = (Rule) o;
+
+		if (operator != rule.operator) {
+			return false;
+		}
+		if (type != rule.type) {
+			return false;
+		}
+		if (values != null ? !values.equals(rule.values) : rule.values != null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = operator != null ? operator.hashCode() : 0;
+		result = 31 * result + (type != null ? type.hashCode() : 0);
+		result = 31 * result + (values != null ? values.hashCode() : 0);
+		return result;
 	}
 }

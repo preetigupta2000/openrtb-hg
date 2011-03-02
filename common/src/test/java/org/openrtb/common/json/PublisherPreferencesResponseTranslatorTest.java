@@ -33,8 +33,8 @@ package org.openrtb.common.json;
 
 import org.junit.Test;
 import org.openrtb.common.model.Identification;
-import org.openrtb.common.model.OperandType;
 import org.openrtb.common.model.Operator;
+import org.openrtb.common.model.PreferenceType;
 import org.openrtb.common.model.PublisherPreference;
 import org.openrtb.common.model.PublisherPreferencesResponse;
 import org.openrtb.common.model.Rule;
@@ -74,7 +74,7 @@ public class PublisherPreferencesResponseTranslatorTest {
 		VALUES1.add("test2.co");
 	}
 
-	private static final Rule RULE1 = new Rule(Operator.include, OperandType.URL, VALUES1);
+	private static final Rule RULE1 = new Rule(Operator.include, PreferenceType.URL, VALUES1);
 
 	private static final List<Rule> RULES1 = new LinkedList<Rule>();
 
@@ -92,7 +92,7 @@ public class PublisherPreferencesResponseTranslatorTest {
 		VALUES2.add(10);
 	}
 
-	private static final Rule RULE2 = new Rule(Operator.include, OperandType.creativeCategories, VALUES2);
+	private static final Rule RULE2 = new Rule(Operator.include, PreferenceType.creativeCategories, VALUES2);
 
 	private static final List<Rule> RULES2 = new LinkedList<Rule>();
 

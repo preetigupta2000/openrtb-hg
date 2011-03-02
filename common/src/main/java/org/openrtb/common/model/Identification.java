@@ -37,86 +37,114 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 /**
- * Verification of the message content is handled inline with each request.
- * Every request contains an identification object. The identifier's token is
- * constructed by computing the MD5 checksum of the JSON request message, less
- * the token attribute, concatenated with a shared secret. The receiver of the
- * request must remove the token from the request and generate an MD5 checksum
- * with the same shared secret to confirm the message contents.
- *
- * The shared secret may take any form (i.e. text string or key encryption) and
- * is communicated between the parties outside of this protocol.
- *
- * This object encapsulates the <code>identification</code> object found in the
- * requests and responses between a DSP and SSP.
+ * Verification of the message content is handled inline with each request. Every request contains an identification
+ * object. The identifier's token is constructed by computing the MD5 checksum of the JSON request message, less the
+ * token attribute, concatenated with a shared secret. The receiver of the request must remove the token from the
+ * request and generate an MD5 checksum with the same shared secret to confirm the message contents.
+ * <p/>
+ * The shared secret may take any form (i.e. text string or key encryption) and is communicated between the parties
+ * outside of this protocol.
+ * <p/>
+ * This object encapsulates the <code>identification</code> object found in the requests and responses between a DSP and
+ * SSP.
  *
  * @since 1.0
  */
-@JsonSerialize(include=Inclusion.NON_DEFAULT)
+@JsonSerialize(include = Inclusion.NON_DEFAULT)
 @JsonPropertyOrder({"organization", "timestamp", "token"})
 public class Identification {
 
-    @JsonProperty
-    private String organization;
-    @JsonProperty
-    private long timestamp;
-    @JsonProperty
-    private String token;
+	@JsonProperty
+	private String organization;
+	@JsonProperty
+	private long timestamp;
+	@JsonProperty
+	private String token;
 
-    public Identification() { }
+	public Identification() {
+	}
 
-    /**
-     * Creates a minimal identification object. The associated
-     * {@link #timestamp} is assumed to be equal to
-     * {@link System#currentTimeMillis()}.
-     *
-     * @param organization
-     *            used to identify the ownership of the organization sending the
-     *            request or response..
-     */
-    public Identification(String organization) {
-        this(organization, System.currentTimeMillis());
-    }
+	/**
+	 * Creates a minimal identification object. The associated {@link #timestamp} is assumed to be equal to {@link
+	 * System#currentTimeMillis()}.
+	 *
+	 * @param organization used to identify the ownership of the organization sending the request or response..
+	 */
+	public Identification(String organization) {
+		this(organization, System.currentTimeMillis());
+	}
 
-    public Identification(String organization, long timestamp) {
-        setOrganization(organization);
-        setTimestamp(timestamp);
-    }
+	public Identification(String organization, long timestamp) {
+		setOrganization(organization);
+		setTimestamp(timestamp);
+	}
 
-    /**
-     * The identifier used by the receiver to identify the requesting
-     * organization.
-     */
-    public String getOrganization() {
-        return organization;
-    }
-    public void setOrganization(String organization) {
-        if (organization == null || "".equals(organization.trim())) {
-            throw new IllegalArgumentException("Identifier passed to Identification#setOrganization() must be non-null and not all whitespace");
-        }
+	/**
+	 * The identifier used by the receiver to identify the requesting organization.
+	 */
+	public String getOrganization() {
+		return organization;
+	}
 
-        this.organization = organization;
-    }
+	public void setOrganization(String organization) {
+		if (organization == null || "".equals(organization.trim())) {
+			throw new IllegalArgumentException("Identifier passed to Identification#setOrganization() must be non-null and not all whitespace");
+		}
 
-    /**
-     * The number of milliseconds since EPOC this request was made.
-     */
-    public long getTimestamp() {
-        return timestamp;
-    }
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
+		this.organization = organization;
+	}
 
-    /**
-     * The associated MD5 token used to confirm the authenticity of and uniquely
-     * identify the request.
-     */
-    public String getToken() {
-        return token;
-    }
-    public void setToken(String token) {
-        this.token = token;
-    }
+	/**
+	 * The number of milliseconds since EPOC this request was made.
+	 */
+	public long getTimestamp() {
+		return timestamp;
+	}
 
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	/**
+	 * The associated MD5 token used to confirm the authenticity of and uniquely identify the request.
+	 */
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		Identification that = (Identification) o;
+
+		if (timestamp != that.timestamp) {
+			return false;
+		}
+		if (organization != null ? !organization.equals(that.organization) : that.organization != null) {
+			return false;
+		}
+		if (token != null ? !token.equals(that.token) : that.token != null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = organization != null ? organization.hashCode() : 0;
+		result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
+		result = 31 * result + (token != null ? token.hashCode() : 0);
+		return result;
+	}
 }
