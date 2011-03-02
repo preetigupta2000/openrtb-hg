@@ -31,6 +31,7 @@
  */
 package org.openrtb.dsp.client;
 
+import org.openrtb.common.model.PreferenceType;
 import org.openrtb.common.model.Publisher;
 import org.openrtb.common.model.PublisherPreference;
 import org.openrtb.common.model.Rule;
@@ -51,21 +52,22 @@ import java.util.Map;
  *
  * @author jdrahos
  */
-public class StaticPublisherService extends AbstractStaticService
-	implements PublisherService{
+public class StaticPublisherService extends AbstractStaticService implements PublisherService {
 
 	private static final Logger log = LoggerFactory.getLogger(StaticPublisherService.class);
-	private static final Long lastSyncTimeStamp = (System.currentTimeMillis()/1000) - (24 * 60 * 60);
+	private static final Long lastSyncTimeStamp = (System.currentTimeMillis() / 1000) - (24 * 60 * 60);
 
-	private static final List<String> preferenceTypes = new LinkedList<String>();
+	private static final List<PreferenceType> preferenceTypes = new LinkedList<PreferenceType>();
+
 	static {
-		preferenceTypes.add("URL");
+		preferenceTypes.add(PreferenceType.URL);
 	}
 
-	private static final Map<String,Collection<Publisher>> publisherStore = new HashMap<String,Collection<Publisher>>();
+	private static final Map<String, Collection<Publisher>> publisherStore = new HashMap<String, Collection<Publisher>>();
+
 	static {
 		//publishers not blocked on the dsp side from the testssp ssp
-		publisherStore.put("testssp",new LinkedList<Publisher>());
+		publisherStore.put("testssp", new LinkedList<Publisher>());
 		publisherStore.get("testssp").add(new Publisher("1", "101", "test.co", preferenceTypes, lastSyncTimeStamp));
 		publisherStore.get("testssp").add(new Publisher("2", "102", "test2.co", preferenceTypes, lastSyncTimeStamp));
 		publisherStore.get("testssp").add(new Publisher("3", "103", "test3.co", preferenceTypes, lastSyncTimeStamp));
@@ -77,14 +79,14 @@ public class StaticPublisherService extends AbstractStaticService
 		Collection<Publisher> pubs = new LinkedList<Publisher>();
 		Collection<Publisher> existingPublishers = getPublishersForSSP(ssp);
 
-		if(existingPublishers != null){
+		if (existingPublishers != null) {
 			//request publisher preferences for publishers of the ssp which are already in the system
 			pubs.addAll(existingPublishers);
 			log.info("requesting [" + existingPublishers.size() + "] publisher preferences from [" + ssp.getOrganization() + "] for existing publishers");
 		} else {
 			//request all publisher preferences for the ssp which wasn't synced yet
-			pubs.add(new Publisher("0","0", null, preferenceTypes, null));
-			log.info("requesting all publisher preferences from ["+ssp.getOrganization()+"]");
+			pubs.add(new Publisher("0", "0", null, preferenceTypes, null));
+			log.info("requesting all publisher preferences from [" + ssp.getOrganization() + "]");
 		}
 
 		return pubs;
@@ -94,29 +96,30 @@ public class StaticPublisherService extends AbstractStaticService
 	public void replacePublisherPreferencesList(final SupplySidePlatform ssp, final Collection<PublisherPreference> publisherPreferences) {
 		StringBuilder valuesBuilder = new StringBuilder();
 		Iterator<Object> iter;
-		
-		for(PublisherPreference publisherPreference : publisherPreferences){
+
+		for (PublisherPreference publisherPreference : publisherPreferences) {
 			log.info("received preference for publisher [" + publisherPreference.getPublisherID() + "] for site [" + publisherPreference.getSiteID() + "][" + publisherPreference.getSiteTLD() + "] with [" + publisherPreference.getRules().size() + "] rules");
 
-			for(Rule rule: publisherPreference.getRules()){
+			for (Rule rule : publisherPreference.getRules()) {
 				valuesBuilder.delete(0, valuesBuilder.length());
-				if(rule.getValues() != null && rule.getValues().size() != 0){
+				if (rule.getValues() != null && rule.getValues().size() != 0) {
 					iter = rule.getValues().iterator();
 					valuesBuilder.append(iter.next());
-					while (iter.hasNext()){
+					while (iter.hasNext()) {
 						valuesBuilder.append(", ").append(iter.next());
 					}
 				}
-				log.info("- rule with operator ["+rule.getOperator()+"] type ["+rule.getType()+"] and values ["+ valuesBuilder.toString() +"]");
+				log.info("- rule with operator [" + rule.getOperator() + "] type [" + rule.getType() + "] and values [" + valuesBuilder.toString() + "]");
 			}
 		}
 	}
 
-	private Collection<Publisher> getPublishersForSSP(SupplySidePlatform ssp){
+	private Collection<Publisher> getPublishersForSSP(SupplySidePlatform ssp) {
 		String sspOrganization = ssp.getOrganization().toLowerCase();
 
-		if(publisherStore.containsKey(sspOrganization))
+		if (publisherStore.containsKey(sspOrganization)) {
 			return publisherStore.get(sspOrganization);
+		}
 
 		return null;
 	}
