@@ -31,13 +31,6 @@
  */
 package org.openrtb.dsp.core;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -51,70 +44,75 @@ import org.openrtb.dsp.intf.service.IdentificationService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.Collections;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class AdvertiserBlocklistRequesterTest {
 
-    private static ApplicationContext ctx;
+	private static ApplicationContext ctx;
 
-    @BeforeClass
-    public static void beforeTests() {
-        ctx = new ClassPathXmlApplicationContext(new String[] {"norequest-core.xml",
-                                                               "dsp-client.xml"});
-    }
-
-
-    private AdvertiserBlocklistRequester test;
-
-    @Before
-    public void setup() {
-        test = (AdvertiserBlocklistRequester)ctx.getBean(AdvertiserBlocklistRequester.SPRING_NAME);
-    }
-
-    @After
-    public void teardown() {
-        ((AdvertiserBlocklistNeverRequest)ctx.getBean(AdvertiserBlocklistRequester.SPRING_NAME))
-                                             .reset();
-    }
+	@BeforeClass
+	public static void beforeTests() {
+		ctx = new ClassPathXmlApplicationContext(new String[]{"norequest-core.xml", "dsp-client.xml"});
+	}
 
 
-    @Test
-    public void requestAllBlocklists_noAdvertisers() throws Exception {
-        AdvertiserService aService = mock(AdvertiserService.class);
-        when(aService.getAdvertiserList()).thenReturn(Collections.<Advertiser>emptyList());
-        AdvertiserBlocklistRequester test = new AdvertiserBlocklistRequester(aService, null);
+	private AdvertiserBlocklistRequester test;
 
-        test.requestAllBlocklists();
-        verify(aService).getAdvertiserList();
-        verify(aService, never()).replaceBlocklists(null, null);
-    }
+	@Before
+	public void setup() {
+		test = (AdvertiserBlocklistRequester) ctx.getBean(AdvertiserBlocklistRequester.SPRING_NAME);
+	}
 
-    @Test
-    public void requestAllBlocklists_noMatch() throws Exception {
-        Advertiser advertiser = new Advertiser("a-cool-advertiser.com");
-        AdvertiserService aService = mock(AdvertiserService.class);
-        when(aService.getAdvertiserList()).thenReturn(Collections.<Advertiser>singletonList(advertiser));
+	@After
+	public void teardown() {
+		((AdvertiserBlocklistNeverRequest) ctx.getBean(AdvertiserBlocklistRequester.SPRING_NAME)).reset();
+	}
 
-        SupplySidePlatform ssp = new SupplySidePlatform("supply-side-platform-organization", "supply.platform.com", "our shared secret".getBytes());
-        IdentificationService iService = mock(IdentificationService.class);
-        when(iService.getOrganizationIdentifier()).thenReturn("organization-identifier");
-        when(iService.getServiceEndpoints()).thenReturn(Collections.<SupplySidePlatform>singletonList(ssp));
 
-        AdvertiserBlocklistRequester test = new AdvertiserBlocklistRequester(aService, iService) {
-            @Override
-            AdvertiserBlocklistResponse makeRequest(SupplySidePlatform ssp, String request) {
-                return null;
-            }
-        };
+	@Test
+	public void requestAllBlocklists_noAdvertisers() throws Exception {
+		AdvertiserService aService = mock(AdvertiserService.class);
+		when(aService.getAdvertiserList()).thenReturn(Collections.<Advertiser>emptyList());
+		AdvertiserBlocklistRequester test = new AdvertiserBlocklistRequester(aService, null);
 
-        test.requestAllBlocklists();
-        verify(aService).getAdvertiserList();
-        verify(aService, never()).replaceBlocklists(null, null);
-    }
+		test.requestAllBlocklists();
+		verify(aService).getAdvertiserList();
+		verify(aService, never()).replaceBlocklists(null, null);
+	}
 
-    @Test @Ignore
-    public void requestAllBlocklists_integration() throws Exception {
-        ApplicationContext ictx = new ClassPathXmlApplicationContext(new String[] {"dsp-core.xml",
-                                                                                   "dsp-client.xml"});
-        test = (AdvertiserBlocklistRequester)ictx.getBean(AdvertiserBlocklistRequester.SPRING_NAME);
-        test.requestAllBlocklists();
-    }
+	@Test
+	public void requestAllBlocklists_noMatch() throws Exception {
+		Advertiser advertiser = new Advertiser("a-cool-advertiser.com");
+		AdvertiserService aService = mock(AdvertiserService.class);
+		when(aService.getAdvertiserList()).thenReturn(Collections.<Advertiser>singletonList(advertiser));
+
+		SupplySidePlatform ssp = new SupplySidePlatform("supply-side-platform-organization", "supply.platform.com/adv", "supply.platform.com/pub", "our shared secret".getBytes());
+		IdentificationService iService = mock(IdentificationService.class);
+		when(iService.getOrganizationIdentifier()).thenReturn("organization-identifier");
+		when(iService.getServiceEndpoints()).thenReturn(Collections.<SupplySidePlatform>singletonList(ssp));
+
+		AdvertiserBlocklistRequester test = new AdvertiserBlocklistRequester(aService, iService) {
+			@Override
+			AdvertiserBlocklistResponse makeRequest(SupplySidePlatform ssp, String request) {
+				return null;
+			}
+		};
+
+		test.requestAllBlocklists();
+		verify(aService).getAdvertiserList();
+		verify(aService, never()).replaceBlocklists(null, null);
+	}
+
+	@Test
+	@Ignore
+	public void requestAllBlocklists_integration() throws Exception {
+		ApplicationContext ictx = new ClassPathXmlApplicationContext(new String[]{"dsp-core.xml", "dsp-client.xml"});
+		test = (AdvertiserBlocklistRequester) ictx.getBean(AdvertiserBlocklistRequester.SPRING_NAME);
+		test.requestAllBlocklists();
+	}
 }
