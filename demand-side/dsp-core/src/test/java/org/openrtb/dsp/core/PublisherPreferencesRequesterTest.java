@@ -96,6 +96,19 @@ public class PublisherPreferencesRequesterTest {
 	}
 
 	@Test
+	public void requestPublisherPreferences_SupplySidePlatformIsNull() {
+		SupplySidePlatform ssp = null;
+
+		PublisherService publisherService = mock(PublisherService.class);
+		IdentificationService identificationService = mock(IdentificationService.class);
+
+		test = new PublisherPreferencesRequester(publisherService, identificationService);
+		test.requestPublisherPreferences(ssp);
+
+		verify(publisherService, never()).replacePublisherPreferencesList(any(SupplySidePlatform.class), anyCollectionOf(PublisherPreference.class));
+	}
+
+	@Test
 	public void requestPublisherPreferences_PublishersAreNull() {
 		Collection<Publisher> publishers = null;
 		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "test".getBytes());

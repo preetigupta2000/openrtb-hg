@@ -83,7 +83,7 @@ public class PublisherPreferencesRequester {
 		Collection<SupplySidePlatform> platforms = identificationService.getServiceEndpoints();
 
 		if (platforms == null || platforms.isEmpty()) {
-			logger.info("Unable to sync publisher preferences with supply-side platforms; no platforms returned from IdentificationService#.getServiceEndpoints().");
+			logger.info("Unable to sync publisher preferences with supply-side platforms; no platforms returned from IdentificationService#getServiceEndpoints().");
 			return;
 		}
 
@@ -93,6 +93,11 @@ public class PublisherPreferencesRequester {
 	}
 
 	public void requestPublisherPreferences(SupplySidePlatform ssp) {
+		if (ssp == null) {
+			logger.info("Unable to sync publisher preferences with supply-side platform; no platform provided in requestPublisherPreferences#requestPublisherPreferences(ssp).");
+			return;
+		}
+
 		String organization = identificationService.getOrganizationIdentifier();
 		Identification dsp = new Identification(organization);
 
