@@ -31,45 +31,41 @@
  */
 package org.openrtb.ssp.web;
 
+import org.openrtb.ssp.PublisherSupplySideService;
+import org.openrtb.ssp.core.PublisherSupplySideServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.openrtb.ssp.SupplySideService;
-import org.openrtb.ssp.core.SupplySideServer;
-
 /**
- * A thin web layer that converts HTTP requests to JSON requests and
- * JSON responses to HTTP responses. The SSP implementor can utilize
- * it as is as this servlet can be configured via <code>web.xml</code> to 
- * instantiate a specific implementation class of the {@link SupplySideService} interface. 
- *
+ * A thin web layer that converts HTTP requests to JSON requests and JSON responses to HTTP responses. The SSP
+ * implementor can utilize it as is as this servlet can be configured via <code>web.xml</code> to instantiate a specific
+ * implementation class of the {@link org.openrtb.ssp.PublisherSupplySideService} interface.
  */
 public class SupplySideServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(SupplySideServlet.class);
-	private SupplySideServer server = null;
-	
+	private static final Logger log = LoggerFactory.getLogger(SupplySideServlet.class);
+	private PublisherSupplySideServer server = null;
+
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a specific implementation class of the {@link SupplySideService} interface.
+	 * Instantiates a specific implementation class of the {@link org.openrtb.ssp.PublisherSupplySideService} interface.
 	 */
-	public void init () throws ServletException {
-		String clientClassName = getServletConfig().getInitParameter("ClientClassName"); 
-		SupplySideService ssp;
+	public void init() throws ServletException {
+		String clientClassName = getServletConfig().getInitParameter("ClientClassName");
+		PublisherSupplySideService ssp;
 		try {
-			ssp = (SupplySideService) Class.forName(clientClassName).newInstance();
+			ssp = (PublisherSupplySideService) Class.forName(clientClassName).newInstance();
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 			throw new ServletException(e.getMessage());
@@ -80,52 +76,54 @@ public class SupplySideServlet extends HttpServlet {
 			e.printStackTrace();
 			throw new ServletException(e.getMessage());
 		}
-		server = new SupplySideServer(ssp);
+		server = new PublisherSupplySideServer(ssp);
 	}
 
 	/**
 	 * Converts HTTP requests to JSON requests and JSON responses to HTTP responses
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String jsonRequest, jsonResponse;		
+		String jsonRequest, jsonResponse;
 		//process request
 		jsonRequest = getJsonRequest(request);
 		jsonResponse = server.process(jsonRequest);
 		//return the result
 		PrintWriter out = response.getWriter();
 		out.println(jsonResponse);
-    	log.info(" IN:"+jsonRequest);
-    	log.info("OUT:"+jsonResponse);
+		log.info(" IN:" + jsonRequest);
+		log.info("OUT:" + jsonResponse);
 		out.flush();
 		out.close();
 	}
-	
+
 	/**
 	 * Extracts a JSON request form the HTTP request
+	 *
 	 * @param request HTTP POST request
 	 * @return JSON request
+	 *
 	 * @throws IOException
 	 */
-	private String getJsonRequest(HttpServletRequest request) throws IOException
-	{
-		StringBuilder stringBuilder = new StringBuilder();  
-		BufferedReader bufferedReader = null;  
-		try {  
-			InputStream inputStream = request.getInputStream();  
-			if (inputStream != null) {  
-				bufferedReader = new BufferedReader(new InputStreamReader(inputStream));  
-				char[] charBuffer = new char[128];  
-				int bytesRead = -1;  
-				while ((bytesRead = bufferedReader.read(charBuffer)) > 0)  
-					stringBuilder.append(charBuffer, 0, bytesRead); 
+	private String getJsonRequest(HttpServletRequest request) throws IOException {
+		StringBuilder stringBuilder = new StringBuilder();
+		BufferedReader bufferedReader = null;
+		try {
+			InputStream inputStream = request.getInputStream();
+			if (inputStream != null) {
+				bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+				char[] charBuffer = new char[128];
+				int bytesRead = -1;
+				while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+					stringBuilder.append(charBuffer, 0, bytesRead);
+				}
+			} else {
+				stringBuilder.append("");
 			}
-			else
-				stringBuilder.append("");   
-		} 
-		finally {  
-			if (bufferedReader != null)
-				bufferedReader.close();  
-		}  
-		return stringBuilder.toString();  
+		} finally {
+			if (bufferedReader != null) {
+				bufferedReader.close();
+			}
+		}
+		return stringBuilder.toString();
 	}
 }

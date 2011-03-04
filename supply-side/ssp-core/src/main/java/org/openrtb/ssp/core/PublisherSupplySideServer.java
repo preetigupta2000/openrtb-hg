@@ -41,7 +41,7 @@ import org.openrtb.common.model.PublisherPreference;
 import org.openrtb.common.model.PublisherPreferencesRequest;
 import org.openrtb.common.model.PublisherPreferencesResponse;
 import org.openrtb.common.model.Status;
-import org.openrtb.ssp.SupplySideService;
+import org.openrtb.ssp.PublisherSupplySideService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,19 +51,19 @@ import java.util.Collection;
 /**
  * The stateless processing of batch Open RTB JSON requests resulting in JSON responses. Besides translation of JSON to
  * internal model objects it verifies the requests and signs the responses. Its dependency on an SSP implementor is
- * defined by the {@link SupplySideService} interface.
+ * defined by the {@link org.openrtb.ssp.PublisherSupplySideService} interface.
  *
  * @since 1.0.1
  */
-public class SupplySideServer {
+public class PublisherSupplySideServer {
 
-	private static final Logger log = LoggerFactory.getLogger(SupplySideServer.class);
-	private SupplySideService ssp;
+	private static final Logger log = LoggerFactory.getLogger(PublisherSupplySideServer.class);
+	private PublisherSupplySideService ssp;
 
 	private PublisherPreferencesRequestTranslator reqTrans = new PublisherPreferencesRequestTranslator();
 	private PublisherPreferencesResponseTranslator resTrans = new PublisherPreferencesResponseTranslator();
 
-	public SupplySideServer(SupplySideService ssp) {
+	public PublisherSupplySideServer(PublisherSupplySideService ssp) {
 		this.ssp = ssp;
 	}
 

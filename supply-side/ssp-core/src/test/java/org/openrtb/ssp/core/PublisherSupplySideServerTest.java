@@ -46,7 +46,7 @@ import org.openrtb.common.model.PublisherPreferencesRequest;
 import org.openrtb.common.model.PublisherPreferencesResponse;
 import org.openrtb.common.model.Rule;
 import org.openrtb.common.model.Status;
-import org.openrtb.ssp.SupplySideService;
+import org.openrtb.ssp.PublisherSupplySideService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,9 +58,9 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 
 
-public class SupplySideServerTest {
+public class PublisherSupplySideServerTest {
 
-	class OpenRtbSspTestClient implements SupplySideService {
+	class OpenRtbSspTestClient implements PublisherSupplySideService {
 
 		@Override
 		public Collection<PublisherPreference> getPublisherPreferences(Collection<Publisher> publishers) {
@@ -91,14 +91,14 @@ public class SupplySideServerTest {
 
 	private static final String REQUEST = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + DSP + "\",\n" + "    \"timestamp\" : " + System.currentTimeMillis() + ",\n" + "	 \"token\" : \"1234567890\"\n" + "  },\n" + "  \"publishers\" : [{" + "    \"publisherID\" : \"0\",\n" + "    \"preferenceTypes\" : [\"URL\"]" + "  }]" + "}";
 
-	private SupplySideService ssp;
+	private PublisherSupplySideService ssp;
 
-	private SupplySideServer server;
+	private PublisherSupplySideServer server;
 
 	@Before
 	public void setup() {
 		ssp = new OpenRtbSspTestClient();
-		server = new SupplySideServer(ssp);
+		server = new PublisherSupplySideServer(ssp);
 	}
 
 	@Test

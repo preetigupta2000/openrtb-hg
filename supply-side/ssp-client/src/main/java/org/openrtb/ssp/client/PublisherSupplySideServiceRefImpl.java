@@ -36,7 +36,7 @@ import org.openrtb.common.model.PreferenceType;
 import org.openrtb.common.model.Publisher;
 import org.openrtb.common.model.PublisherPreference;
 import org.openrtb.common.model.Rule;
-import org.openrtb.ssp.SupplySideService;
+import org.openrtb.ssp.PublisherSupplySideService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,13 +52,13 @@ import java.util.Set;
  *
  * @since 1.0.1
  */
-public class SupplySideServiceRefImpl implements SupplySideService {
+public class PublisherSupplySideServiceRefImpl implements PublisherSupplySideService {
 
 	private Map<String, Map<String, PublisherPreference>> publisherPreferencesDB = new HashMap<String, Map<String, PublisherPreference>>();
 	private String secret = "RTB";
 	private String org = "The SSP";
 
-	public SupplySideServiceRefImpl() {
+	public PublisherSupplySideServiceRefImpl() {
 		//Publisher no. 1 - All sites
 		List<Rule> rules1 = new ArrayList<Rule>();
 		rules1.add(new Rule(Operator.include, PreferenceType.URL, Arrays.asList((Object) "abc.com")));

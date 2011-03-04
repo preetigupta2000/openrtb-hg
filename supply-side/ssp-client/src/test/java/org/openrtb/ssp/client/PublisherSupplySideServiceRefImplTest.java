@@ -38,7 +38,7 @@ import org.openrtb.common.model.PreferenceType;
 import org.openrtb.common.model.Publisher;
 import org.openrtb.common.model.PublisherPreference;
 import org.openrtb.common.model.Rule;
-import org.openrtb.ssp.SupplySideService;
+import org.openrtb.ssp.PublisherSupplySideService;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,13 +49,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class SupplySideServiceRefImplTest {
+public class PublisherSupplySideServiceRefImplTest {
 
-	private SupplySideService ssp;
+	private PublisherSupplySideService ssp;
 
 	@Before
 	public void setup() {
-		ssp = new SupplySideServiceRefImpl();
+		ssp = new PublisherSupplySideServiceRefImpl();
 	}
 
 	@Test
