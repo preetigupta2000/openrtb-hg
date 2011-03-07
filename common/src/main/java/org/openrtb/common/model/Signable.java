@@ -49,7 +49,7 @@ public abstract class Signable {
 
     private static final Logger log = LoggerFactory.getLogger(Signable.class);
 
-    abstract Identification getIdentification();
+    public abstract Identification getIdentification();
 
 
     /**
@@ -203,7 +203,7 @@ public abstract class Signable {
      *
      * @param identification
      *            {@link Identification} object to be validated.
-     * @throws IllegalArguementException
+     * @throws IllegalArgumentException
      *             if the identification object supplied is <tt>null</tt>.
      */
     protected void validateIdentification(Identification identification) {
