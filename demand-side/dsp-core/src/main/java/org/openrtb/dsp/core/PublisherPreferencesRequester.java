@@ -65,6 +65,7 @@ public class PublisherPreferencesRequester {
 
 	private static final PublisherPreferencesRequestTranslator REQUEST_TRANSFORM;
 	private static final PublisherPreferencesResponseTranslator RESPONSE_TRANSFORM;
+
 	static {
 		REQUEST_TRANSFORM = new PublisherPreferencesRequestTranslator();
 		RESPONSE_TRANSFORM = new PublisherPreferencesResponseTranslator();
@@ -73,34 +74,47 @@ public class PublisherPreferencesRequester {
 	private PublisherService publisherService;
 	private IdentificationService identificationService;
 
-	public PublisherPreferencesRequester(PublisherService publisherService,
-										IdentificationService identificationService) {
+	public PublisherPreferencesRequester(PublisherService publisherService, IdentificationService identificationService) {
 		this.publisherService = publisherService;
 		this.identificationService = identificationService;
 	}
 
-	public void requestAllPublisherPreferences(){
-		String organization = identificationService.getOrganizationIdentifier();
-		Identification dsp = new Identification(organization);
+	public void requestAllPublisherPreferences() {
+		Collection<SupplySidePlatform> platforms = identificationService.getServiceEndpoints();
 
-		for(SupplySidePlatform ssp : identificationService.getServiceEndpoints()) {
+		if (platforms == null || platforms.isEmpty()) {
+			logger.info("Unable to sync publisher preferences with supply-side platforms; no platforms returned from IdentificationService#getServiceEndpoints().");
+			return;
+		}
+
+		for (SupplySidePlatform ssp : platforms) {
 			requestPublisherPreferences(ssp);
 		}
 	}
 
-	public void requestPublisherPreferences(SupplySidePlatform ssp){
+	public void requestPublisherPreferences(SupplySidePlatform ssp) {
+		if (ssp == null) {
+			logger.info("Unable to sync publisher preferences with supply-side platform; no platform provided in requestPublisherPreferences#requestPublisherPreferences(ssp).");
+			return;
+		}
+
 		String organization = identificationService.getOrganizationIdentifier();
 		Identification dsp = new Identification(organization);
 
 		Collection<Publisher> publishers = publisherService.getPublisherList(ssp);
 
-		PublisherPreferencesRequest request = new PublisherPreferencesRequest(dsp,publishers);
+		if (publishers == null || publishers.isEmpty()) {
+			logger.info("Unable to sync publisher preferences with supply-side platform [" + ssp.getOrganization() + "] no publishers returned from PublisherService#getPublisherList().");
+			return;
+		}
+
+		PublisherPreferencesRequest request = new PublisherPreferencesRequest(dsp, publishers);
 		PublisherPreferencesResponse response = null;
 
 		try {
 			request.sign(ssp.getSharedSecret(), REQUEST_TRANSFORM);
 		} catch (IOException e) {
-			logger.error("Unable to sign json request for ["+ssp.getOrganization()+"] due to exception", e);
+			logger.error("Unable to sign json request for [" + ssp.getOrganization() + "] due to exception", e);
 			return;
 		}
 
@@ -108,26 +122,28 @@ public class PublisherPreferencesRequester {
 			response = makeRequest(ssp, REQUEST_TRANSFORM.toJSON(request));
 			if (response != null) {
 				if (!response.verify(ssp.getSharedSecret(), RESPONSE_TRANSFORM)) {
-					logger.error("Verification of response from ["+ssp.getOrganization()+"] failed");
+					logger.error("Verification of response from [" + ssp.getOrganization() + "] failed");
 					return;
 				}
 
-				if(response.getPublisherPreferences() != null) {
+				if (response.getPublisherPreferences() != null && !response.getPublisherPreferences().isEmpty()) {
 					publisherService.replacePublisherPreferencesList(ssp, response.getPublisherPreferences());
 				} else {
-					logger.error("Response from ["+ssp.getOrganization()+"] had no publisher preferences");
+					logger.error("Response from [" + ssp.getOrganization() + "] had no publisher preferences");
 				}
+			} else {
+				logger.error("Response from [" + ssp.getOrganization() + "] was null");
 			}
 		} catch (IOException e) {
-			logger.error("Unable to verify json response from ["+ssp.getOrganization()+"] due to exception", e);
+			logger.error("Unable to verify json response from [" + ssp.getOrganization() + "] due to exception", e);
 		}
 	}
 
-	private PublisherPreferencesResponse makeRequest(SupplySidePlatform ssp, String request){
+	protected PublisherPreferencesResponse makeRequest(SupplySidePlatform ssp, String request) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Organization Name ["+ssp.getOrganization()+"]");
-			logger.debug("Organization Endpoint ["+ssp.getPublisherBatchServiceUrl()+"]");
-			logger.debug("Organization Secret ["+new String(ssp.getSharedSecret())+"]");
+			logger.debug("Organization Name [" + ssp.getOrganization() + "]");
+			logger.debug("Organization Endpoint [" + ssp.getPublisherBatchServiceUrl() + "]");
+			logger.debug("Organization Secret [" + new String(ssp.getSharedSecret()) + "]");
 			logger.debug("Organization Request: " + request);
 		}
 
@@ -136,7 +152,7 @@ public class PublisherPreferencesRequester {
 		try {
 			post.setRequestEntity(new StringRequestEntity(request, "application/json", null));
 		} catch (UnsupportedEncodingException e) {
-			logger.error("Unable to set ["+ssp.getOrganization()+"] request's encoding type: application/json", e);
+			logger.error("Unable to set [" + ssp.getOrganization() + "] request's encoding type: application/json", e);
 			return null;
 		}
 
@@ -144,9 +160,7 @@ public class PublisherPreferencesRequester {
 		try {
 			int statusCode = client.executeMethod(post);
 			if (statusCode != HttpStatus.SC_OK) {
-				logger.error("Request for publisher preferences failed w/ code ["+statusCode+"] " +
-							 "for supply-side platform ["+ssp.getOrganization()+"] " +
-							 "w/ url ["+ssp.getPublisherBatchServiceUrl()+"]");
+				logger.error("Request for publisher preferences failed w/ code [" + statusCode + "] " + "for supply-side platform [" + ssp.getOrganization() + "] " + "w/ url [" + ssp.getPublisherBatchServiceUrl() + "]");
 				return null;
 			}
 			response = RESPONSE_TRANSFORM.fromJSON(new InputStreamReader(post.getResponseBodyAsStream()));
@@ -154,11 +168,10 @@ public class PublisherPreferencesRequester {
 				logger.debug("Organization Response: " + RESPONSE_TRANSFORM.toJSON(response));
 			}
 		} catch (HttpException e) {
-			logger.error("Unable to send JSON request to ["+ssp.getOrganization()+"] " +
-						 "at ["+ssp.getPublisherBatchServiceUrl()+"]", e);
+			logger.error("Unable to send JSON request to [" + ssp.getOrganization() + "] " + "at [" + ssp.getPublisherBatchServiceUrl() + "]", e);
 			return null;
 		} catch (IOException e) {
-			logger.error("Unable to process JSON response from ["+ssp.getOrganization()+"]", e);
+			logger.error("Unable to process JSON response from [" + ssp.getOrganization() + "]", e);
 			return null;
 		} finally {
 			post.releaseConnection();

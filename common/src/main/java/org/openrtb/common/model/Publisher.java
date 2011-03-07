@@ -61,7 +61,7 @@ public class Publisher {
 		this(null, null, null, null, null);
 	}
 
-	public Publisher(String publisherID, String siteID, String siteTLD, List<PreferenceType> preferenceTypes, Long timestamp) {
+	public Publisher(String publisherID, String siteID, String siteTLD, Collection<PreferenceType> preferenceTypes, Long timestamp) {
 		setPublisherID(publisherID);
 		setSiteID(siteID);
 		setSiteTLD(siteTLD);

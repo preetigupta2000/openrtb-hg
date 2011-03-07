@@ -29,37 +29,36 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.openrtb.dsp.client;
+package org.openrtb.dsp.core;
 
+import org.openrtb.common.model.PublisherPreferencesResponse;
 import org.openrtb.dsp.intf.model.SupplySidePlatform;
 import org.openrtb.dsp.intf.service.IdentificationService;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.openrtb.dsp.intf.service.PublisherService;
 
 /**
- * This is simply a reference implementation of a static service for testing, etc. For more information about this
- * service, please see the interface listed below.
+ * Created by IntelliJ IDEA. PublisherPreferencesNeverRequest
  *
- * @see IdentificationService
+ * @author jdrahos
  */
-public class StaticIdentificationService extends AbstractStaticService implements IdentificationService {
+public class PublisherPreferencesNeverRequest extends PublisherPreferencesRequester {
 
+	private PublisherPreferencesResponse response;
+
+	public PublisherPreferencesNeverRequest(PublisherService publisherService, IdentificationService identificationService) {
+		super(publisherService, identificationService);
+	}
+
+	public void reset() {
+		response = null;
+	}
+
+	public void setResponse(final PublisherPreferencesResponse response) {
+		this.response = response;
+	}
 
 	@Override
-	public String getOrganizationIdentifier() {
-		return "The DSP";
+	protected PublisherPreferencesResponse makeRequest(SupplySidePlatform ssp, String request) {
+		return response;
 	}
-
-	public static List<SupplySidePlatform> platforms = new ArrayList<SupplySidePlatform>();
-
-	static {
-		platforms.add(new SupplySidePlatform("The SSP", "http://localhost:8080/ssp-web/openrtb/adv", "http://localhost:8080/ssp-web/openrtb/pub", "RTB".getBytes()));
-	}
-
-	@Override
-	public List<SupplySidePlatform> getServiceEndpoints() {
-		return new ArrayList<SupplySidePlatform>(platforms);
-	}
-
 }
