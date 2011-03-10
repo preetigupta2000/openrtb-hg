@@ -109,9 +109,8 @@ public class PublisherPreference {
 	}
 
 	public void setRules(Collection<Rule> rules) {
-		if (rules == null) {
-			this.rules.clear();
-		} else {
+		this.rules.clear();
+		if (rules != null) {
 			this.rules.addAll(rules);
 		}
 	}

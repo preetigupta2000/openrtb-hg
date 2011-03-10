@@ -43,7 +43,7 @@ import java.util.List;
  *
  * @author jdrahos
  */
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_DEFAULT)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"identification", "status", "publisherPreferences"})
 public class PublisherPreferencesResponse extends Signable {
@@ -57,15 +57,15 @@ public class PublisherPreferencesResponse extends Signable {
 	/**
 	 * Needed for JSON serialization/deserialization.
 	 */
-	protected PublisherPreferencesResponse(){
+	protected PublisherPreferencesResponse() {
 		publisherPreferences = new LinkedList<PublisherPreference>();
 	}
 
-	public PublisherPreferencesResponse(Identification identification){
+	public PublisherPreferencesResponse(Identification identification) {
 		this(identification, new Status());
 	}
 
-	public PublisherPreferencesResponse(Identification identification, Status status){
+	public PublisherPreferencesResponse(Identification identification, Status status) {
 		this();
 		setIdentification(identification);
 		setStatus(status);
@@ -86,8 +86,9 @@ public class PublisherPreferencesResponse extends Signable {
 	}
 
 	public void setStatus(Status status) {
-		if(status == null)
+		if (status == null) {
 			throw new IllegalArgumentException("status passed to PublisherPreferencesResponse#setStatus() must be non-null");
+		}
 
 		this.status = status;
 	}
@@ -97,15 +98,16 @@ public class PublisherPreferencesResponse extends Signable {
 	}
 
 	public void setPublisherPreferences(Collection<PublisherPreference> publisherPreferences) {
-		if(publisherPreferences == null)
-			this.publisherPreferences.clear();
-		else
+		this.publisherPreferences.clear();
+		if (publisherPreferences != null) {
 			this.publisherPreferences.addAll(publisherPreferences);
+		}
 	}
 
 	public void addPublisherPreference(PublisherPreference publisherPreference) {
-		if(publisherPreference == null)
+		if (publisherPreference == null) {
 			throw new IllegalArgumentException("publisherPreference passed to PublisherPreferencesResponse#addPublisherPreference() must be non-null");
+		}
 
 		publisherPreferences.add(publisherPreference);
 	}
