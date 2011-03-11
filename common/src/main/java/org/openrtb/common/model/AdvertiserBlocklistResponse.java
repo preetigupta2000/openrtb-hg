@@ -31,96 +31,95 @@
  */
 package org.openrtb.common.model;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * The companion object to the {@link AdvertiserBlocklistRequest}.
- * 
+ *
  * @since 1.0.1
  */
 @JsonSerialize(include = Inclusion.NON_DEFAULT)
 @JsonPropertyOrder({"identification", "status", "advertisers"})
-public class AdvertiserBlocklistResponse extends Signable{
+public class AdvertiserBlocklistResponse extends Signable {
 
-    @JsonProperty
-    private Identification identification;
+	@JsonProperty
+	private Identification identification;
 
-    @JsonProperty
-    private Status status;
+	@JsonProperty
+	private Status status;
 
-    @JsonProperty
-    private List<Advertiser> advertisers;
+	@JsonProperty
+	private List<Advertiser> advertisers;
 
-    public AdvertiserBlocklistResponse() {
-        setAdvertisers(null);
-    }
+	public AdvertiserBlocklistResponse() {
+		setAdvertisers(null);
+	}
 
-    public AdvertiserBlocklistResponse(Identification identification, Status status) {
-        setIdentification(identification);
-        setStatus(status);
-    }
+	public AdvertiserBlocklistResponse(Identification identification, Status status) {
+		setIdentification(identification);
+		setStatus(status);
+	}
 
-    @Override
-    public Identification getIdentification() {
-        return identification;
-    }
-    public void setIdentification(Identification identification) {
-        this.identification = identification;
-    }
+	@Override
+	public Identification getIdentification() {
+		return identification;
+	}
 
-    public Status getStatus() {
-        return status;
-    }
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+	public void setIdentification(Identification identification) {
+		this.identification = identification;
+	}
 
-    /**
-     * There has to be at least one advertiser in the
-     * {@link AdvertiserBlocklistRequest} for that to be valid; as a result, the
-     * response will have at least one {@link Advertiser} in the object to be
-     * valid.
-     *
-     * @return
-     */
-    public List<Advertiser> getAdvertisers() {
-        return advertisers;
-    }
-    public void setAdvertisers(Collection<Advertiser> advertisers) {
-        initializeAdvertisers();
+	public Status getStatus() {
+		return status;
+	}
 
-        if (advertisers == null) {
-            this.advertisers.clear();
-        } else {
-            this.advertisers.addAll(advertisers);
-        }
-    }
-    /**
-     * @param advertiser
-     *            non-null {@link Advertiser} to add to the request.
-     * @throws IllegalArgumentException
-     *             should <code>advertiser</code> be <code>null</code>.
-     */
-    public void addAdvertiser(Advertiser advertiser) {
-        if (advertiser == null) {
-            throw new IllegalArgumentException("Advetiser passed to AdvertiserBlocklistResponse#addAdvetiser() must be non-null");
-        }
+	public void setStatus(Status status) {
+		this.status = status;
+	}
 
-        initializeAdvertisers();
-        advertisers.add(advertiser);
-    }
+	/**
+	 * There has to be at least one advertiser in the {@link AdvertiserBlocklistRequest} for that to be valid; as a
+	 * result, the response will have at least one {@link Advertiser} in the object to be valid.
+	 *
+	 * @return
+	 */
+	public List<Advertiser> getAdvertisers() {
+		return advertisers;
+	}
+
+	public void setAdvertisers(Collection<Advertiser> advertisers) {
+		initializeAdvertisers();
+		this.advertisers.clear();
+
+		if (advertisers != null) {
+			this.advertisers.addAll(advertisers);
+		}
+	}
+
+	/**
+	 * @param advertiser non-null {@link Advertiser} to add to the request.
+	 * @throws IllegalArgumentException should <code>advertiser</code> be <code>null</code>.
+	 */
+	public void addAdvertiser(Advertiser advertiser) {
+		if (advertiser == null) {
+			throw new IllegalArgumentException("Advetiser passed to AdvertiserBlocklistResponse#addAdvetiser() must be non-null");
+		}
+
+		initializeAdvertisers();
+		advertisers.add(advertiser);
+	}
 
 
-    private void initializeAdvertisers() {
-        if (advertisers == null) {
-            advertisers = new LinkedList<Advertiser>();
-        }
-    }
+	private void initializeAdvertisers() {
+		if (advertisers == null) {
+			advertisers = new LinkedList<Advertiser>();
+		}
+	}
 }

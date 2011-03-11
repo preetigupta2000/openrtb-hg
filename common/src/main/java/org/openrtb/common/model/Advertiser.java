@@ -29,140 +29,138 @@
  */
 package org.openrtb.common.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Represents the contents of an Advertiser object as is necessary for all
- * requests and responses.
- *
- * The {@link #landingPage} represents the unique identifier of an individual
- * advertiser for all communication between a DSP and SSP.
+ * Represents the contents of an Advertiser object as is necessary for all requests and responses.
+ * <p/>
+ * The {@link #landingPage} represents the unique identifier of an individual advertiser for all communication between a
+ * DSP and SSP.
  *
  * @since 1.0
  */
-@JsonSerialize(include=Inclusion.NON_DEFAULT)
+@JsonSerialize(include = Inclusion.NON_DEFAULT)
 @JsonPropertyOrder({"landingPageTLD", "name", "sinceThisTimestamp", "blocklist"})
 public class Advertiser {
 
-    @JsonProperty("landingPageTLD")
-    private String landingPage;
+	@JsonProperty("landingPageTLD")
+	private String landingPage;
 
-    @JsonProperty("name")
-    private String name;
+	@JsonProperty("name")
+	private String name;
 
-    @JsonProperty("sinceThisTimestamp")
-    private Long timestamp;
+	@JsonProperty("sinceThisTimestamp")
+	private Long timestamp;
 
-    @JsonProperty("blocklist")
-    private List<Blocklist> blocklist;
+	@JsonProperty("blocklist")
+	private List<Blocklist> blocklist;
 
-    public Advertiser() {
-        this(null, null, null, null);
-    }
-    public Advertiser(String landingPage) {
-        this(landingPage, null);
-    }
-    public Advertiser(String landingPage, String name) {
-        this(landingPage, name, null);
-    }
-    public Advertiser(String landingPage, String name, Long timestamp) {
-        this(landingPage, name, timestamp, null);
-    }
-    public Advertiser(String landingPage, String name, Long timestamp, List<Blocklist> blocklist) {
-        setLandingPage(landingPage);
-        setName(name);
-        setTimestamp(timestamp);
-        setBlocklist(blocklist);
-    }
+	public Advertiser() {
+		this(null, null, null, null);
+	}
 
-    /**
-     * The advertiser's landing page url as a top-level domain (TLD). Advertiser
-     * landing pages are expected to be a generic landing page for the name
-     * optional sinceThisTimestamp optional
-     *
-     * Example: "carbrand.com". Should be in lower case letters. This field is
-     * used as a unique ID for the advertiser between the DSP and SSP.
-     */
-    @JsonProperty("landingPageTLD")
-    public String getLandingPage() {
-        return landingPage;
-    }
+	public Advertiser(String landingPage) {
+		this(landingPage, null);
+	}
 
-    public void setLandingPage(String landingPage) {
-        this.landingPage = landingPage;
-    }
+	public Advertiser(String landingPage, String name) {
+		this(landingPage, name, null);
+	}
 
-    /**
-     * The advertiser's name.
-     *
-     * This field is used for informational purposes only and is not expected to
-     * be unique.
-     */
-    public String getName() {
-        return name;
-    }
+	public Advertiser(String landingPage, String name, Long timestamp) {
+		this(landingPage, name, timestamp, null);
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Advertiser(String landingPage, String name, Long timestamp, List<Blocklist> blocklist) {
+		setLandingPage(landingPage);
+		setName(name);
+		setTimestamp(timestamp);
+		setBlocklist(blocklist);
+	}
 
-    /**
-     * If specified, the API will only return changes since this POSIX
-     * timestamp.
-     *
-     * By default, the API will return all results if this value is set to
-     * <code>null</code>.
-     */
-    @JsonProperty("sinceThisTimestamp")
-    public Long getTimestamp() {
-        return timestamp;
-    }
+	/**
+	 * The advertiser's landing page url as a top-level domain (TLD). Advertiser landing pages are expected to be a
+	 * generic landing page for the name optional sinceThisTimestamp optional
+	 * <p/>
+	 * Example: "carbrand.com". Should be in lower case letters. This field is used as a unique ID for the advertiser
+	 * between the DSP and SSP.
+	 */
+	@JsonProperty("landingPageTLD")
+	public String getLandingPage() {
+		return landingPage;
+	}
 
-    public void setTimestamp(Long newTime) {
-        this.timestamp = newTime;
-    }
+	public void setLandingPage(String landingPage) {
+		this.landingPage = landingPage;
+	}
 
-    /**
-     * One or more {@link Blocklist} definitions that this
-     * <code>Advertiser</code> is blocked from serving advertisements on.
-     *
-     * If this field is empty (<code>getBlocklist().empty()</code> or
-     * <code>null</code>, there is no <tt>blocklist</tt> specified for this
-     * advertiser.
-     *
-     * This method should never return <code>null</code>.
-     */
-    public List<Blocklist> getBlocklist() {
-        return blocklist;
-    }
+	/**
+	 * The advertiser's name.
+	 * <p/>
+	 * This field is used for informational purposes only and is not expected to be unique.
+	 */
+	public String getName() {
+		return name;
+	}
 
-    public void setBlocklist(List<Blocklist> blocklist) {
-        initializeBlocklist();
-        if (blocklist == null) {
-            this.blocklist.clear();
-        } else {
-            this.blocklist.addAll(blocklist);
-        }
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void addBlocklist(Blocklist blocklist) {
-        if (blocklist == null) {
-            throw new IllegalArgumentException("Blocklist passed to Advertiser#addBlocklist() must be non-null");
-        }
+	/**
+	 * If specified, the API will only return changes since this POSIX timestamp.
+	 * <p/>
+	 * By default, the API will return all results if this value is set to <code>null</code>.
+	 */
+	@JsonProperty("sinceThisTimestamp")
+	public Long getTimestamp() {
+		return timestamp;
+	}
 
-        initializeBlocklist();
-        this.blocklist.add(blocklist);
-    }
+	public void setTimestamp(Long newTime) {
+		this.timestamp = newTime;
+	}
 
-    private void initializeBlocklist() {
-        if (blocklist == null) {
-            blocklist = new ArrayList<Blocklist>();
-        }
-    }
+	/**
+	 * One or more {@link Blocklist} definitions that this <code>Advertiser</code> is blocked from serving
+	 * advertisements on.
+	 * <p/>
+	 * If this field is empty (<code>getBlocklist().empty()</code> or <code>null</code>, there is no <tt>blocklist</tt>
+	 * specified for this advertiser.
+	 * <p/>
+	 * This method should never return <code>null</code>.
+	 */
+	public List<Blocklist> getBlocklist() {
+		return blocklist;
+	}
+
+	public void setBlocklist(List<Blocklist> blocklist) {
+		initializeBlocklist();
+		this.blocklist.clear();
+
+		if (blocklist != null) {
+			this.blocklist.addAll(blocklist);
+		}
+	}
+
+	public void addBlocklist(Blocklist blocklist) {
+		if (blocklist == null) {
+			throw new IllegalArgumentException("Blocklist passed to Advertiser#addBlocklist() must be non-null");
+		}
+
+		initializeBlocklist();
+		this.blocklist.add(blocklist);
+	}
+
+	private void initializeBlocklist() {
+		if (blocklist == null) {
+			blocklist = new ArrayList<Blocklist>();
+		}
+	}
 }
