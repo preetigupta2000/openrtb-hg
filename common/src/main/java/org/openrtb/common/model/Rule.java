@@ -156,4 +156,15 @@ public class Rule {
 		result = 31 * result + (values != null ? values.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("Rule");
+		sb.append("{operator=").append(operator);
+		sb.append(", type=").append(type);
+		sb.append(", values=").append(values);
+		sb.append('}');
+		return sb.toString();
+	}
 }

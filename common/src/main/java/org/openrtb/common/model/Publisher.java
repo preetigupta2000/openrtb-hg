@@ -153,4 +153,17 @@ public class Publisher {
 		result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("Publisher");
+		sb.append("{publisherID='").append(publisherID).append('\'');
+		sb.append(", siteID='").append(siteID).append('\'');
+		sb.append(", siteTLD='").append(siteTLD).append('\'');
+		sb.append(", preferenceTypes=").append(preferenceTypes);
+		sb.append(", timestamp=").append(timestamp);
+		sb.append('}');
+		return sb.toString();
+	}
 }

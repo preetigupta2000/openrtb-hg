@@ -158,4 +158,16 @@ public class PublisherPreference {
 		result = 31 * result + (rules != null ? rules.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("PublisherPreference");
+		sb.append("{publisherID='").append(publisherID).append('\'');
+		sb.append(", siteID='").append(siteID).append('\'');
+		sb.append(", siteTLD='").append(siteTLD).append('\'');
+		sb.append(", rules=").append(rules);
+		sb.append('}');
+		return sb.toString();
+	}
 }

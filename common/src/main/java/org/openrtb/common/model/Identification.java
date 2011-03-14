@@ -147,4 +147,15 @@ public class Identification {
 		result = 31 * result + (token != null ? token.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("Identification");
+		sb.append("{organization='").append(organization).append('\'');
+		sb.append(", timestamp=").append(timestamp);
+		sb.append(", token='").append(token).append('\'');
+		sb.append('}');
+		return sb.toString();
+	}
 }

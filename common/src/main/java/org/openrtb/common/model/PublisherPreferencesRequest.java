@@ -47,7 +47,7 @@ import java.util.List;
  * @author jdrahos
  * @since 1.2
  */
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_DEFAULT)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"identification", "publishers"})
 public class PublisherPreferencesRequest extends Signable {
@@ -60,7 +60,7 @@ public class PublisherPreferencesRequest extends Signable {
 	/**
 	 * Needed for JSON serialization/deserialization.
 	 */
-	protected PublisherPreferencesRequest (){
+	protected PublisherPreferencesRequest() {
 		publishers = new LinkedList<Publisher>();
 	}
 
@@ -72,27 +72,22 @@ public class PublisherPreferencesRequest extends Signable {
 	/**
 	 * Creates a minimal <code>PublisherPreferencesRequest</code>.
 	 *
-	 * @param organization
-	 *            The unique name of the organization making the request. This
-	 *            value represents the unique key between the SSP and the
-	 *            requestor for identifying who sent the request.
-	 * @throws IllegalArgumentException
-	 *             this exception is thrown if <code>organization</code> is
-	 *             <code>null</code>.
+	 * @param organization The unique name of the organization making the request. This value represents the unique key
+	 *                     between the SSP and the requestor for identifying who sent the request.
+	 * @throws IllegalArgumentException this exception is thrown if <code>organization</code> is <code>null</code>.
 	 */
 	public PublisherPreferencesRequest(String organization) {
 		this(new Identification(organization));
 	}
 
-	public PublisherPreferencesRequest(Identification identification,
-									   Collection<Publisher> publishers) {
+	public PublisherPreferencesRequest(Identification identification, Collection<Publisher> publishers) {
 		this(identification);
 		setPublishers(publishers);
 	}
 
 	/**
 	 * {@link Identification} of who is making this request.
-	 *
+	 * <p/>
 	 * This attribute is required.
 	 */
 	@Override
@@ -115,19 +110,29 @@ public class PublisherPreferencesRequest extends Signable {
 	}
 
 	public void setPublishers(Collection<Publisher> publishers) {
-		if(publishers == null || publishers.size() < 1){
+		if (publishers == null || publishers.size() < 1) {
 			throw new IllegalArgumentException("At least one Publisher must be present for call to PublisherPreferencesRequest#setPublishers()");
-		}else{
+		} else {
 			this.publishers.clear();
 			this.publishers.addAll(publishers);
 		}
 	}
 
 	public void addPublisher(Publisher publisher) {
-		if(publisher == null){
+		if (publisher == null) {
 			throw new IllegalArgumentException("Publisher passed to PublisherPreferencesRequest#addPublisher() must be non-null");
 		}
-		
+
 		this.publishers.add(publisher);
+	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("PublisherPreferencesRequest");
+		sb.append("{identification=").append(identification);
+		sb.append(", publishers=").append(publishers);
+		sb.append('}');
+		return sb.toString();
 	}
 }
