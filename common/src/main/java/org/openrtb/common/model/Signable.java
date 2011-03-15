@@ -63,8 +63,8 @@ public abstract class Signable {
 	 * @param translator   a specific {@link AbstractJsonTranslator} associated with the supplied {@link Signable}
 	 *                     <tt>request</tt>. If the wrong <tt>translator</tt> is supplied for the supplied
 	 *                     <tt>request</tt>, well, then any number of things can go wrong.  Good luck.
-	 * @throws IOException should the {@link Signable} be unable to be converted to JSON, an <tt>IOException</tt> will
-	 *                     be thrown.
+	 * @throws IOException should the {@link Signable} be unable to be converted to JSON, an <tt>IOException</tt> will be
+	 *                     thrown.
 	 */
 	public void sign(byte[] sharedSecret, AbstractJsonTranslator translator) throws IOException {
 		clearToken();
@@ -84,8 +84,8 @@ public abstract class Signable {
 	 *                     <tt>request</tt>, well, then any number of things can go wrong. Good luck.
 	 * @return <tt>true</tt> if the verification completed successfully, <tt>false</tt> otherwise.
 	 *
-	 * @throws IOException should the {@link Signable} be unable to be converted to JSON, an <tt>IOException</tt> will
-	 *                     be thrown.
+	 * @throws IOException should the {@link Signable} be unable to be converted to JSON, an <tt>IOException</tt> will be
+	 *                     thrown.
 	 */
 	public boolean verify(byte[] sharedSecret, AbstractJsonTranslator translator) throws IOException {
 		String token = clearToken();
@@ -97,9 +97,6 @@ public abstract class Signable {
 
 			StringBuilder signableStr = new StringBuilder("{").append(translator.toJSON(this)).append(",\"sharedSecret\":").append(Hex.encodeHex(sharedSecret)).append("}");
 			String verification = DigestUtils.md5Hex(signableStr.toString());
-			if (log.isDebugEnabled()) {
-				log.debug("generated md5: " + verification);
-			}
 			if (!token.equals(verification)) {
 				log.error("Signature verification value [" + verification + "] does not match supplied value [" + token + "]");
 				return false;
@@ -115,14 +112,13 @@ public abstract class Signable {
 	 * object. <tt>null</tt> is a valid token, however, the internal state of the object implementing this interface may
 	 * not be complete enough to identify if a token is present.
 	 * <p/>
-	 * If this case occurs, throw an appropriate {@link IllegalStateException} indicating why one can not be
-	 * identified.
+	 * If this case occurs, throw an appropriate {@link IllegalStateException} indicating why one can not be identified.
 	 *
 	 * @return the token value used to uniquely identify/validate the object, if one exists, including <tt>null</tt>.
 	 *
-	 * @throws IllegalStateException if you are unable to identify a token for the signable object, for whatever reason,
-	 *                               no {@link Identification} object exists prior to calling this method; indicative of
-	 *                               a logic error elsewhere in your application.
+	 * @throws IllegalStateException if you are unable to identify a token for the signable object, for whatever reason, no
+	 *                               {@link Identification} object exists prior to calling this method; indicative of a
+	 *                               logic error elsewhere in your application.
 	 */
 	public String clearToken() {
 		validateIdentification();
@@ -133,8 +129,8 @@ public abstract class Signable {
 	}
 
 	/**
-	 * For the associated object, set its internal token to the supplied <tt>token</tt> value. If you are unable to do
-	 * so, throw an {@link IllegalStateException} to the caller to indicate that it is currently not possible to do so.
+	 * For the associated object, set its internal token to the supplied <tt>token</tt> value. If you are unable to do so,
+	 * throw an {@link IllegalStateException} to the caller to indicate that it is currently not possible to do so.
 	 * <p/>
 	 * The <tt>token</tt> value supplied should be non-<tt>null</tt>. If a <tt>null</tt> is supplied, then an {@link
 	 * IllegalArgumentException} will be thrown. If the caller desires to clear out the token value for the associated
