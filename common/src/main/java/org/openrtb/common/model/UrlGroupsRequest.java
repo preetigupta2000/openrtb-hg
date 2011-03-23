@@ -101,4 +101,14 @@ public class UrlGroupsRequest extends Signable {
 
 		this.urlGroups.add(urlGroup);
 	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("UrlGroupsRequest");
+		sb.append("{identification=").append(identification);
+		sb.append(", urlGroups=").append(urlGroups);
+		sb.append('}');
+		return sb.toString();
+	}
 }

@@ -124,4 +124,14 @@ public class UrlGroup {
 		result = 31 * result + landingPages.hashCode();
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("UrlGroup");
+		sb.append("{groupName='").append(groupName).append('\'');
+		sb.append(", landingPages=").append(landingPages);
+		sb.append('}');
+		return sb.toString();
+	}
 }

@@ -112,4 +112,15 @@ public class PublisherPreferencesResponse extends Signable {
 
 		publisherPreferences.add(publisherPreference);
 	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("PublisherPreferencesResponse");
+		sb.append("{identification=").append(identification);
+		sb.append(", status=").append(status);
+		sb.append(", publisherPreferences=").append(publisherPreferences);
+		sb.append('}');
+		return sb.toString();
+	}
 }

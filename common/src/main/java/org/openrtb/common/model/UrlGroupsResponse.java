@@ -81,4 +81,14 @@ public class UrlGroupsResponse extends Signable {
 
 		this.status = status;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("UrlGroupsResponse");
+		sb.append("{identification=").append(identification);
+		sb.append(", status=").append(status);
+		sb.append('}');
+		return sb.toString();
+	}
 }
