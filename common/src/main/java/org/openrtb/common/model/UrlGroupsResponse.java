@@ -34,39 +34,28 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
- * Created by IntelliJ IDEA. PublisherPreferencesResponse
+ * Created by IntelliJ IDEA. UrlGroupsResponse
  *
  * @author jdrahos
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"identification", "status", "publisherPreferences"})
-public class PublisherPreferencesResponse extends Signable {
+@JsonPropertyOrder({"identification", "status"})
+public class UrlGroupsResponse extends Signable {
 	@JsonProperty
 	private Identification identification;
 	@JsonProperty
 	private Status status;
-	@JsonProperty
-	private List<PublisherPreference> publisherPreferences;
 
-	/**
-	 * Needed for JSON serialization/deserialization.
-	 */
-	protected PublisherPreferencesResponse() {
-		publisherPreferences = new LinkedList<PublisherPreference>();
+	protected UrlGroupsResponse() {
 	}
 
-	public PublisherPreferencesResponse(Identification identification) {
+	public UrlGroupsResponse(final Identification identification) {
 		this(identification, new Status());
 	}
 
-	public PublisherPreferencesResponse(Identification identification, Status status) {
-		this();
+	public UrlGroupsResponse(final Identification identification, final Status status) {
 		setIdentification(identification);
 		setStatus(status);
 	}
@@ -87,29 +76,9 @@ public class PublisherPreferencesResponse extends Signable {
 
 	public void setStatus(Status status) {
 		if (status == null) {
-			throw new IllegalArgumentException("status passed to PublisherPreferencesResponse#setStatus() must be non-null");
+			throw new IllegalArgumentException("status passed to UrlGroupsResponse#setStatus() must be non-null");
 		}
 
 		this.status = status;
-	}
-
-	public List<PublisherPreference> getPublisherPreferences() {
-		return publisherPreferences;
-	}
-
-	public void setPublisherPreferences(Collection<PublisherPreference> publisherPreferences) {
-		this.publisherPreferences.clear();
-
-		if (publisherPreferences != null) {
-			this.publisherPreferences.addAll(publisherPreferences);
-		}
-	}
-
-	public void addPublisherPreference(PublisherPreference publisherPreference) {
-		if (publisherPreference == null) {
-			throw new IllegalArgumentException("publisherPreference passed to PublisherPreferencesResponse#addPublisherPreference() must be non-null");
-		}
-
-		publisherPreferences.add(publisherPreference);
 	}
 }
