@@ -32,64 +32,53 @@
 package org.openrtb.dsp.intf.model;
 
 /**
- * A value object representing the required information for sending a request to
- * a supply-side platform (exchange).
+ * A value object representing the required information for sending a request to a supply-side platform (exchange).
  */
 public class SupplySidePlatform {
 
-    String organization;
+	String organization;
 	String advertiserBatchServiceUrl;
 	String publisherBatchServiceUrl;
-    byte[] sharedSecret;
-
-    /**
-     * Constructor for a supply-side platform object. All values are required to
-     * be non- <tt>null</tt>. If null is supplied for any one of the values, an
-     * {@link IllegalArgumentException} is thrown to alert the caller of the
-     * condition.
-     */
-	@Deprecated
-    public SupplySidePlatform(String organization, String batchServiceUrl, byte[] sharedSecret) {
-        if (organization == null || batchServiceUrl == null || sharedSecret == null) {
-            throw new IllegalArgumentException("organization ["+organization+"], " +
-                                               "service url ["+batchServiceUrl+"], and " +
-                                               "secret ["+sharedSecret+"] are required " +
-                                               "for valid supply-side platform definitions");
-        }
-        this.organization = organization;
-        this.advertiserBatchServiceUrl = batchServiceUrl;
-        this.sharedSecret = sharedSecret;
-    }
+	String urlGroupsBatchServiceUrl;
+	byte[] sharedSecret;
 
 	/**
-	 * Constructor for a supply-side platform object. Organization and sharedSecret are required to
-	 * be non- <tt>null</tt>. Either advertiserBatchServiceUrl or publisherBatchServiceUrl is required to be
-	 * non-<tt>null</tt>. If above conditions are not met, an {@link IllegalArgumentException} is thrown to alert the caller of the condition.
+	 * Constructor for a supply-side platform object. All values are required to be non- <tt>null</tt>. If null is supplied
+	 * for any one of the values, an {@link IllegalArgumentException} is thrown to alert the caller of the condition.
 	 */
-	public SupplySidePlatform(String organization, String advertiserBatchServiceUrl, String publisherBatchServiceUrl, byte[] sharedSecret) {
-		if (organization == null
-				|| sharedSecret == null
-				|| (publisherBatchServiceUrl == null
-					&& advertiserBatchServiceUrl == null)) {
-			throw new IllegalArgumentException("organization ["+organization+"] and " +
-											   "secret ["+sharedSecret+"] are required and " +
-											   "either advertiser service url ["+advertiserBatchServiceUrl+"] or " +
-											   "publisher service url ["+publisherBatchServiceUrl+"] is required " +
-											   "for valid supply-side platform definitions");
+	@Deprecated
+	public SupplySidePlatform(String organization, String batchServiceUrl, byte[] sharedSecret) {
+		if (organization == null || batchServiceUrl == null || sharedSecret == null) {
+			throw new IllegalArgumentException("organization [" + organization + "], " + "service url [" + batchServiceUrl + "], and " + "secret [" + sharedSecret + "] are required " + "for valid supply-side platform definitions");
+		}
+		this.organization = organization;
+		this.advertiserBatchServiceUrl = batchServiceUrl;
+		this.sharedSecret = sharedSecret;
+	}
+
+	/**
+	 * Constructor for a supply-side platform object. Organization and sharedSecret are required to be non- <tt>null</tt>.
+	 * Either advertiserBatchServiceUrl or publisherBatchServiceUrl is required to be non-<tt>null</tt>. If above
+	 * conditions are not met, an {@link IllegalArgumentException} is thrown to alert the caller of the condition.
+	 */
+	public SupplySidePlatform(String organization, String advertiserBatchServiceUrl, String publisherBatchServiceUrl, String urlGroupsBatchServiceUrl, byte[] sharedSecret) {
+		if (organization == null || sharedSecret == null || (publisherBatchServiceUrl == null && advertiserBatchServiceUrl == null)) {
+			throw new IllegalArgumentException("organization [" + organization + "] and " + "secret [" + sharedSecret + "] are required and " + "either advertiser service url [" + advertiserBatchServiceUrl + "] or " + "publisher service url [" + publisherBatchServiceUrl + "] is required " + "for valid supply-side platform definitions");
 		}
 		this.organization = organization;
 		this.sharedSecret = sharedSecret;
 		this.advertiserBatchServiceUrl = advertiserBatchServiceUrl;
 		this.publisherBatchServiceUrl = publisherBatchServiceUrl;
+		this.urlGroupsBatchServiceUrl = urlGroupsBatchServiceUrl;
 	}
 
-    public String getOrganization() {
-        return organization;
-    }
+	public String getOrganization() {
+		return organization;
+	}
 
-    public byte[] getSharedSecret() {
-        return sharedSecret;
-    }
+	public byte[] getSharedSecret() {
+		return sharedSecret;
+	}
 
 	@Deprecated
 	public String getBatchServiceUrl() {
@@ -102,5 +91,9 @@ public class SupplySidePlatform {
 
 	public String getPublisherBatchServiceUrl() {
 		return publisherBatchServiceUrl;
+	}
+
+	public String getUrlGroupsBatchServiceUrl() {
+		return urlGroupsBatchServiceUrl;
 	}
 }

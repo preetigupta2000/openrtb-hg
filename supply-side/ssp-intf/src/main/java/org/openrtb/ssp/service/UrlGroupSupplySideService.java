@@ -29,37 +29,24 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.openrtb.dsp.client;
+package org.openrtb.ssp.service;
 
-import org.openrtb.dsp.intf.model.SupplySidePlatform;
-import org.openrtb.dsp.intf.service.IdentificationService;
+import org.openrtb.common.model.UrlGroup;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 /**
- * This is simply a reference implementation of a static service for testing, etc. For more information about this
- * service, please see the interface listed below.
+ * Created by IntelliJ IDEA. UrlGroupSupplySideService
  *
- * @see IdentificationService
+ * @author jdrahos
  */
-public class StaticIdentificationService extends AbstractStaticService implements IdentificationService {
-
-
-	@Override
-	public String getOrganizationIdentifier() {
-		return "The DSP";
-	}
-
-	public static List<SupplySidePlatform> platforms = new ArrayList<SupplySidePlatform>();
-
-	static {
-		platforms.add(new SupplySidePlatform("The SSP", "http://localhost:8080/ssp-web/openrtb/advCentricSync", "http://localhost:8080/ssp-web/openrtb/pubCentricSync", "http://localhost:8080/ssp-web/openrtb/urlGroupsSync", "RTB".getBytes()));
-	}
-
-	@Override
-	public List<SupplySidePlatform> getServiceEndpoints() {
-		return new ArrayList<SupplySidePlatform>(platforms);
-	}
-
+public interface UrlGroupSupplySideService extends SupplySideService {
+	/**
+	 * returns url groups which were modified since the provided timestamp or all url group if the timestamp is not
+	 * provided
+	 *
+	 * @param timestamp timestamp of previous synchronization (posix) or null if all groups should be returned.
+	 * @return url groups with populated list of landingPages
+	 */
+	Collection<UrlGroup> getUrlGroups(Long timestamp);
 }

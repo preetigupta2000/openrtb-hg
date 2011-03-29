@@ -29,21 +29,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.openrtb.ssp;
+package org.openrtb.ssp.service;
 
-import org.openrtb.common.model.Advertiser;
-
-import java.util.Collection;
-
-public interface AdvertiserSupplySideService {
-	/**
-	 * Looks up blocklists for the requested advertisers
-	 *
-	 * @param advertisers
-	 * @return advertisers with initialized blocklists
-	 */
-	Collection<Advertiser> setBlocklists(Collection<Advertiser> advertisers);
-
+/**
+ * Created by IntelliJ IDEA. SupplySideService
+ *
+ * @author jdrahos
+ */
+public interface SupplySideService {
 	/**
 	 * Returns a secret shared with the DSP organization
 	 *
@@ -58,5 +51,4 @@ public interface AdvertiserSupplySideService {
 	 * @return the organization identifier
 	 */
 	String getOrganization();
-
 }

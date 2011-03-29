@@ -45,52 +45,51 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * This is simply a reference implementation of a static service for testing,
- * etc. For more information about this service, please see the interface listed
- * below.
+ * This is simply a reference implementation of a static service for testing, etc. For more information about this
+ * service, please see the interface listed below.
  *
  * @see AdvertiserService
  */
-public class StaticAdvertiserService extends AbstractStaticService
-                                     implements AdvertiserService {
+public class StaticAdvertiserService extends AbstractStaticService implements AdvertiserService {
 
-    private static final Logger log = LoggerFactory.getLogger(StaticAdvertiserService.class);
+	private static final Logger log = LoggerFactory.getLogger(StaticAdvertiserService.class);
 
-    public static List<Advertiser> advertisers = new ArrayList<Advertiser>();
-    static {
-        // ssp-client configured advertiser
-        advertisers.add(new Advertiser("acmeluxuryfurniture.com"));
+	public static List<Advertiser> advertisers = new ArrayList<Advertiser>();
 
-        // unknowns
-        advertisers.add(new Advertiser("intriguing.biz"));
-        advertisers.add(new Advertiser("sports-advertiser.com", "Some Sports Advertiser"));
-        advertisers.add(new Advertiser("unknown.info"));
-    }
+	static {
+		// ssp-client configured advertiser
+//		advertisers.add(new Advertiser("acmeluxuryfurniture.com"));
 
-    @Override
-    public List<Advertiser> getAdvertiserList() {
-        return new ArrayList<Advertiser>(advertisers);
-    }
+		// unknowns
+//        advertisers.add(new Advertiser("intriguing.biz"));
+//        advertisers.add(new Advertiser("sports-advertiser.com", "Some Sports Advertiser"));
+		advertisers.add(new Advertiser("unknown.info"));
+//		advertisers.add(new Advertiser("testXYZ.com"));
+	}
 
-    @Override
-    public void replaceBlocklists(SupplySidePlatform ssp, 
-                                  Collection<Advertiser> advertisers) {
-        Set<String> publisher = new HashSet<String>();
-        Set<String> site = new HashSet<String>();
-        StringBuilder blocklistBuilder = new StringBuilder();
+	@Override
+	public List<Advertiser> getAdvertiserList() {
+		return new ArrayList<Advertiser>(advertisers);
+	}
 
-        for(Advertiser advertiser : advertisers) {
-            blocklistBuilder.delete(0, blocklistBuilder.length());
-            for(Blocklist blocklist : advertiser.getBlocklist()) {
-                publisher.add(blocklist.getPublisherId());
-                site.add(blocklist.getSiteId());
-                blocklistBuilder.append("[").append(blocklist.getPublisherId()).append(":").append(blocklist.getSiteId()).append("],");
-            }
-            String blocklistValue = (blocklistBuilder.length() > 0 ? blocklistBuilder.substring(0, blocklistBuilder.length()-1) : "");
+	@Override
+	public void replaceBlocklists(SupplySidePlatform ssp, Collection<Advertiser> advertisers) {
+		Set<String> publisher = new HashSet<String>();
+		Set<String> site = new HashSet<String>();
+		StringBuilder blocklistBuilder = new StringBuilder();
 
-            log.info("received advertiser ["+advertiser.getLandingPage()+"] blocked on ["+publisher.size()+"] publishers and ["+site.size()+"] sites");
-            log.info("received advertiser ["+advertiser.getLandingPage()+"] w/ blocklist ["+ blocklistValue+"]");
-        }
-    }
+		for (Advertiser advertiser : advertisers) {
+			blocklistBuilder.delete(0, blocklistBuilder.length());
+			for (Blocklist blocklist : advertiser.getBlocklist()) {
+				publisher.add(blocklist.getPublisherId());
+				site.add(blocklist.getSiteId());
+				blocklistBuilder.append("[").append(blocklist.getPublisherId()).append(":").append(blocklist.getSiteId()).append("],");
+			}
+			String blocklistValue = (blocklistBuilder.length() > 0 ? blocklistBuilder.substring(0, blocklistBuilder.length() - 1) : "");
+
+			log.info("received advertiser [" + advertiser.getLandingPage() + "] blocked on [" + publisher.size() + "] publishers and [" + site.size() + "] sites");
+			log.info("received advertiser [" + advertiser.getLandingPage() + "] w/ blocklist [" + blocklistValue + "]");
+		}
+	}
 
 }

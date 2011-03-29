@@ -34,10 +34,6 @@ package org.openrtb.common.model;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -49,12 +45,7 @@ public class UrlGroupsRequestTest {
 
 	private UrlGroupsRequest test;
 	private static final Identification IDENTIFICATION = new Identification("test");
-	private static final List<UrlGroup> URL_GROUPS = new LinkedList<UrlGroup>();
-
-	static {
-		URL_GROUPS.add(new UrlGroup("test", Arrays.asList("test.com", "test.us")));
-		URL_GROUPS.add(new UrlGroup("test2", Arrays.asList("test2.com", "test2.us", "test2.ca")));
-	}
+	private static final Long TIMESTAMP = 1L;
 
 	@Before
 	public void setup() {
@@ -65,7 +56,6 @@ public class UrlGroupsRequestTest {
 	public void create() {
 		UrlGroupsRequest request = new UrlGroupsRequest(IDENTIFICATION);
 		assertNotNull("Identification is required", request.getIdentification());
-		assertNotNull("Url groups is required", request.getUrlGroups());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -78,7 +68,6 @@ public class UrlGroupsRequestTest {
 	public void create2() {
 		UrlGroupsRequest request = new UrlGroupsRequest("test");
 		assertNotNull("Identification is required", request.getIdentification());
-		assertNotNull("Url groups is required", request.getUrlGroups());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -95,21 +84,14 @@ public class UrlGroupsRequestTest {
 
 	@Test
 	public void create3() {
-		UrlGroupsRequest request = new UrlGroupsRequest(IDENTIFICATION, URL_GROUPS);
+		UrlGroupsRequest request = new UrlGroupsRequest(IDENTIFICATION, TIMESTAMP);
 		assertNotNull("Identification is required", request.getIdentification());
-		assertNotNull("Url groups is required", request.getUrlGroups());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void create3Invlaid_IdentificationIsNull() {
 		Identification identification = null;
-		UrlGroupsRequest request = new UrlGroupsRequest(identification, URL_GROUPS);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void create3Invlaid_UrlGroupsIsNull() {
-		List<UrlGroup> urlGroups = null;
-		UrlGroupsRequest request = new UrlGroupsRequest(IDENTIFICATION, urlGroups);
+		UrlGroupsRequest request = new UrlGroupsRequest(identification, TIMESTAMP);
 	}
 
 	@Test
@@ -121,27 +103,5 @@ public class UrlGroupsRequestTest {
 	public void setIdentification_Null() {
 		Identification identification = null;
 		test.setIdentification(identification);
-	}
-
-	@Test
-	public void setUrlGroups() {
-		test.setUrlGroups(URL_GROUPS);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void setUrlGroups_Null() {
-		List<UrlGroup> urlGroups = null;
-		test.setUrlGroups(urlGroups);
-	}
-
-	@Test
-	public void addUrlGroup() {
-		test.addUrlGroup(URL_GROUPS.get(0));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void addUrlGroup_Null() {
-		UrlGroup urlGroup = null;
-		test.addUrlGroup(urlGroup);
 	}
 }

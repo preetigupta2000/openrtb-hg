@@ -34,6 +34,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA. UrlGroupsResponse
  *
@@ -41,14 +45,17 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"identification", "status"})
-public class UrlGroupsResponse extends Signable {
+@JsonPropertyOrder({"identification", "status", "urlGroups"})
+public class UrlGroupsResponse extends Signable implements Response {
 	@JsonProperty
 	private Identification identification;
 	@JsonProperty
 	private Status status;
+	@JsonProperty
+	private List<UrlGroup> urlGroups;
 
 	protected UrlGroupsResponse() {
+		urlGroups = new LinkedList<UrlGroup>();
 	}
 
 	public UrlGroupsResponse(final Identification identification) {
@@ -56,6 +63,7 @@ public class UrlGroupsResponse extends Signable {
 	}
 
 	public UrlGroupsResponse(final Identification identification, final Status status) {
+		this();
 		setIdentification(identification);
 		setStatus(status);
 	}
@@ -80,6 +88,27 @@ public class UrlGroupsResponse extends Signable {
 		}
 
 		this.status = status;
+	}
+
+	public List<UrlGroup> getUrlGroups() {
+		return urlGroups;
+	}
+
+	public void setUrlGroups(Collection<UrlGroup> urlGroups) {
+		if (urlGroups == null || urlGroups.size() < 1) {
+			throw new IllegalArgumentException("At least one url group must be present for call to UrlGroupsRequest#setUrlGroups()");
+		} else {
+			this.urlGroups.clear();
+			this.urlGroups.addAll(urlGroups);
+		}
+	}
+
+	public void addUrlGroup(UrlGroup urlGroup) {
+		if (urlGroup == null) {
+			throw new IllegalArgumentException("Url group passed to UrlGroupsRequest#addUrlGroup() must be non-null");
+		}
+
+		this.urlGroups.add(urlGroup);
 	}
 
 	@Override

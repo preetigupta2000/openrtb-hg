@@ -33,6 +33,10 @@ package org.openrtb.common.model;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -43,6 +47,13 @@ import static org.junit.Assert.assertNotNull;
 public class UrlGroupsResponseTest {
 	private static final Identification IDENTIFICATION = new Identification("test");
 	private static final Status STATUS = new Status("44ab444914088e855ad1f948ec4a1fc7", 0, "success");
+	private static final List<UrlGroup> URL_GROUPS = new LinkedList<UrlGroup>();
+
+	static {
+		URL_GROUPS.add(new UrlGroup("test", Arrays.asList("test.com", "test.us")));
+		URL_GROUPS.add(new UrlGroup("test2", Arrays.asList("test2.com", "test2.us", "test2.ca")));
+	}
+
 	private UrlGroupsResponse test = new UrlGroupsResponse(IDENTIFICATION);
 
 	@Test
@@ -97,5 +108,27 @@ public class UrlGroupsResponseTest {
 	public void setStatus_Null() {
 		Status status = null;
 		test.setStatus(status);
+	}
+
+	@Test
+	public void setUrlGroups() {
+		test.setUrlGroups(URL_GROUPS);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void setUrlGroups_Null() {
+		List<UrlGroup> urlGroups = null;
+		test.setUrlGroups(urlGroups);
+	}
+
+	@Test
+	public void addUrlGroup() {
+		test.addUrlGroup(URL_GROUPS.get(0));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void addUrlGroup_Null() {
+		UrlGroup urlGroup = null;
+		test.addUrlGroup(urlGroup);
 	}
 }

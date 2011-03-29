@@ -34,59 +34,59 @@ package org.openrtb.dsp.intf.model;
 import org.junit.Test;
 
 /**
- * Validating the supply-side platform object is correctly constructed; We
- * require and enforce an organization identifier, a service url, and a shared
- * secret are supplied.
+ * Validating the supply-side platform object is correctly constructed; We require and enforce an organization
+ * identifier, a service url, and a shared secret are supplied.
  */
 public class SupplySidePlatformTest {
 
-    private static final String ORGANIZATION = "an organization identifier";
+	private static final String ORGANIZATION = "an organization identifier";
 	private static final String ADVERTISER_SERVICE_URL = "http://blah.blah.com/foo/bar/adv";
 	private static final String PUBLISHER_SERVICE_URL = "http://blah.blah.com/foo/bar/pub";
-    private static final byte[] SECRET = "can't guess me".getBytes();
+	private static final String URL_GROUP_SERVICE_URL = "http://blah.blah.com/foo/bar/urlGroup";
+	private static final byte[] SECRET = "can't guess me".getBytes();
 
 	@Test(expected = IllegalArgumentException.class)
-    public void createSsp_noOrganization() {
-        new SupplySidePlatform(null, ADVERTISER_SERVICE_URL, SECRET);
-    }
+	public void createSsp_noOrganization() {
+		new SupplySidePlatform(null, ADVERTISER_SERVICE_URL, SECRET);
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void createSsp_noService() {
-        new SupplySidePlatform(ORGANIZATION, null, SECRET);
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void createSsp_noService() {
+		new SupplySidePlatform(ORGANIZATION, null, SECRET);
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void createSsp_noSecret() {
-        new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, null);
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void createSsp_noSecret() {
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, null);
+	}
 
 	@Test //checking that the positive scenario is fine
 	public void createSsp2() {
-		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, SECRET);
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, SECRET);
 	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void createSsp2_noOrganization() {
-        new SupplySidePlatform(null, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, SECRET);
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void createSsp2_noOrganization() {
+		new SupplySidePlatform(null, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, SECRET);
+	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createSsp2_noSecret() {
-		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, null);
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, null);
 	}
 
 	@Test
 	public void createSsp2_noAdvService() {
-		new SupplySidePlatform(ORGANIZATION, null, PUBLISHER_SERVICE_URL, SECRET);
+		new SupplySidePlatform(ORGANIZATION, null, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, SECRET);
 	}
 
 	@Test
 	public void createSsp2_noPubService() {
-		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, null, SECRET);
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, null, URL_GROUP_SERVICE_URL, SECRET);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createSsp2_noServices() {
-		new SupplySidePlatform(ORGANIZATION, null, null, SECRET);
+		new SupplySidePlatform(ORGANIZATION, null, null, URL_GROUP_SERVICE_URL, SECRET);
 	}
 }

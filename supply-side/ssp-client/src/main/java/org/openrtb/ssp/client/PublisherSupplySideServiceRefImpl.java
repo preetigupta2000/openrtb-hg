@@ -36,7 +36,7 @@ import org.openrtb.common.model.PreferenceType;
 import org.openrtb.common.model.Publisher;
 import org.openrtb.common.model.PublisherPreference;
 import org.openrtb.common.model.Rule;
-import org.openrtb.ssp.PublisherSupplySideService;
+import org.openrtb.ssp.service.PublisherSupplySideService;
 
 import java.util.ArrayList;
 import java.util.Arrays;

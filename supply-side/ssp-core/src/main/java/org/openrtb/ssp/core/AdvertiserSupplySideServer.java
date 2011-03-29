@@ -31,20 +31,15 @@
  */
 package org.openrtb.ssp.core;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
+import org.openrtb.common.json.AbstractJsonTranslator;
 import org.openrtb.common.json.AdvertiserBlocklistRequestTranslator;
 import org.openrtb.common.json.AdvertiserBlocklistResponseTranslator;
 import org.openrtb.common.model.Advertiser;
 import org.openrtb.common.model.AdvertiserBlocklistRequest;
 import org.openrtb.common.model.AdvertiserBlocklistResponse;
-import org.openrtb.common.model.Identification;
 import org.openrtb.common.model.Status;
-import org.openrtb.ssp.AdvertiserSupplySideService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openrtb.ssp.service.AdvertiserSupplySideService;
 
-import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -54,79 +49,37 @@ import java.util.Collection;
  *
  * @since 1.0.1
  */
-public class AdvertiserSupplySideServer {
+public class AdvertiserSupplySideServer extends SupplySideServer<AdvertiserSupplySideService, AdvertiserBlocklistRequest, AdvertiserBlocklistResponse> {
+	private static AdvertiserBlocklistRequestTranslator reqTrans = new AdvertiserBlocklistRequestTranslator();
+	private static AdvertiserBlocklistResponseTranslator resTrans = new AdvertiserBlocklistResponseTranslator();
 
-	private static final Logger log = LoggerFactory.getLogger(AdvertiserSupplySideServer.class);
-	private AdvertiserSupplySideService ssp;
-
-	private AdvertiserBlocklistRequestTranslator reqTrans = new AdvertiserBlocklistRequestTranslator();
-	private AdvertiserBlocklistResponseTranslator resTrans = new AdvertiserBlocklistResponseTranslator();
-
-	public AdvertiserSupplySideServer(AdvertiserSupplySideService ssp) {
-		this.ssp = ssp;
+	public AdvertiserSupplySideServer(AdvertiserSupplySideService advertiserSupplySideService) {
+		super(advertiserSupplySideService);
 	}
 
-	/**
-	 * Processes Open RTB JSON requests. Returns JSON-formatted responses.
-	 *
-	 * @param jsonRequest
-	 */
-	public String process(String jsonRequest) {
-		AdvertiserBlocklistRequest request = null;
-		AdvertiserBlocklistResponse response = new AdvertiserBlocklistResponse();
-		Status status = new Status("n/a");
-		String requestToken = null;
-		String jsonResponse = null;
-		Identification identification = new Identification(ssp.getOrganization(), System.currentTimeMillis());
-		String dsp = null;
+	@Override
+	protected AdvertiserBlocklistResponse processRequest(final AdvertiserBlocklistRequest advertiserBlocklistRequest) {
+		Collection<Advertiser> advertisers = advertiserBlocklistRequest.getAdvertisers();
+		advertisers = service.setBlocklists(advertisers);
+		AdvertiserBlocklistResponse response = new AdvertiserBlocklistResponse(getIdentification());
+		response.setAdvertisers(advertisers);
 
-		//process request
-		try {
-			//translate and verify request
-			request = reqTrans.fromJSON(jsonRequest);
-			dsp = request.getIdentification().getOrganization();
-			if (dsp == null || !request.verify(ssp.getSharedSecret(dsp), reqTrans)) {
-				throw new IllegalArgumentException("Invalid MD5 checksum");
-			}
-			requestToken = request.getIdentification().getToken();
-			status.setRequestToken(requestToken);
+		return response;
+	}
 
-			//obtain block lists
-			Collection<Advertiser> advertisers = request.getAdvertisers();
-			advertisers = ssp.setBlocklists(advertisers);
-			response.setAdvertisers(advertisers);
+	@Override
+	protected AdvertiserBlocklistResponse createEmptyResponse(final Status status) {
+		return new AdvertiserBlocklistResponse(getIdentification(), status);
+	}
 
-			//set success code
-			status.setResponseCode(Status.SUCCESS_CODE, Status.SUCCESS_MESSAGE);
+	@Override
+	protected AbstractJsonTranslator<AdvertiserBlocklistResponse> getResponseTranslator() {
+		return resTrans;
+	}
 
-		} catch (IllegalArgumentException e) {
-			status.setResponseCode(Status.AUTH_ERROR_CODE, e.getMessage());
-		} catch (JsonMappingException e) {
-			//e.printStackTrace();
-			status.setResponseCode(Status.OTHER_ERROR_CODE, e.getMessage());
-		} catch (JsonParseException e) {
-			//e.printStackTrace();
-			status.setResponseCode(Status.OTHER_ERROR_CODE, e.getMessage());
-		} catch (IOException e) {
-			//e.printStackTrace();
-			status.setResponseCode(Status.OTHER_ERROR_CODE, e.getMessage());
-		}
-		//set status
-		response.setStatus(status);
-		//set response identification
-		response.setIdentification(identification);
-		//translate response and add a MD5 token
-		try {
-			if (dsp != null) {
-				response.sign(ssp.getSharedSecret(dsp), resTrans);
-			}
-			jsonResponse = resTrans.toJSON(response);
-		} catch (Exception e) {
-			//what to do in this case? ... HTTP error?
-			log.error("Response signing/translation failed", e);
-			jsonResponse = null;
-		}
-		return jsonResponse;
+	@Override
+	protected AbstractJsonTranslator<AdvertiserBlocklistRequest> getRequestTranslator() {
+		return reqTrans;
 	}
 
 }

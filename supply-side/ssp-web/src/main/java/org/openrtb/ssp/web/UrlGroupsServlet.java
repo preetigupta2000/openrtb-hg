@@ -29,37 +29,22 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.openrtb.dsp.client;
+package org.openrtb.ssp.web;
 
-import org.openrtb.dsp.intf.model.SupplySidePlatform;
-import org.openrtb.dsp.intf.service.IdentificationService;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.openrtb.ssp.core.UrlGroupSupplySideServer;
+import org.openrtb.ssp.service.SupplySideService;
+import org.openrtb.ssp.service.UrlGroupSupplySideService;
 
 /**
- * This is simply a reference implementation of a static service for testing, etc. For more information about this
- * service, please see the interface listed below.
+ * Created by IntelliJ IDEA. UrlGroupsServlet
  *
- * @see IdentificationService
+ * @author jdrahos
  */
-public class StaticIdentificationService extends AbstractStaticService implements IdentificationService {
-
-
-	@Override
-	public String getOrganizationIdentifier() {
-		return "The DSP";
-	}
-
-	public static List<SupplySidePlatform> platforms = new ArrayList<SupplySidePlatform>();
-
-	static {
-		platforms.add(new SupplySidePlatform("The SSP", "http://localhost:8080/ssp-web/openrtb/advCentricSync", "http://localhost:8080/ssp-web/openrtb/pubCentricSync", "http://localhost:8080/ssp-web/openrtb/urlGroupsSync", "RTB".getBytes()));
-	}
+public class UrlGroupsServlet extends SupplySideServlet<UrlGroupSupplySideServer> {
+	private static final long serialVersionUID = 1L;
 
 	@Override
-	public List<SupplySidePlatform> getServiceEndpoints() {
-		return new ArrayList<SupplySidePlatform>(platforms);
+	protected UrlGroupSupplySideServer createServerInstance(final SupplySideService service) {
+		return new UrlGroupSupplySideServer((UrlGroupSupplySideService) service);
 	}
-
 }

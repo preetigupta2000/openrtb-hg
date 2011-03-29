@@ -50,7 +50,7 @@ import java.util.List;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"identification", "publishers"})
-public class PublisherPreferencesRequest extends Signable {
+public class PublisherPreferencesRequest extends Signable implements Request {
 
 	@JsonProperty
 	private Identification identification;

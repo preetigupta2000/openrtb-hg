@@ -37,6 +37,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -81,7 +82,7 @@ public class UrlGroup {
 		return landingPages;
 	}
 
-	public void setLandingPages(final List<String> landingPages) {
+	public void setLandingPages(final Collection<String> landingPages) {
 		this.landingPages.clear();
 
 		if (landingPages != null) {

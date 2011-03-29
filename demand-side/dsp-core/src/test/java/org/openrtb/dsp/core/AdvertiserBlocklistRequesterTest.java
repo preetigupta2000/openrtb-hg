@@ -91,7 +91,7 @@ public class AdvertiserBlocklistRequesterTest {
 		AdvertiserService aService = mock(AdvertiserService.class);
 		when(aService.getAdvertiserList()).thenReturn(Collections.<Advertiser>singletonList(advertiser));
 
-		SupplySidePlatform ssp = new SupplySidePlatform("supply-side-platform-organization", "supply.platform.com/adv", "supply.platform.com/pub", "our shared secret".getBytes());
+		SupplySidePlatform ssp = new SupplySidePlatform("supply-side-platform-organization", "supply.platform.com/adv", "supply.platform.com/pub", "supply.platform.com/urlGroup", "our shared secret".getBytes());
 		IdentificationService iService = mock(IdentificationService.class);
 		when(iService.getOrganizationIdentifier()).thenReturn("organization-identifier");
 		when(iService.getServiceEndpoints()).thenReturn(Collections.<SupplySidePlatform>singletonList(ssp));

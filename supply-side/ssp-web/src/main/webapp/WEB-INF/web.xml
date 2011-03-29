@@ -5,15 +5,39 @@
 <web-app>
 	<display-name>Open RTB SSP</display-name>
 	<servlet>
-		<servlet-name>ssp</servlet-name>
-		<servlet-class>org.openrtb.ssp.web.SupplySideServlet</servlet-class>
+		<servlet-name>AdvertiserServlet</servlet-name>
+		<servlet-class>org.openrtb.ssp.web.AdvertiserServlet</servlet-class>
+		<init-param>
+			<param-name>ClientClassName</param-name>
+			<param-value>org.openrtb.ssp.client.AdvertiserSupplySideServiceRefImpl</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>PublisherServlet</servlet-name>
+		<servlet-class>org.openrtb.ssp.web.PublisherServlet</servlet-class>
 		<init-param>
 			<param-name>ClientClassName</param-name>
 			<param-value>org.openrtb.ssp.client.PublisherSupplySideServiceRefImpl</param-value>
 		</init-param>
 	</servlet>
+	<servlet>
+		<servlet-name>UrlGroupsServlet</servlet-name>
+		<servlet-class>org.openrtb.ssp.web.UrlGroupsServlet</servlet-class>
+		<init-param>
+			<param-name>ClientClassName</param-name>
+			<param-value>org.openrtb.ssp.client.UrlGroupSupplySideServiceRefImpl</param-value>
+		</init-param>
+	</servlet>
 	<servlet-mapping>
-		<servlet-name>ssp</servlet-name>
-		<url-pattern>/openrtb</url-pattern>
+		<servlet-name>AdvertiserServlet</servlet-name>
+		<url-pattern>/openrtb/advCentricSync</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>PublisherServlet</servlet-name>
+		<url-pattern>/openrtb/pubCentricSync</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>UrlGroupsServlet</servlet-name>
+		<url-pattern>/openrtb/urlGroupsSync</url-pattern>
 	</servlet-mapping>
 </web-app>

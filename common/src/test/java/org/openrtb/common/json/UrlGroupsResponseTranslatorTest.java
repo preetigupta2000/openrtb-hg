@@ -34,9 +34,12 @@ package org.openrtb.common.json;
 import org.junit.Test;
 import org.openrtb.common.model.Identification;
 import org.openrtb.common.model.Status;
+import org.openrtb.common.model.UrlGroup;
 import org.openrtb.common.model.UrlGroupsResponse;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -55,9 +58,41 @@ public class UrlGroupsResponseTranslatorTest {
 
 	private static final Status STATUS = new Status("44ab444914088e855ad1f948ec4a1fc7", 0, "success");
 
+	private static final String GROUP_NAME = "Test_Group";
+	private static final List<String> LANDING_PAGES = new LinkedList<String>();
+
+	static {
+		LANDING_PAGES.add("test.com");
+		LANDING_PAGES.add("test.us");
+	}
+
+	private static final UrlGroup URL_GROUP = new UrlGroup(GROUP_NAME, LANDING_PAGES);
+
+	private static final String GROUP_NAME2 = "Test_Group2";
+	private static final List<String> LANDING_PAGES2 = new LinkedList<String>();
+
+	static {
+		LANDING_PAGES2.add("test2.com");
+		LANDING_PAGES2.add("test2.us");
+		LANDING_PAGES2.add("test2.ca");
+	}
+
+	private static final UrlGroup URL_GROUP2 = new UrlGroup(GROUP_NAME2, LANDING_PAGES2);
+
+	private static final List<UrlGroup> URL_GROUPS = new LinkedList<UrlGroup>();
+
+	static {
+		URL_GROUPS.add(URL_GROUP);
+		URL_GROUPS.add(URL_GROUP2);
+	}
+
 	private static final UrlGroupsResponse URL_GROUPS_RESPONSE = new UrlGroupsResponse(IDENT, STATUS);
 
-	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + ",\n" + "    \"token\" : \"" + IDENT.getToken() + "\"\n" + "  },\n" + "  \"status\" : {\n" + "    \"requestToken\" : \"44ab444914088e855ad1f948ec4a1fc7\",\n" + "    \"statusCode\" : 0,\n" + "    \"statusMessage\" : \"success\"\n" + "  }\n" + "}";
+	static {
+		URL_GROUPS_RESPONSE.setUrlGroups(URL_GROUPS);
+	}
+
+	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + ",\n" + "    \"token\" : \"" + IDENT.getToken() + "\"\n" + "  },\n" + "  \"status\" : {\n" + "    \"requestToken\" : \"44ab444914088e855ad1f948ec4a1fc7\",\n" + "    \"statusCode\" : 0,\n" + "    \"statusMessage\" : \"success\"\n" + "  },\n" + "  \"urlGroups\" : [" + "    {" + "      \"groupName\" : \"" + GROUP_NAME + "\",\n" + "      \"landingPageTLDs\" : [ \n" + "        \"" + LANDING_PAGES.get(0) + "\",\n" + "        \"" + LANDING_PAGES.get(1) + "\"\n" + "      ]" + "    }," + "    {" + "      \"groupName\" : \"" + GROUP_NAME2 + "\",\n" + "      \"landingPageTLDs\" : [ \n" + "        \"" + LANDING_PAGES2.get(0) + "\",\n" + "        \"" + LANDING_PAGES2.get(1) + "\",\n" + "        \"" + LANDING_PAGES2.get(2) + "\"\n" + "      ]" + "} ] }";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 
@@ -90,6 +125,7 @@ public class UrlGroupsResponseTranslatorTest {
 		} else {
 			assertEquals("unable to deserialize status", expectedObject.getStatus(), actualObject.getStatus());
 		}
+		assertEquals("unable to deserialize url groups", expectedObject.getUrlGroups(), actualObject.getUrlGroups());
 	}
 
 	private static class TestObject extends UrlGroupsResponse {

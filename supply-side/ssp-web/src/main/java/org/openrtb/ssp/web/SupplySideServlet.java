@@ -31,8 +31,8 @@
  */
 package org.openrtb.ssp.web;
 
-import org.openrtb.ssp.PublisherSupplySideService;
-import org.openrtb.ssp.core.PublisherSupplySideServer;
+import org.openrtb.ssp.core.SupplySideServer;
+import org.openrtb.ssp.service.SupplySideService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,25 +47,19 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 /**
- * A thin web layer that converts HTTP requests to JSON requests and JSON responses to HTTP responses. The SSP
- * implementor can utilize it as is as this servlet can be configured via <code>web.xml</code> to instantiate a specific
- * implementation class of the {@link org.openrtb.ssp.PublisherSupplySideService} interface.
+ * Created by IntelliJ IDEA. SupplySideServlet
+ *
+ * @author jdrahos
  */
-public class SupplySideServlet extends HttpServlet {
-
+public abstract class SupplySideServlet<TServer extends SupplySideServer> extends HttpServlet {
+	private TServer server = null;
 	private static final Logger log = LoggerFactory.getLogger(SupplySideServlet.class);
-	private PublisherSupplySideServer server = null;
 
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Instantiates a specific implementation class of the {@link org.openrtb.ssp.PublisherSupplySideService} interface.
-	 */
 	public void init() throws ServletException {
 		String clientClassName = getServletConfig().getInitParameter("ClientClassName");
-		PublisherSupplySideService ssp;
+		SupplySideService service;
 		try {
-			ssp = (PublisherSupplySideService) Class.forName(clientClassName).newInstance();
+			service = (SupplySideService) Class.forName(clientClassName).newInstance();
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 			throw new ServletException(e.getMessage());
@@ -76,7 +70,7 @@ public class SupplySideServlet extends HttpServlet {
 			e.printStackTrace();
 			throw new ServletException(e.getMessage());
 		}
-		server = new PublisherSupplySideServer(ssp);
+		server = createServerInstance(service);
 	}
 
 	/**
@@ -126,4 +120,6 @@ public class SupplySideServlet extends HttpServlet {
 		}
 		return stringBuilder.toString();
 	}
+
+	protected abstract TServer createServerInstance(SupplySideService service);
 }

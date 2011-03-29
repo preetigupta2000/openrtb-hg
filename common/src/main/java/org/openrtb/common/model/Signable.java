@@ -45,11 +45,9 @@ import java.io.IOException;
  *
  * @since 1.0
  */
-public abstract class Signable {
+public abstract class Signable implements Message {
 
 	private static final Logger log = LoggerFactory.getLogger(Signable.class);
-
-	public abstract Identification getIdentification();
 
 
 	/**
@@ -66,6 +64,7 @@ public abstract class Signable {
 	 * @throws IOException should the {@link Signable} be unable to be converted to JSON, an <tt>IOException</tt> will be
 	 *                     thrown.
 	 */
+	@Override
 	public void sign(byte[] sharedSecret, AbstractJsonTranslator translator) throws IOException {
 		clearToken();
 		StringBuilder signableStr = new StringBuilder("{").append(translator.toJSON(this)).append(",\"sharedSecret\":").append(Hex.encodeHex(sharedSecret)).append("}");
@@ -87,6 +86,7 @@ public abstract class Signable {
 	 * @throws IOException should the {@link Signable} be unable to be converted to JSON, an <tt>IOException</tt> will be
 	 *                     thrown.
 	 */
+	@Override
 	public boolean verify(byte[] sharedSecret, AbstractJsonTranslator translator) throws IOException {
 		String token = clearToken();
 		try {

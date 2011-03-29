@@ -33,35 +33,69 @@ package org.openrtb.ssp.client;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openrtb.common.model.Advertiser;
-import org.openrtb.common.model.Blocklist;
-import org.openrtb.ssp.service.AdvertiserSupplySideService;
+import org.openrtb.common.model.UrlGroup;
+import org.openrtb.ssp.service.UrlGroupSupplySideService;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Iterator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class AdvertiserSupplySideServiceRefImplTest {
-
-	private AdvertiserSupplySideService ssp;
+/**
+ * Created by IntelliJ IDEA. UrlGroupSupplySideServiceRefImplTest
+ *
+ * @author jdrahos
+ */
+public class UrlGroupSupplySideServiceRefImplTest {
+	private UrlGroupSupplySideService service;
 
 	@Before
 	public void setup() {
-		ssp = new AdvertiserSupplySideServiceRefImpl();
+		service = new UrlGroupSupplySideServiceRefImpl();
 	}
 
 	@Test
-	public void blocklistGetsSet() {
-		List<Blocklist> bls = null;
-		Advertiser a = new Advertiser("acmeluxuryfurniture.com", "ACME Luxury Furniture");
-		bls = a.getBlocklist();
-		assertTrue("Blocklist is initialy empty", bls.size() == 0);
+	public void getPublisherPreferences_NullTimestamp() {
+		Long timestamp = null;
+		Collection<UrlGroup> urlGroups = service.getUrlGroups(timestamp);
+		assertNotNull(urlGroups);
+		assertEquals(3, urlGroups.size());
+	}
 
-		List<Advertiser> advertisers = new LinkedList<Advertiser>();
-		advertisers.add(a);
-		ssp.setBlocklists(advertisers);
-		assertTrue("Blocklist has been set", bls.size() != 0);
-		//System.out.println("SIZE="+bls.size());
+	@Test
+	public void getPublisherPreferences_Timestamp() {
+		Long timestamp = 50L;
+		Collection<UrlGroup> urlGroups = service.getUrlGroups(timestamp);
+		assertNotNull(urlGroups);
+		assertEquals(3, urlGroups.size());
+
+		timestamp = 100L;
+		urlGroups = service.getUrlGroups(timestamp);
+		assertNotNull(urlGroups);
+		assertEquals(2, urlGroups.size());
+
+		Iterator<UrlGroup> iterator = urlGroups.iterator();
+		while (iterator.hasNext()) {
+			UrlGroup urlGroup = iterator.next();
+			assertTrue(UrlGroupSupplySideServiceRefImpl.urlGroups.get(urlGroup) > timestamp);
+		}
+
+		timestamp = 150L;
+		urlGroups = service.getUrlGroups(timestamp);
+		assertNotNull(urlGroups);
+		assertEquals(1, urlGroups.size());
+
+		iterator = urlGroups.iterator();
+		while (iterator.hasNext()) {
+			UrlGroup urlGroup = iterator.next();
+			assertTrue(UrlGroupSupplySideServiceRefImpl.urlGroups.get(urlGroup) > timestamp);
+		}
+
+		timestamp = 2000L;
+		urlGroups = service.getUrlGroups(timestamp);
+		assertNotNull(urlGroups);
+		assertEquals(0, urlGroups.size());
 	}
 }

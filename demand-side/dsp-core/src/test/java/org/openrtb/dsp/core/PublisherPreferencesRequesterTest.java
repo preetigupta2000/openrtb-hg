@@ -111,7 +111,7 @@ public class PublisherPreferencesRequesterTest {
 	@Test
 	public void requestPublisherPreferences_PublishersAreNull() {
 		Collection<Publisher> publishers = null;
-		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "test".getBytes());
+		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "http://test.co/urlGroup", "test".getBytes());
 
 		PublisherService publisherService = mock(PublisherService.class);
 		IdentificationService identificationService = mock(IdentificationService.class);
@@ -129,7 +129,7 @@ public class PublisherPreferencesRequesterTest {
 	@Test
 	public void requestPublisherPreferences_PublishersAreEmpty() {
 		Collection<Publisher> publishers = new LinkedList<Publisher>();
-		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "test".getBytes());
+		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "http://test.co/urlGroup", "test".getBytes());
 
 		PublisherService publisherService = mock(PublisherService.class);
 		IdentificationService identificationService = mock(IdentificationService.class);
@@ -150,7 +150,7 @@ public class PublisherPreferencesRequesterTest {
 
 		Collection<Publisher> publishers = new LinkedList<Publisher>();
 		publishers.add(new Publisher("0", "0", null, null, null));
-		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "test".getBytes());
+		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "http://test.co/urlGroup", "test".getBytes());
 
 		PublisherService publisherService = mock(PublisherService.class);
 		IdentificationService identificationService = mock(IdentificationService.class);
@@ -171,7 +171,7 @@ public class PublisherPreferencesRequesterTest {
 
 		Collection<Publisher> publishers = new LinkedList<Publisher>();
 		publishers.add(new Publisher("0", "0", null, null, null));
-		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "test".getBytes());
+		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "http://test.co/urlGroup", "test".getBytes());
 
 		Identification dsp = new Identification("test");
 		PublisherPreferencesRequest request = new PublisherPreferencesRequest(dsp, publishers);
@@ -201,7 +201,7 @@ public class PublisherPreferencesRequesterTest {
 
 		Collection<Publisher> publishers = new LinkedList<Publisher>();
 		publishers.add(new Publisher("0", "0", null, null, null));
-		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "test".getBytes());
+		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "http://test.co/urlGroup", "test".getBytes());
 
 		Identification dsp = new Identification("test");
 		PublisherPreferencesRequest request = new PublisherPreferencesRequest(dsp, publishers);

@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="dsp.client.AdvertiserService" 
-        class="org.openrtb.dsp.client.StaticAdvertiserService"/>
+	<bean id="dsp.client.AdvertiserService"
+		  class="org.openrtb.dsp.client.StaticAdvertiserService"/>
 
-  <bean id="dsp.client.IdentificationService" 
-        class="org.openrtb.dsp.client.StaticIdentificationService"/>
+	<bean id="dsp.client.IdentificationService"
+		  class="org.openrtb.dsp.client.StaticIdentificationService"/>
 
-  <bean id="dsp.client.PublisherService"
+	<bean id="dsp.client.PublisherService"
 		  class="org.openrtb.dsp.client.StaticPublisherService"/>
 
+
+	<bean id="dsp.client.UrlGroupService"
+		  class="org.openrtb.dsp.client.StaticUrlGroupService"/>
 
 </beans>

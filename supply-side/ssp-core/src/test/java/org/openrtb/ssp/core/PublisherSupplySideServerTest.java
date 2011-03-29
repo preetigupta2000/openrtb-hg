@@ -46,7 +46,7 @@ import org.openrtb.common.model.PublisherPreferencesRequest;
 import org.openrtb.common.model.PublisherPreferencesResponse;
 import org.openrtb.common.model.Rule;
 import org.openrtb.common.model.Status;
-import org.openrtb.ssp.PublisherSupplySideService;
+import org.openrtb.ssp.service.PublisherSupplySideService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -88,11 +88,9 @@ public class PublisherSupplySideServerTest {
 	}
 
 	private static final String DSP = "The_DSP";
-
 	private static final String REQUEST = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + DSP + "\",\n" + "    \"timestamp\" : " + System.currentTimeMillis() + ",\n" + "	 \"token\" : \"1234567890\"\n" + "  },\n" + "  \"publishers\" : [{" + "    \"publisherID\" : \"0\",\n" + "    \"preferenceTypes\" : [\"URL\"]" + "  }]" + "}";
 
 	private PublisherSupplySideService ssp;
-
 	private PublisherSupplySideServer server;
 
 	@Before

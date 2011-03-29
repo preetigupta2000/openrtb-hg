@@ -47,7 +47,7 @@ import java.util.List;
  */
 @JsonSerialize(include = Inclusion.NON_DEFAULT)
 @JsonPropertyOrder({"identification", "status", "advertisers"})
-public class AdvertiserBlocklistResponse extends Signable {
+public class AdvertiserBlocklistResponse extends Signable implements Response {
 
 	@JsonProperty
 	private Identification identification;
@@ -60,6 +60,10 @@ public class AdvertiserBlocklistResponse extends Signable {
 
 	public AdvertiserBlocklistResponse() {
 		setAdvertisers(null);
+	}
+
+	public AdvertiserBlocklistResponse(Identification identification) {
+		this(identification, new Status());
 	}
 
 	public AdvertiserBlocklistResponse(Identification identification, Status status) {
@@ -85,8 +89,8 @@ public class AdvertiserBlocklistResponse extends Signable {
 	}
 
 	/**
-	 * There has to be at least one advertiser in the {@link AdvertiserBlocklistRequest} for that to be valid; as a
-	 * result, the response will have at least one {@link Advertiser} in the object to be valid.
+	 * There has to be at least one advertiser in the {@link AdvertiserBlocklistRequest} for that to be valid; as a result,
+	 * the response will have at least one {@link Advertiser} in the object to be valid.
 	 *
 	 * @return
 	 */

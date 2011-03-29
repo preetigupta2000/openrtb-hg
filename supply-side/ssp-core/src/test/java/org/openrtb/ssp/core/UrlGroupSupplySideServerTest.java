@@ -35,35 +35,28 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Before;
 import org.junit.Test;
-import org.openrtb.common.json.AdvertiserBlocklistRequestTranslator;
-import org.openrtb.common.json.AdvertiserBlocklistResponseTranslator;
-import org.openrtb.common.model.Advertiser;
-import org.openrtb.common.model.AdvertiserBlocklistRequest;
-import org.openrtb.common.model.AdvertiserBlocklistResponse;
-import org.openrtb.common.model.Blocklist;
+import org.openrtb.common.json.PublisherPreferencesRequestTranslator;
+import org.openrtb.common.json.UrlGroupsResponseTranslator;
+import org.openrtb.common.model.PublisherPreferencesRequest;
 import org.openrtb.common.model.Status;
-import org.openrtb.ssp.service.AdvertiserSupplySideService;
+import org.openrtb.common.model.UrlGroup;
+import org.openrtb.common.model.UrlGroupsResponse;
+import org.openrtb.ssp.service.UrlGroupSupplySideService;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-
-public class AdvertiserSupplySideServerTest {
-
-	class OpenRtbSspTestClient implements AdvertiserSupplySideService {
-		@Override
-		public Collection<Advertiser> setBlocklists(Collection<Advertiser> advertisers) {
-			List<Blocklist> list1 = new LinkedList<Blocklist>();
-			list1.add(new Blocklist("3422", "Joe's News"));
-			for (Advertiser a : advertisers) {
-				a.setBlocklist(list1);
-			}
-			return advertisers;
-		}
+/**
+ * Created by IntelliJ IDEA. UrlGroupSupplySideServerTest
+ *
+ * @author jdrahos
+ */
+public class UrlGroupSupplySideServerTest {
+	class TestService implements UrlGroupSupplySideService {
 
 		@Override
 		public byte[] getSharedSecret(String dsp) {
@@ -74,43 +67,52 @@ public class AdvertiserSupplySideServerTest {
 		public String getOrganization() {
 			return "ORG";
 		}
+
+		@Override
+		public Collection<UrlGroup> getUrlGroups(final Long timestamp) {
+			Collection<UrlGroup> urlGroups = new LinkedList<UrlGroup>();
+			urlGroups.add(new UrlGroup("test_group1", Arrays.asList("test.com", "test.ca")));
+			urlGroups.add(new UrlGroup("test_group2", Arrays.asList("test2.com", "test2.ca")));
+
+			return urlGroups;
+		}
 	}
 
 	private static final String DSP = "The_DSP";
-	private static final String REQUEST = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + DSP + "\",\n" + "    \"timestamp\" : " + System.currentTimeMillis() + ",\n" + "        \"token\" : \"1234567890\"\n" + "  },\n" + "  \"advertisers\" : [{" + "    \"landingPageTLD\" : \"acmeluxuryfurniture.com\",\n" + "    \"name\" : \"Acme_Luxury_Furniture\"" + "  }]" + "}";
+	private static final String REQUEST = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + DSP + "\",\n" + "    \"timestamp\" : " + System.currentTimeMillis() + ",\n" + "    \"token\" : \"1234567890\"\n" + "  },\n" + "\"sinceThisTimestamp\": " + 0L + "    }";
 
-	private AdvertiserSupplySideService ssp;
-	private AdvertiserSupplySideServer server;
+	private UrlGroupSupplySideService service;
+	private UrlGroupSupplySideServer server;
 
 	@Before
 	public void setup() {
-		ssp = new OpenRtbSspTestClient();
-		server = new AdvertiserSupplySideServer(ssp);
+		service = new TestService();
+		server = new UrlGroupSupplySideServer(service);
 	}
 
 	@Test
-	public void invalidMD5ChecksumRequest() throws JsonMappingException, JsonParseException, IOException {
+	public void invalidMD5ChecksumRequest() throws IOException {
 		String jsonRequest = REQUEST.replaceAll("[ \n]", "");
 
 		String jsonResponse = server.process(jsonRequest);
 		System.out.println(" IN:" + jsonRequest);
 		System.out.println("OUT:" + jsonResponse);
 
-		AdvertiserBlocklistResponseTranslator resTrans = new AdvertiserBlocklistResponseTranslator();
-		AdvertiserBlocklistResponse response = resTrans.fromJSON(jsonResponse);
+		UrlGroupsResponseTranslator resTrans = new UrlGroupsResponseTranslator();
+		UrlGroupsResponse response = resTrans.fromJSON(jsonResponse);
 		assertTrue("expected AUTH error (invalid signature)", response.getStatus().getCode() == Status.AUTH_ERROR_CODE);
 	}
 
 	@Test
-	public void validMD5ChecksumRequest() throws JsonMappingException, JsonParseException, IOException {
-		AdvertiserBlocklistRequestTranslator reqTrans = new AdvertiserBlocklistRequestTranslator();
-		AdvertiserBlocklistResponseTranslator resTrans = new AdvertiserBlocklistResponseTranslator();
+	public void validMD5ChecksumRequest() throws IOException {
+		PublisherPreferencesRequestTranslator reqTrans = new PublisherPreferencesRequestTranslator();
+		UrlGroupsResponseTranslator resTrans = new UrlGroupsResponseTranslator();
 		String digest;
 
 		//set the request checksum
 		String jsonRequest = REQUEST.replaceAll("[ \n]", "");
-		AdvertiserBlocklistRequest request = reqTrans.fromJSON(jsonRequest);
-		request.sign(ssp.getSharedSecret(DSP), reqTrans);
+		PublisherPreferencesRequest request = reqTrans.fromJSON(jsonRequest);
+		request.sign(service.getSharedSecret(DSP), reqTrans);
 		jsonRequest = reqTrans.toJSON(request);
 
 		//request --> response
@@ -119,11 +121,11 @@ public class AdvertiserSupplySideServerTest {
 		System.out.println("OUT:" + jsonResponse);
 
 		//validate success
-		AdvertiserBlocklistResponse response = resTrans.fromJSON(jsonResponse);
+		UrlGroupsResponse response = resTrans.fromJSON(jsonResponse);
 		assertTrue("expected success status code", response.getStatus().getCode() == Status.SUCCESS_CODE);
 
 		//verify the response checksum
-		assertTrue("expected successful verification", response.verify(ssp.getSharedSecret(DSP), resTrans));
+		assertTrue("expected successful verification", response.verify(service.getSharedSecret(DSP), resTrans));
 	}
 
 	@Test
@@ -134,9 +136,8 @@ public class AdvertiserSupplySideServerTest {
 		System.out.println(" IN:" + jsonRequest);
 		System.out.println("OUT:" + jsonResponse);
 
-		AdvertiserBlocklistResponseTranslator resTrans = new AdvertiserBlocklistResponseTranslator();
-		AdvertiserBlocklistResponse response = resTrans.fromJSON(jsonResponse);
+		UrlGroupsResponseTranslator resTrans = new UrlGroupsResponseTranslator();
+		UrlGroupsResponse response = resTrans.fromJSON(jsonResponse);
 		assertTrue("bad MD5 status code", response.getStatus().getCode() == Status.OTHER_ERROR_CODE);
 	}
-
 }

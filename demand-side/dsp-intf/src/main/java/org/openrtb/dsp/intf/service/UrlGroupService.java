@@ -29,40 +29,34 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.openrtb.ssp;
+package org.openrtb.dsp.intf.service;
 
-import org.openrtb.common.model.Publisher;
-import org.openrtb.common.model.PublisherPreference;
+import org.openrtb.common.model.UrlGroup;
+import org.openrtb.dsp.intf.model.SupplySidePlatform;
 
 import java.util.Collection;
 
 /**
- * The contract between the message handling code located in the 'ssp-core' and an SSP's specific internal
- * representation of that data.
+ * Created by IntelliJ IDEA. UrlGroupService
  *
- * @since 1.0.1
+ * @author jdrahos
  */
-public interface PublisherSupplySideService {
-	/**
-	 * Looks up preferences for the requested publishers
-	 *
-	 * @param publishers
-	 * @return publishers' preferences
-	 */
-	Collection<PublisherPreference> getPublisherPreferences(Collection<Publisher> publishers);
+public interface UrlGroupService {
+	public static final String SPRING_NAME = "dsp.intf.UrlGroupService";
 
 	/**
-	 * Returns a secret shared with the DSP organization
+	 * returns posix timestamp of beginning of the last url group synchronization with provided ssp
 	 *
-	 * @param dsp The DSP organization identifier. Cannot be null.
-	 * @return the shared secret
+	 * @param ssp supply side platform
+	 * @return posix timestamp
 	 */
-	byte[] getSharedSecret(String dsp);
+	public Long getLastSynchronizationTimestamp(SupplySidePlatform ssp);
 
 	/**
-	 * Returns the SSP organization identifier
+	 * replaces url groups found in the collection for the specified ssp
 	 *
-	 * @return the organization identifier
+	 * @param ssp	   supply side platform
+	 * @param urlGroups url groups to be replaced
 	 */
-	String getOrganization();
+	public void replaceUrlGroups(SupplySidePlatform ssp, Collection<UrlGroup> urlGroups);
 }

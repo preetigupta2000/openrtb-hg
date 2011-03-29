@@ -29,37 +29,22 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.openrtb.dsp.client;
+package org.openrtb.ssp.web;
 
-import org.openrtb.dsp.intf.model.SupplySidePlatform;
-import org.openrtb.dsp.intf.service.IdentificationService;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.openrtb.ssp.core.PublisherSupplySideServer;
+import org.openrtb.ssp.service.PublisherSupplySideService;
+import org.openrtb.ssp.service.SupplySideService;
 
 /**
- * This is simply a reference implementation of a static service for testing, etc. For more information about this
- * service, please see the interface listed below.
- *
- * @see IdentificationService
+ * A thin web layer that converts HTTP requests to JSON requests and JSON responses to HTTP responses. The SSP
+ * implementor can utilize it as is as this servlet can be configured via <code>web.xml</code> to instantiate a specific
+ * implementation class of the {@link org.openrtb.ssp.service.PublisherSupplySideService} interface.
  */
-public class StaticIdentificationService extends AbstractStaticService implements IdentificationService {
-
-
-	@Override
-	public String getOrganizationIdentifier() {
-		return "The DSP";
-	}
-
-	public static List<SupplySidePlatform> platforms = new ArrayList<SupplySidePlatform>();
-
-	static {
-		platforms.add(new SupplySidePlatform("The SSP", "http://localhost:8080/ssp-web/openrtb/advCentricSync", "http://localhost:8080/ssp-web/openrtb/pubCentricSync", "http://localhost:8080/ssp-web/openrtb/urlGroupsSync", "RTB".getBytes()));
-	}
+public class PublisherServlet extends SupplySideServlet<PublisherSupplySideServer> {
+	private static final long serialVersionUID = 1L;
 
 	@Override
-	public List<SupplySidePlatform> getServiceEndpoints() {
-		return new ArrayList<SupplySidePlatform>(platforms);
+	protected PublisherSupplySideServer createServerInstance(final SupplySideService service) {
+		return new PublisherSupplySideServer((PublisherSupplySideService) service);
 	}
-
 }

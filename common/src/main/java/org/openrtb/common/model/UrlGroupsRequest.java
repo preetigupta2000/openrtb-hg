@@ -31,13 +31,11 @@
  */
 package org.openrtb.common.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA. UrlGroupsRequest
@@ -46,15 +44,14 @@ import java.util.List;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"identification", "urlGroups"})
-public class UrlGroupsRequest extends Signable {
+@JsonPropertyOrder({"identification", "sinceThisTimestamp"})
+public class UrlGroupsRequest extends Signable implements Request {
 	@JsonProperty
 	private Identification identification;
-	@JsonProperty
-	private List<UrlGroup> urlGroups;
+	@JsonProperty("sinceThisTimestamp")
+	Long timestamp;
 
 	protected UrlGroupsRequest() {
-		urlGroups = new LinkedList<UrlGroup>();
 	}
 
 	public UrlGroupsRequest(final Identification identification) {
@@ -66,9 +63,9 @@ public class UrlGroupsRequest extends Signable {
 		this(new Identification(organization));
 	}
 
-	public UrlGroupsRequest(final Identification identification, final List<UrlGroup> urlGroups) {
+	public UrlGroupsRequest(final Identification identification, final Long timestamp) {
 		this(identification);
-		setUrlGroups(urlGroups);
+		setTimestamp(timestamp);
 	}
 
 	@Override
@@ -81,34 +78,12 @@ public class UrlGroupsRequest extends Signable {
 		this.identification = identification;
 	}
 
-	public List<UrlGroup> getUrlGroups() {
-		return urlGroups;
+	@JsonIgnore
+	public Long getTimestamp() {
+		return timestamp;
 	}
 
-	public void setUrlGroups(final List<UrlGroup> urlGroups) {
-		if (urlGroups == null || urlGroups.size() < 1) {
-			throw new IllegalArgumentException("At least one url group must be present for call to UrlGroupsRequest#setUrlGroups()");
-		} else {
-			this.urlGroups.clear();
-			this.urlGroups.addAll(urlGroups);
-		}
-	}
-
-	public void addUrlGroup(UrlGroup urlGroup) {
-		if (urlGroup == null) {
-			throw new IllegalArgumentException("Url group passed to UrlGroupsRequest#addUrlGroup() must be non-null");
-		}
-
-		this.urlGroups.add(urlGroup);
-	}
-
-	@Override
-	public String toString() {
-		final StringBuffer sb = new StringBuffer();
-		sb.append("UrlGroupsRequest");
-		sb.append("{identification=").append(identification);
-		sb.append(", urlGroups=").append(urlGroups);
-		sb.append('}');
-		return sb.toString();
+	public void setTimestamp(final Long timestamp) {
+		this.timestamp = timestamp;
 	}
 }

@@ -31,59 +31,53 @@
  */
 package org.openrtb.ssp.client;
 
-import org.openrtb.common.model.Advertiser;
-import org.openrtb.common.model.Blocklist;
-import org.openrtb.ssp.service.AdvertiserSupplySideService;
+import org.openrtb.common.model.UrlGroup;
+import org.openrtb.ssp.service.UrlGroupSupplySideService;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * A sample reference implementation in order to demonstrate the role of SSP implementor.
+ * Created by IntelliJ IDEA. UrlGroupSupplySideServiceRefImpl
  *
- * @since 1.0.1
+ * @author jdrahos
  */
-public class AdvertiserSupplySideServiceRefImpl implements AdvertiserSupplySideService {
+public class UrlGroupSupplySideServiceRefImpl implements UrlGroupSupplySideService {
+	public static Map<UrlGroup, Long> urlGroups = new Hashtable<UrlGroup, Long>();
 
-	private Map<String, List<Blocklist>> blocklistDB = new HashMap<String, List<Blocklist>>();
-	private String secret = "RTB";
-	private String org = "The SSP";
-
-	public AdvertiserSupplySideServiceRefImpl() {
-		List<Blocklist> list1 = new LinkedList<Blocklist>();
-		list1.add(new Blocklist("3422", "Joe's News"));
-		list1.add(new Blocklist("2342", "Big Portal", "1", "Finance section"));
-		list1.add(new Blocklist("23423", "Smith Blog", "223", "Technology Section"));
-		list1.add(new Blocklist("423", "Smith Blog", "23", "Cars Section"));
-		list1.add(new Blocklist("34223", "Jones Blog"));
-		blocklistDB.put("acmeluxuryfurniture.com", list1);
-
-		List<Blocklist> list2 = new LinkedList<Blocklist>();
-		list2.add(new Blocklist("34223", "Joe's Blog"));
-		blocklistDB.put("luxurycarbrand.com", list2);
-	}
-
-	@Override
-	public Collection<Advertiser> setBlocklists(Collection<Advertiser> advertisers) {
-
-		for (Advertiser a : advertisers) {
-			String url = a.getLandingPage();
-			a.setBlocklist(blocklistDB.get(url));
-		}
-		return advertisers;
-	}
-
-	@Override
-	public byte[] getSharedSecret(String dsp) {
-		return secret.getBytes();
+	static {
+		urlGroups.put(new UrlGroup("test_group1", Arrays.asList("test.com", "test.ca")), 100L);
+		urlGroups.put(new UrlGroup("test_group2", Arrays.asList("test2.com", "test2.ca")), 150L);
+		urlGroups.put(new UrlGroup("test_group3", Arrays.asList("test3.com", "test3.ca")), 200L);
 	}
 
 	@Override
 	public String getOrganization() {
-		return org;
+		return "The SSP";
 	}
 
+	@Override
+	public byte[] getSharedSecret(final String ssp) {
+		return "RTB".getBytes();
+	}
+
+	@Override
+	public List<UrlGroup> getUrlGroups(Long timestamp) {
+		if (timestamp == null) {
+			timestamp = -1L;
+		}
+
+		List<UrlGroup> result = new LinkedList<UrlGroup>();
+
+		for (UrlGroup urlGroup : urlGroups.keySet()) {
+			if (urlGroups.get(urlGroup) > timestamp) {
+				result.add(urlGroup);
+			}
+		}
+
+		return result;
+	}
 }
