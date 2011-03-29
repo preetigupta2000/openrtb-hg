@@ -31,9 +31,9 @@
  */
 package org.openrtb.ssp.web;
 
+import org.openrtb.ssp.SupplySideService;
+import org.openrtb.ssp.UrlGroupSupplySideService;
 import org.openrtb.ssp.core.UrlGroupSupplySideServer;
-import org.openrtb.ssp.service.SupplySideService;
-import org.openrtb.ssp.service.UrlGroupSupplySideService;
 
 /**
  * Created by IntelliJ IDEA. UrlGroupsServlet

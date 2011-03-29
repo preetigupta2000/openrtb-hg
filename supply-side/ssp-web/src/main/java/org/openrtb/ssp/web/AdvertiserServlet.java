@@ -31,9 +31,9 @@
  */
 package org.openrtb.ssp.web;
 
+import org.openrtb.ssp.AdvertiserSupplySideService;
+import org.openrtb.ssp.SupplySideService;
 import org.openrtb.ssp.core.AdvertiserSupplySideServer;
-import org.openrtb.ssp.service.AdvertiserSupplySideService;
-import org.openrtb.ssp.service.SupplySideService;
 
 /**
  * Created by IntelliJ IDEA. AdvertiserServlet

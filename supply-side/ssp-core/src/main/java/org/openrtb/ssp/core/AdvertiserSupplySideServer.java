@@ -38,7 +38,7 @@ import org.openrtb.common.model.Advertiser;
 import org.openrtb.common.model.AdvertiserBlocklistRequest;
 import org.openrtb.common.model.AdvertiserBlocklistResponse;
 import org.openrtb.common.model.Status;
-import org.openrtb.ssp.service.AdvertiserSupplySideService;
+import org.openrtb.ssp.AdvertiserSupplySideService;
 
 import java.util.Collection;
 

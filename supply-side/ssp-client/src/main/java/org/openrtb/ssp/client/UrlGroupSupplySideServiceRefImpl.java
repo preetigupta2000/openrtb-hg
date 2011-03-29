@@ -32,7 +32,7 @@
 package org.openrtb.ssp.client;
 
 import org.openrtb.common.model.UrlGroup;
-import org.openrtb.ssp.service.UrlGroupSupplySideService;
+import org.openrtb.ssp.UrlGroupSupplySideService;
 
 import java.util.Arrays;
 import java.util.Hashtable;

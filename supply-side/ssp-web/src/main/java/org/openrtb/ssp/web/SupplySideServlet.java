@@ -31,8 +31,8 @@
  */
 package org.openrtb.ssp.web;
 
+import org.openrtb.ssp.SupplySideService;
 import org.openrtb.ssp.core.SupplySideServer;
-import org.openrtb.ssp.service.SupplySideService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

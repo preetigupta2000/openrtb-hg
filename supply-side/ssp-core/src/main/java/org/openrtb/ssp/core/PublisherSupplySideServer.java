@@ -39,14 +39,14 @@ import org.openrtb.common.model.PublisherPreference;
 import org.openrtb.common.model.PublisherPreferencesRequest;
 import org.openrtb.common.model.PublisherPreferencesResponse;
 import org.openrtb.common.model.Status;
-import org.openrtb.ssp.service.PublisherSupplySideService;
+import org.openrtb.ssp.PublisherSupplySideService;
 
 import java.util.Collection;
 
 /**
  * The stateless processing of batch Open RTB JSON requests resulting in JSON responses. Besides translation of JSON to
  * internal model objects it verifies the requests and signs the responses. Its dependency on an SSP implementor is
- * defined by the {@link org.openrtb.ssp.service.PublisherSupplySideService} interface.
+ * defined by the {@link org.openrtb.ssp.PublisherSupplySideService} interface.
  *
  * @since 1.0.1
  */

@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrtb.common.model.Advertiser;
 import org.openrtb.common.model.Blocklist;
-import org.openrtb.ssp.service.AdvertiserSupplySideService;
+import org.openrtb.ssp.AdvertiserSupplySideService;
 
 import java.util.LinkedList;
 import java.util.List;

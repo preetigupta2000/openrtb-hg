@@ -46,7 +46,7 @@ import org.openrtb.common.model.PublisherPreferencesRequest;
 import org.openrtb.common.model.PublisherPreferencesResponse;
 import org.openrtb.common.model.Rule;
 import org.openrtb.common.model.Status;
-import org.openrtb.ssp.service.PublisherSupplySideService;
+import org.openrtb.ssp.PublisherSupplySideService;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -31,14 +31,14 @@
  */
 package org.openrtb.ssp.web;
 
+import org.openrtb.ssp.PublisherSupplySideService;
+import org.openrtb.ssp.SupplySideService;
 import org.openrtb.ssp.core.PublisherSupplySideServer;
-import org.openrtb.ssp.service.PublisherSupplySideService;
-import org.openrtb.ssp.service.SupplySideService;
 
 /**
  * A thin web layer that converts HTTP requests to JSON requests and JSON responses to HTTP responses. The SSP
  * implementor can utilize it as is as this servlet can be configured via <code>web.xml</code> to instantiate a specific
- * implementation class of the {@link org.openrtb.ssp.service.PublisherSupplySideService} interface.
+ * implementation class of the {@link org.openrtb.ssp.PublisherSupplySideService} interface.
  */
 public class PublisherServlet extends SupplySideServlet<PublisherSupplySideServer> {
 	private static final long serialVersionUID = 1L;

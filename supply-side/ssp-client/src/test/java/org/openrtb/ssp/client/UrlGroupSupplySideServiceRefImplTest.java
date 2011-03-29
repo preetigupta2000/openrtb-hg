@@ -34,7 +34,7 @@ package org.openrtb.ssp.client;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrtb.common.model.UrlGroup;
-import org.openrtb.ssp.service.UrlGroupSupplySideService;
+import org.openrtb.ssp.UrlGroupSupplySideService;
 
 import java.util.Collection;
 import java.util.Iterator;

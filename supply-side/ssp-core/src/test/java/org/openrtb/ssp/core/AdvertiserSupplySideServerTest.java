@@ -42,7 +42,7 @@ import org.openrtb.common.model.AdvertiserBlocklistRequest;
 import org.openrtb.common.model.AdvertiserBlocklistResponse;
 import org.openrtb.common.model.Blocklist;
 import org.openrtb.common.model.Status;
-import org.openrtb.ssp.service.AdvertiserSupplySideService;
+import org.openrtb.ssp.AdvertiserSupplySideService;
 
 import java.io.IOException;
 import java.util.Collection;

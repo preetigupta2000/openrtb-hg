@@ -38,7 +38,7 @@ import org.openrtb.common.model.Identification;
 import org.openrtb.common.model.Request;
 import org.openrtb.common.model.Response;
 import org.openrtb.common.model.Status;
-import org.openrtb.ssp.service.SupplySideService;
+import org.openrtb.ssp.SupplySideService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -33,7 +33,7 @@ package org.openrtb.ssp.client;
 
 import org.openrtb.common.model.Advertiser;
 import org.openrtb.common.model.Blocklist;
-import org.openrtb.ssp.service.AdvertiserSupplySideService;
+import org.openrtb.ssp.AdvertiserSupplySideService;
 
 import java.util.Collection;
 import java.util.HashMap;

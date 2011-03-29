@@ -29,24 +29,25 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.openrtb.ssp.service;
+package org.openrtb.ssp;
 
-import org.openrtb.common.model.UrlGroup;
+import org.openrtb.common.model.Publisher;
+import org.openrtb.common.model.PublisherPreference;
 
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA. UrlGroupSupplySideService
+ * The contract between the message handling code located in the 'ssp-core' and an SSP's specific internal
+ * representation of that data.
  *
- * @author jdrahos
+ * @since 1.0.1
  */
-public interface UrlGroupSupplySideService extends SupplySideService {
+public interface PublisherSupplySideService extends SupplySideService {
 	/**
-	 * returns url groups which were modified since the provided timestamp or all url group if the timestamp is not
-	 * provided
+	 * Looks up preferences for the requested publishers
 	 *
-	 * @param timestamp timestamp of previous synchronization (posix) or null if all groups should be returned.
-	 * @return url groups with populated list of landingPages
+	 * @param publishers
+	 * @return publishers' preferences
 	 */
-	Collection<UrlGroup> getUrlGroups(Long timestamp);
+	Collection<PublisherPreference> getPublisherPreferences(Collection<Publisher> publishers);
 }

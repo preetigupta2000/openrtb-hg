@@ -38,7 +38,7 @@ import org.openrtb.common.model.Status;
 import org.openrtb.common.model.UrlGroup;
 import org.openrtb.common.model.UrlGroupsRequest;
 import org.openrtb.common.model.UrlGroupsResponse;
-import org.openrtb.ssp.service.UrlGroupSupplySideService;
+import org.openrtb.ssp.UrlGroupSupplySideService;
 
 import java.util.Collection;
 
