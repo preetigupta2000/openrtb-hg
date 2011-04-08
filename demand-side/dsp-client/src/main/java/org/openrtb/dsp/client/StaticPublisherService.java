@@ -111,6 +111,8 @@ public class StaticPublisherService extends AbstractStaticService implements Pub
 				}
 				log.info("- rule with operator [" + rule.getOperator() + "] type [" + rule.getType() + "] and values [" + valuesBuilder.toString() + "]");
 			}
+
+			processPublisherPreference(ssp.getOrganization(), publisherPreference);
 		}
 	}
 
@@ -122,5 +124,31 @@ public class StaticPublisherService extends AbstractStaticService implements Pub
 		}
 
 		return null;
+	}
+
+	private void processPublisherPreference(String sspOrganization, PublisherPreference publisherPreference) {
+		sspOrganization = sspOrganization.toLowerCase();
+		Long timestamp = System.currentTimeMillis() / 1000;
+
+		if (!publisherStore.containsKey(sspOrganization)) {
+			publisherStore.put(sspOrganization, new LinkedList<Publisher>());
+		}
+
+		Collection<Publisher> publishers = publisherStore.get(sspOrganization);
+
+		for (Publisher existingPublisher : publishers) {
+			if (existingPublisher.getPublisherID().equals(publisherPreference.getPublisherID()) && existingPublisher.getSiteID().equals(publisherPreference.getSiteID())) {
+				existingPublisher.setTimestamp(timestamp);
+				return;
+			}
+		}
+
+		Publisher newPublisher = new Publisher();
+		newPublisher.setPublisherID(publisherPreference.getPublisherID());
+		newPublisher.setSiteID(publisherPreference.getSiteID());
+		newPublisher.setSiteTLD(publisherPreference.getSiteTLD());
+		newPublisher.setTimestamp(timestamp);
+
+		publishers.add(newPublisher);
 	}
 }
