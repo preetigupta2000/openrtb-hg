@@ -72,9 +72,9 @@ public class UrlGroupsResponseTranslatorTest {
 	private static final List<String> LANDING_PAGES2 = new LinkedList<String>();
 
 	static {
+		LANDING_PAGES2.add("test2.ca");
 		LANDING_PAGES2.add("test2.com");
 		LANDING_PAGES2.add("test2.us");
-		LANDING_PAGES2.add("test2.ca");
 	}
 
 	private static final UrlGroup URL_GROUP2 = new UrlGroup(GROUP_NAME2, LANDING_PAGES2);

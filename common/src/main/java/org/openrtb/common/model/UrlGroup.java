@@ -38,8 +38,9 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA. UrlGroup
@@ -53,10 +54,10 @@ public class UrlGroup {
 	@JsonProperty
 	private String groupName;
 	@JsonProperty("landingPageTLDs")
-	private List<String> landingPages;
+	private Set<String> landingPages;
 
 	protected UrlGroup() {
-		landingPages = new LinkedList<String>();
+		landingPages = new HashSet<String>();
 	}
 
 	public UrlGroup(final String groupName, final List<String> landingPages) {
@@ -78,7 +79,7 @@ public class UrlGroup {
 	}
 
 	@JsonIgnore
-	public List<String> getLandingPages() {
+	public Set<String> getLandingPages() {
 		return landingPages;
 	}
 
