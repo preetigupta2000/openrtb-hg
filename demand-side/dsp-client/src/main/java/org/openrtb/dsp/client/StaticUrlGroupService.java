@@ -39,8 +39,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA. StaticUrlGroupService
@@ -76,7 +76,7 @@ public class StaticUrlGroupService implements UrlGroupService {
 
 	private static final class UrlGroupStore {
 		private static Logger logger = LoggerFactory.getLogger(UrlGroupStore.class);
-		private static Map<String, List<String>> urlGroups = new HashMap<String, List<String>>();
+		private static Map<String, Set<String>> urlGroups = new HashMap<String, Set<String>>();
 
 		static boolean urlGroupExists(String groupName) {
 			return urlGroups.containsKey(groupName);
@@ -88,7 +88,7 @@ public class StaticUrlGroupService implements UrlGroupService {
 		}
 
 		static void updateUrlGroup(UrlGroup urlGroup) {
-			List<String> domains = urlGroups.get(urlGroup.getGroupName());
+			Set<String> domains = urlGroups.get(urlGroup.getGroupName());
 			domains.clear();
 			domains.addAll(urlGroup.getLandingPages());
 			logger.debug("Url group {} updated", urlGroup.getGroupName());
