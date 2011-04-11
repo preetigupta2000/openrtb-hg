@@ -61,6 +61,10 @@ public class StaticPublisherService extends AbstractStaticService implements Pub
 
 	static {
 		preferenceTypes.add(PreferenceType.URL);
+		preferenceTypes.add(PreferenceType.creativeCategories);
+		preferenceTypes.add(PreferenceType.creativeAttribute);
+		preferenceTypes.add(PreferenceType.richmediaVendor);
+		preferenceTypes.add(PreferenceType.trackingVendor);
 	}
 
 	private static final Map<String, Collection<Publisher>> publisherStore = new HashMap<String, Collection<Publisher>>();

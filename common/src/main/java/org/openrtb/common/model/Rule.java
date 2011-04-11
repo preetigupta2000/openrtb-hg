@@ -35,8 +35,8 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA. Rule
@@ -52,10 +52,10 @@ public class Rule {
 	@JsonProperty
 	private PreferenceType type;
 	@JsonProperty
-	private List<Object> values;
+	private Set<Object> values;
 
 	protected Rule() {
-		values = new LinkedList<Object>();
+		values = new HashSet<Object>();
 	}
 
 	public Rule(Operator operator, PreferenceType type, Collection<Object> values) {
@@ -87,7 +87,7 @@ public class Rule {
 		this.type = type;
 	}
 
-	public List<Object> getValues() {
+	public Set<Object> getValues() {
 		return values;
 	}
 
