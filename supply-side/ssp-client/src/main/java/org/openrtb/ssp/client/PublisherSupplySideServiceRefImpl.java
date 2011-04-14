@@ -62,7 +62,7 @@ public class PublisherSupplySideServiceRefImpl implements PublisherSupplySideSer
 		//Publisher no. 1 - All sites
 		List<Rule> rules1 = new ArrayList<Rule>();
 		rules1.add(new Rule(Operator.include, PreferenceType.URL, Arrays.asList((Object) "abc.com")));
-		rules1.add(new Rule(Operator.exclude, PreferenceType.creativeAttribute, Arrays.asList((Object) "1", "2")));
+		rules1.add(new Rule(Operator.exclude, PreferenceType.creativeAttributes, Arrays.asList((Object) "1", "2")));
 		Map<String, PublisherPreference> publisherSiteMap1 = new HashMap<String, PublisherPreference>();
 		//ID 0 means all sites for publisher
 		publisherSiteMap1.put("0", new PublisherPreference("3422", "0", null, rules1));
@@ -71,14 +71,14 @@ public class PublisherSupplySideServiceRefImpl implements PublisherSupplySideSer
 		//Publisher no. 2 - Site no 1
 		List<Rule> rules2 = new ArrayList<Rule>();
 		rules2.add(new Rule(Operator.exclude, PreferenceType.URL, Arrays.asList((Object) "abc.com")));
-		rules2.add(new Rule(Operator.include, PreferenceType.creativeAttribute, Arrays.asList((Object) "1", "2", "9")));
+		rules2.add(new Rule(Operator.include, PreferenceType.creativeAttributes, Arrays.asList((Object) "1", "2", "9")));
 		Map<String, PublisherPreference> publisherSiteMap2 = new HashMap<String, PublisherPreference>();
 		publisherSiteMap2.put("1", new PublisherPreference("2342", "1", "joe.com", rules2));
 
 		//Publisher no. 3 - Site no 2
 		List<Rule> rules3 = new ArrayList<Rule>();
 		rules3.add(new Rule(Operator.include, PreferenceType.URL, Arrays.asList((Object) "cnn.com")));
-		rules3.add(new Rule(Operator.include, PreferenceType.creativeAttribute, Arrays.asList((Object) "1", "2")));
+		rules3.add(new Rule(Operator.include, PreferenceType.creativeAttributes, Arrays.asList((Object) "1", "2")));
 		publisherSiteMap2.put("2", new PublisherPreference("2342", "2", "joeads.com", rules3));
 		publisherPreferencesDB.put("2342", publisherSiteMap2);
 	}

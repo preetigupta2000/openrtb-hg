@@ -61,7 +61,7 @@ public class PublisherPreferencesRequestTranslatorTest {
 	}
 
 	private static final Publisher PUBLISHER1 = new Publisher("0", "0", null, null, null);
-	private static final Publisher PUBLISHER2 = new Publisher("test1", "test2", "tests.co", Arrays.asList(PreferenceType.URL, PreferenceType.creativeAttribute), 100L);
+	private static final Publisher PUBLISHER2 = new Publisher("test1", "test2", "tests.co", Arrays.asList(PreferenceType.URL, PreferenceType.creativeAttributes), 100L);
 
 	private static final PublisherPreferencesRequest REQUEST = new PublisherPreferencesRequest(IDENT);
 

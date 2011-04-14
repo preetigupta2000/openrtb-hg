@@ -60,7 +60,10 @@ public class UrlGroupSupplySideServer extends SupplySideServer<UrlGroupSupplySid
 		Long timestamp = urlGroupsRequest.getTimestamp();
 		Collection<UrlGroup> urlGroups = service.getUrlGroups(timestamp);
 		UrlGroupsResponse response = new UrlGroupsResponse(getIdentification());
-		response.setUrlGroups(urlGroups);
+
+		if (urlGroups != null && !urlGroups.isEmpty()) {
+			response.setUrlGroups(urlGroups);
+		}
 
 		return response;
 	}

@@ -72,31 +72,31 @@ public class PublisherSupplySideServiceRefImplTest {
 
 	@Test
 	public void getPublisherPreferences_SiteId() {
-		Publisher publisher1 = new Publisher("2342", "2", "joeads.com", Arrays.asList(PreferenceType.creativeAttribute), System.currentTimeMillis());
+		Publisher publisher1 = new Publisher("2342", "2", "joeads.com", Arrays.asList(PreferenceType.creativeAttributes), System.currentTimeMillis());
 		Collection<PublisherPreference> preferences = ssp.getPublisherPreferences(Arrays.asList(publisher1));
 		assertNotNull(preferences);
 		assertEquals(1, preferences.size());
 		PublisherPreference publisherPreference = preferences.iterator().next();
 		PublisherPreference expectedPublisherPreference = new PublisherPreference("2342", "2");
 		expectedPublisherPreference.setSiteTLD("joeads.com");
-		expectedPublisherPreference.addRule(new Rule(Operator.include, PreferenceType.creativeAttribute, Arrays.asList((Object) "1", "2")));
+		expectedPublisherPreference.addRule(new Rule(Operator.include, PreferenceType.creativeAttributes, Arrays.asList((Object) "1", "2")));
 		assertEquals(publisherPreference, expectedPublisherPreference);
 	}
 
 	@Test
 	public void getPublisherPreferences_All() {
-		Publisher publisher1 = new Publisher("0", "0", null, Arrays.asList(PreferenceType.creativeAttribute), System.currentTimeMillis());
+		Publisher publisher1 = new Publisher("0", "0", null, Arrays.asList(PreferenceType.creativeAttributes), System.currentTimeMillis());
 		Set<PublisherPreference> preferences = new HashSet<PublisherPreference>(ssp.getPublisherPreferences(Arrays.asList(publisher1)));
 		assertNotNull(preferences);
 		assertEquals(3, preferences.size());
 		PublisherPreference expectedPublisherPreference1 = new PublisherPreference("3422", "0");
-		expectedPublisherPreference1.addRule(new Rule(Operator.exclude, PreferenceType.creativeAttribute, Arrays.asList((Object) "1", "2")));
+		expectedPublisherPreference1.addRule(new Rule(Operator.exclude, PreferenceType.creativeAttributes, Arrays.asList((Object) "1", "2")));
 		PublisherPreference expectedPublisherPreference2 = new PublisherPreference("2342", "1");
 		expectedPublisherPreference2.setSiteTLD("joe.com");
-		expectedPublisherPreference2.addRule(new Rule(Operator.include, PreferenceType.creativeAttribute, Arrays.asList((Object) "1", "2", "9")));
+		expectedPublisherPreference2.addRule(new Rule(Operator.include, PreferenceType.creativeAttributes, Arrays.asList((Object) "1", "2", "9")));
 		PublisherPreference expectedPublisherPreference3 = new PublisherPreference("2342", "2");
 		expectedPublisherPreference3.setSiteTLD("joeads.com");
-		expectedPublisherPreference3.addRule(new Rule(Operator.include, PreferenceType.creativeAttribute, Arrays.asList((Object) "1", "2")));
+		expectedPublisherPreference3.addRule(new Rule(Operator.include, PreferenceType.creativeAttributes, Arrays.asList((Object) "1", "2")));
 
 		assertTrue(preferences.contains(expectedPublisherPreference1));
 		assertTrue(preferences.contains(expectedPublisherPreference2));

@@ -49,7 +49,7 @@ import static org.junit.Assert.fail;
  */
 public class PublisherTranslatorTest {
 
-	private static final Publisher PUBLISHER = new Publisher("test1", "test2", "tests.co", Arrays.asList(PreferenceType.URL, PreferenceType.creativeAttribute), 100L);
+	private static final Publisher PUBLISHER = new Publisher("test1", "test2", "tests.co", Arrays.asList(PreferenceType.URL, PreferenceType.creativeAttributes), 100L);
 
 	private static final String PRETTY_VALUE = "{" + "  \"publisherID\" : \"" + PUBLISHER.getPublisherID() + "\",\n" + "  \"siteID\" : \"" + PUBLISHER.getSiteID() + "\",\n" + "  \"siteTLD\" : \"" + PUBLISHER.getSiteTLD() + "\",\n" + "  \"preferenceTypes\" : [\"" + PUBLISHER.getPreferenceTypes().get(0) + "\", \"" + PUBLISHER.getPreferenceTypes().get(1) + "\"]," + "  \"sinceThisTimestamp\" : " + PUBLISHER.getTimestamp() + "\n" + "}";
 
