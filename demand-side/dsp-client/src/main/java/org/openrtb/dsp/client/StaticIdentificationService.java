@@ -48,13 +48,13 @@ public class StaticIdentificationService extends AbstractStaticService implement
 
 	@Override
 	public String getOrganizationIdentifier() {
-		return "The DSP";
+		return null;
 	}
 
 	public static List<SupplySidePlatform> platforms = new ArrayList<SupplySidePlatform>();
 
 	static {
-		platforms.add(new SupplySidePlatform("The SSP", "http://localhost:8080/ssp-web/openrtb/advCentricSync", "http://localhost:8080/ssp-web/openrtb/pubCentricSync", "http://localhost:8080/ssp-web/openrtb/urlGroupsSync", "RTB".getBytes()));
+		platforms.add(new SupplySidePlatform("The SSP", "http://localhost:8080/ssp-web/openrtb/advCentricSync", "http://localhost:8080/ssp-web/openrtb/pubCentricSync", "http://localhost:8080/ssp-web/openrtb/urlGroupsSync", "The DSP", "RTB".getBytes()));
 	}
 
 	@Override

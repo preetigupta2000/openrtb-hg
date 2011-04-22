@@ -102,7 +102,7 @@ public class UrlGroupsRequesterTest {
 
 	@Test
 	public void getUrlGroups_ResponseIsNull() {
-		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "http://test.co/urlGroup", "test".getBytes());
+		SupplySidePlatform ssp = new SupplySidePlatform("test", "http://test.co/adv", "http://test.co/pub", "http://test.co/urlGroup", "demand-side company", "test".getBytes());
 
 		UrlGroupService urlGroupService = mock(UrlGroupService.class);
 		IdentificationService identificationService = mock(IdentificationService.class);

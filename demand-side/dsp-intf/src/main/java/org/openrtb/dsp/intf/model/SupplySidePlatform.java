@@ -40,32 +40,40 @@ public class SupplySidePlatform {
 	String advertiserBatchServiceUrl;
 	String publisherBatchServiceUrl;
 	String urlGroupsBatchServiceUrl;
+	String demandSideName;
 	byte[] sharedSecret;
 
-	/**
-	 * Constructor for a supply-side platform object. All values are required to be non- <tt>null</tt>. If null is supplied
-	 * for any one of the values, an {@link IllegalArgumentException} is thrown to alert the caller of the condition.
-	 */
-	@Deprecated
-	public SupplySidePlatform(String organization, String batchServiceUrl, byte[] sharedSecret) {
-		if (organization == null || batchServiceUrl == null || sharedSecret == null) {
-			throw new IllegalArgumentException("organization [" + organization + "], " + "service url [" + batchServiceUrl + "], and " + "secret [" + sharedSecret + "] are required " + "for valid supply-side platform definitions");
-		}
-		this.organization = organization;
-		this.advertiserBatchServiceUrl = batchServiceUrl;
-		this.sharedSecret = sharedSecret;
-	}
+    /**
+     * @deprecated Please refer to
+     *             {@link #SupplySidePlatform(String, String, String, byte[])}
+     *             instead; each supply-side platform is capable of specifying a
+     *             unique name for the demand-side partner.
+     */
+    @Deprecated
+    public SupplySidePlatform(String organization, String batchServiceUrl, byte[] sharedSecret) {
+    	this(organization, batchServiceUrl, null, null, "", sharedSecret);
+    }
 
 	/**
 	 * Constructor for a supply-side platform object. Organization and sharedSecret are required to be non- <tt>null</tt>.
 	 * Either advertiserBatchServiceUrl or publisherBatchServiceUrl is required to be non-<tt>null</tt>. If above
 	 * conditions are not met, an {@link IllegalArgumentException} is thrown to alert the caller of the condition.
 	 */
-	public SupplySidePlatform(String organization, String advertiserBatchServiceUrl, String publisherBatchServiceUrl, String urlGroupsBatchServiceUrl, byte[] sharedSecret) {
-		if (organization == null || sharedSecret == null || (publisherBatchServiceUrl == null && advertiserBatchServiceUrl == null)) {
-			throw new IllegalArgumentException("organization [" + organization + "] and " + "secret [" + sharedSecret + "] are required and " + "either advertiser service url [" + advertiserBatchServiceUrl + "] or " + "publisher service url [" + publisherBatchServiceUrl + "] is required " + "for valid supply-side platform definitions");
+	public SupplySidePlatform(String organization, 
+							  String advertiserBatchServiceUrl, 
+							  String publisherBatchServiceUrl, 
+							  String urlGroupsBatchServiceUrl, 
+							  String demandSideName, byte[] sharedSecret) {
+		if (organization == null || demandSideName == null || sharedSecret == null || (publisherBatchServiceUrl == null && advertiserBatchServiceUrl == null)) {
+			throw new IllegalArgumentException("organization [" + organization + "], " + 
+											   "demand side name ["+demandSideName+"], and " +
+											   "secret [" + sharedSecret + "] are required and " + 
+											   "either advertiser service url [" + advertiserBatchServiceUrl + "] or " + 
+											   "publisher service url [" + publisherBatchServiceUrl + "] is required " + 
+											   "for valid supply-side platform definitions");
 		}
 		this.organization = organization;
+		this.demandSideName = ("".equals(demandSideName))?(null):(demandSideName);
 		this.sharedSecret = sharedSecret;
 		this.advertiserBatchServiceUrl = advertiserBatchServiceUrl;
 		this.publisherBatchServiceUrl = publisherBatchServiceUrl;
@@ -76,13 +84,17 @@ public class SupplySidePlatform {
 		return organization;
 	}
 
+	public String getDemandSideName() {
+		return demandSideName;
+	}
+	
 	public byte[] getSharedSecret() {
 		return sharedSecret;
 	}
 
 	@Deprecated
 	public String getBatchServiceUrl() {
-		return advertiserBatchServiceUrl;
+		return getAdvertiserBatchServiceUrl();
 	}
 
 	public String getAdvertiserBatchServiceUrl() {

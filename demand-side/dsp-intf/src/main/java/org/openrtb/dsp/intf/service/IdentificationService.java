@@ -52,15 +52,13 @@ public interface IdentificationService {
     public static final String SPRING_NAME = "dsp.intf.IdentificationService";
 
     /**
-     * Returns the non-<tt>null</tt> identification for the organization making
-     * the request.  This value will be used to uniquely identify who the
-     * request and/or responses are coming from.
-     *
-     * @return a non-<tt>null</tt> organization identification token. The
-     *         {@link Identification#getOrganization()} value should represent
-     *         the value the request or response recipients will use to identify
-     *         you.
+     * @deprecated this method has been deprecated in lieu of using
+     *             {@link SupplySidePlatform#getDemandSideName()}. The return
+     *             results will only be used if no value is supplied for
+     *             specific {@link SupplySidePlatform} as a single DSP can be
+     *             identified to by multiple SSPs with a different unique key.
      */
+    @Deprecated
     String getOrganizationIdentifier();
 
     /**

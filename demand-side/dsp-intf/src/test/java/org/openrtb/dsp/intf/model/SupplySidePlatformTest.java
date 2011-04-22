@@ -31,6 +31,7 @@
  */
 package org.openrtb.dsp.intf.model;
 
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -43,7 +44,15 @@ public class SupplySidePlatformTest {
 	private static final String ADVERTISER_SERVICE_URL = "http://blah.blah.com/foo/bar/adv";
 	private static final String PUBLISHER_SERVICE_URL = "http://blah.blah.com/foo/bar/pub";
 	private static final String URL_GROUP_SERVICE_URL = "http://blah.blah.com/foo/bar/urlGroup";
+	private static final String DEMAND_SIDE_NAME = "Demand Side";
 	private static final byte[] SECRET = "can't guess me".getBytes();
+
+
+	@Test
+	public void createSsp_worksFine() {
+		assertNotNull("this constructor should work... just fine", 
+					  new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, SECRET));
+	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createSsp_noOrganization() {
@@ -62,31 +71,42 @@ public class SupplySidePlatformTest {
 
 	@Test //checking that the positive scenario is fine
 	public void createSsp2() {
-		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, SECRET);
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, DEMAND_SIDE_NAME, SECRET);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createSsp2_noOrganization() {
-		new SupplySidePlatform(null, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, SECRET);
+		new SupplySidePlatform(null, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, DEMAND_SIDE_NAME, SECRET);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createSsp2_noSecret() {
-		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, null);
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, DEMAND_SIDE_NAME, null);
 	}
 
 	@Test
 	public void createSsp2_noAdvService() {
-		new SupplySidePlatform(ORGANIZATION, null, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, SECRET);
+		new SupplySidePlatform(ORGANIZATION, null, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, DEMAND_SIDE_NAME, SECRET);
 	}
 
 	@Test
 	public void createSsp2_noPubService() {
-		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, null, URL_GROUP_SERVICE_URL, SECRET);
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, null, URL_GROUP_SERVICE_URL, DEMAND_SIDE_NAME, SECRET);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createSsp2_noServices() {
-		new SupplySidePlatform(ORGANIZATION, null, null, URL_GROUP_SERVICE_URL, SECRET);
+		new SupplySidePlatform(ORGANIZATION, null, null, URL_GROUP_SERVICE_URL, DEMAND_SIDE_NAME, SECRET);
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void createSsp2_noDemandSideName() {
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, null, SECRET);
+	}
+
+	public void createSsp2_emptyDemandSideName() {
+		// this is required for deprecation; when the deprecated constructor is removed, this test should be removed also.
+		new SupplySidePlatform(ORGANIZATION, ADVERTISER_SERVICE_URL, PUBLISHER_SERVICE_URL, URL_GROUP_SERVICE_URL, "", SECRET);
+	}
+
 }
