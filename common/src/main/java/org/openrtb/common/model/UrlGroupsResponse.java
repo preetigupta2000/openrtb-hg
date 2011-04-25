@@ -94,6 +94,7 @@ public class UrlGroupsResponse extends Signable implements Response {
 		return urlGroups;
 	}
 
+	//TODO: we should probably remove this check as we can respond with empty list of url groups
 	public void setUrlGroups(Collection<UrlGroup> urlGroups) {
 		if (urlGroups == null || urlGroups.size() < 1) {
 			throw new IllegalArgumentException("At least one url group must be present for call to UrlGroupsRequest#setUrlGroups()");

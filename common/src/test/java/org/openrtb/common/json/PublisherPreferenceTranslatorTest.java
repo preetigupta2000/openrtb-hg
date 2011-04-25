@@ -56,8 +56,8 @@ public class PublisherPreferenceTranslatorTest {
 	private static final List<Object> VALUES1 = new LinkedList<Object>();
 
 	static {
-		VALUES1.add("test2.co");
 		VALUES1.add("test1.co");
+		VALUES1.add("test2.co");
 	}
 
 	private static final Rule RULE1 = new Rule(Operator.include, PreferenceType.URL, VALUES1);

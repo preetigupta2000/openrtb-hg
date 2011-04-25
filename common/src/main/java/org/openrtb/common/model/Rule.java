@@ -35,8 +35,8 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by IntelliJ IDEA. Rule
@@ -55,7 +55,7 @@ public class Rule {
 	private Set<Object> values;
 
 	protected Rule() {
-		values = new HashSet<Object>();
+		values = new TreeSet<Object>();
 	}
 
 	public Rule(Operator operator, PreferenceType type, Collection<Object> values) {

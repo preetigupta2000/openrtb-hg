@@ -47,8 +47,8 @@ public class RuleTest {
 	private static Collection<Object> VALUES = new LinkedList<Object>();
 
 	static {
-		VALUES.add("TEST");
-		VALUES.add(1);
+		VALUES.add("TEST1");
+		VALUES.add("TEST2");
 	}
 
 	private Rule test = new Rule();
