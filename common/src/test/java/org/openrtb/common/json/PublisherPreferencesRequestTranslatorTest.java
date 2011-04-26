@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -60,6 +61,8 @@ public class PublisherPreferencesRequestTranslatorTest {
 		IDENT.setToken("44ab444914088e855ad1f948ec4a1fc7");
 	}
 
+	private static final List<PreferenceType> PREFERENCE_TYPES = Arrays.asList(PreferenceType.URL, PreferenceType.creativeAttributes);
+
 	private static final Publisher PUBLISHER1 = new Publisher("0", "0", null, null, null);
 	private static final Publisher PUBLISHER2 = new Publisher("test1", "test2", "tests.co", Arrays.asList(PreferenceType.URL, PreferenceType.creativeAttributes), 100L);
 
@@ -70,7 +73,7 @@ public class PublisherPreferencesRequestTranslatorTest {
 		REQUEST.addPublisher(PUBLISHER2);
 	}
 
-	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + ",\n" + "    \"token\" : \"" + IDENT.getToken() + "\"\n" + "  },\n" + "  \"publishers\" : [{" + "    \"publisherID\" : \"" + PUBLISHER1.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER1.getSiteID() + "\"\n" + "  }, {" + "    \"publisherID\" : \"" + PUBLISHER2.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER2.getSiteID() + "\",\n" + "    \"siteTLD\" : \"" + PUBLISHER2.getSiteTLD() + "\",\n" + "    \"preferenceTypes\" : [\"" + PUBLISHER2.getPreferenceTypes().get(0) + "\", \"" + PUBLISHER2.getPreferenceTypes().get(1) + "\"]," + "    \"sinceThisTimestamp\" : " + PUBLISHER2.getTimestamp() + "\n" + "  }]" + "}";
+	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + ",\n" + "    \"token\" : \"" + IDENT.getToken() + "\"\n" + "  },\n" + "  \"publishers\" : [{" + "    \"publisherID\" : \"" + PUBLISHER1.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER1.getSiteID() + "\"\n" + "  }, {" + "    \"publisherID\" : \"" + PUBLISHER2.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER2.getSiteID() + "\",\n" + "    \"siteTLD\" : \"" + PUBLISHER2.getSiteTLD() + "\",\n" + "    \"preferenceTypes\" : [\"" + PREFERENCE_TYPES.get(0) + "\", \"" + PREFERENCE_TYPES.get(1) + "\"]," + "    \"sinceThisTimestamp\" : " + PUBLISHER2.getTimestamp() + "\n" + "  }]" + "}";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 

@@ -52,7 +52,7 @@ public class Rule {
 	@JsonProperty
 	private PreferenceType type;
 	@JsonProperty
-	private Set<Object> values;
+	private TreeSet<Object> values;
 
 	protected Rule() {
 		values = new TreeSet<Object>();

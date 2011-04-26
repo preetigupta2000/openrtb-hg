@@ -53,12 +53,12 @@ public class RuleTranslatorTest {
 	private static final List<Object> VALUES = new LinkedList<Object>();
 
 	static {
-		VALUES.add("test1.co");
 		VALUES.add("test1.us");
+		VALUES.add("test1.co");
 	}
 
 	private static final Rule RULE = new Rule(Operator.include, PreferenceType.URL, VALUES);
-	private static final String PRETTY_VALUE = "{" + "  \"operator\": \"" + RULE.getOperator() + "\"," + "  \"type\": \"" + RULE.getType() + "\"," + "  \"values\": [\"" + VALUES.get(0) + "\",\"" + VALUES.get(1) + "\"]" + "}";
+	private static final String PRETTY_VALUE = "{" + "  \"operator\": \"" + RULE.getOperator() + "\"," + "  \"type\": \"" + RULE.getType() + "\"," + "  \"values\": [\"" + VALUES.get(1) + "\",\"" + VALUES.get(0) + "\"]" + "}";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 	private RuleTranslator test = new RuleTranslator();

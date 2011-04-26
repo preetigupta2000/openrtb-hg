@@ -37,6 +37,7 @@ import org.openrtb.common.model.Publisher;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -49,9 +50,10 @@ import static org.junit.Assert.fail;
  */
 public class PublisherTranslatorTest {
 
-	private static final Publisher PUBLISHER = new Publisher("test1", "test2", "tests.co", Arrays.asList(PreferenceType.URL, PreferenceType.creativeAttributes), 100L);
+	private static final List<PreferenceType> PREFERENCE_TYPES = Arrays.asList(PreferenceType.URL, PreferenceType.creativeAttributes);
+	private static final Publisher PUBLISHER = new Publisher("test1", "test2", "tests.co", PREFERENCE_TYPES, 100L);
 
-	private static final String PRETTY_VALUE = "{" + "  \"publisherID\" : \"" + PUBLISHER.getPublisherID() + "\",\n" + "  \"siteID\" : \"" + PUBLISHER.getSiteID() + "\",\n" + "  \"siteTLD\" : \"" + PUBLISHER.getSiteTLD() + "\",\n" + "  \"preferenceTypes\" : [\"" + PUBLISHER.getPreferenceTypes().get(0) + "\", \"" + PUBLISHER.getPreferenceTypes().get(1) + "\"]," + "  \"sinceThisTimestamp\" : " + PUBLISHER.getTimestamp() + "\n" + "}";
+	private static final String PRETTY_VALUE = "{" + "  \"publisherID\" : \"" + PUBLISHER.getPublisherID() + "\",\n" + "  \"siteID\" : \"" + PUBLISHER.getSiteID() + "\",\n" + "  \"siteTLD\" : \"" + PUBLISHER.getSiteTLD() + "\",\n" + "  \"preferenceTypes\" : [\"" + PREFERENCE_TYPES.get(0) + "\", \"" + PREFERENCE_TYPES.get(1) + "\"]," + "  \"sinceThisTimestamp\" : " + PUBLISHER.getTimestamp() + "\n" + "}";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 

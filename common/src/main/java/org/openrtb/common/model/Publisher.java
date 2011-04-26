@@ -35,8 +35,8 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by IntelliJ IDEA. Publisher
@@ -53,7 +53,7 @@ public class Publisher {
 	@JsonProperty
 	String siteTLD;
 	@JsonProperty
-	List<PreferenceType> preferenceTypes;
+	TreeSet<PreferenceType> preferenceTypes;
 	@JsonProperty("sinceThisTimestamp")
 	Long timestamp;
 
@@ -93,7 +93,7 @@ public class Publisher {
 		this.siteTLD = siteTLD;
 	}
 
-	public List<PreferenceType> getPreferenceTypes() {
+	public Set<PreferenceType> getPreferenceTypes() {
 		return preferenceTypes;
 	}
 
@@ -101,7 +101,7 @@ public class Publisher {
 		if (preferenceTypes == null) {
 			this.preferenceTypes = null;
 		} else {
-			this.preferenceTypes = new LinkedList<PreferenceType>(preferenceTypes);
+			this.preferenceTypes = new TreeSet<PreferenceType>(preferenceTypes);
 		}
 	}
 

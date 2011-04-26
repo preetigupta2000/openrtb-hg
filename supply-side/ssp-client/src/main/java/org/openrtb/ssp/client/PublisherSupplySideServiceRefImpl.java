@@ -42,10 +42,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A sample reference implementation in order to demonstrate the role of SSP implementor.
@@ -92,7 +92,7 @@ public class PublisherSupplySideServiceRefImpl implements PublisherSupplySideSer
 		//if publisher ID==0, return all preferences
 		Publisher firstPublisher = publishers.iterator().next();
 		if ("0".equals(firstPublisher.getPublisherID())) {
-			List<PreferenceType> preferenceTypes = firstPublisher.getPreferenceTypes();
+			Set<PreferenceType> preferenceTypes = firstPublisher.getPreferenceTypes();
 			for (Map<String, PublisherPreference> publisherPreferenceMap : publisherPreferencesDB.values()) {
 				for (PublisherPreference publisherPreference : publisherPreferenceMap.values()) {
 					publisherPreferences.add(getForPreferenceTypes(publisherPreference, preferenceTypes));
@@ -100,7 +100,7 @@ public class PublisherSupplySideServiceRefImpl implements PublisherSupplySideSer
 			}
 		} else {
 			for (Publisher publisher : publishers) {
-				List<PreferenceType> preferenceTypes = publisher.getPreferenceTypes();
+				Set<PreferenceType> preferenceTypes = publisher.getPreferenceTypes();
 				Map<String, PublisherPreference> sites = publisherPreferencesDB.get(publisher.getPublisherID());
 				if (publisher.getSiteID().equals("0")) {
 					for (PublisherPreference publisherPreference : sites.values()) {
@@ -124,10 +124,10 @@ public class PublisherSupplySideServiceRefImpl implements PublisherSupplySideSer
 		return org;
 	}
 
-	private static PublisherPreference getForPreferenceTypes(PublisherPreference currentPublisherPreference, List<PreferenceType> preferenceTypes) {
+	private static PublisherPreference getForPreferenceTypes(PublisherPreference currentPublisherPreference, Set<PreferenceType> preferenceTypes) {
 		PublisherPreference publisherPreference = new PublisherPreference(currentPublisherPreference.getPublisherID(), currentPublisherPreference.getSiteID());
 		publisherPreference.setSiteTLD(currentPublisherPreference.getSiteTLD());
-		Set<PreferenceType> preferenceTypeSet = new HashSet<PreferenceType>(preferenceTypes);
+		Set<PreferenceType> preferenceTypeSet = new TreeSet<PreferenceType>(preferenceTypes);
 		for (Rule rule : currentPublisherPreference.getRules()) {
 			if (preferenceTypeSet.contains(rule.getType())) {
 				publisherPreference.addRule(rule);
