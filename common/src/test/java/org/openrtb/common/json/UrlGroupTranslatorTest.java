@@ -56,7 +56,7 @@ public class UrlGroupTranslatorTest {
 
 	private UrlGroup URL_GROUP = new UrlGroup(GROUP_NAME, LANDING_PAGES);
 
-	private static final String PRETTY_VALUE = "{" + "  \"groupName\" : \"" + GROUP_NAME + "\",\n" + "  \"landingPageTLDs\" : [ \n" + "    \"" + LANDING_PAGES.get(0) + "\",\n" + "    \"" + LANDING_PAGES.get(1) + "\"\n" + "  ]" + "}";
+	private static final String PRETTY_VALUE = "{" + "  \"name\" : \"" + GROUP_NAME + "\",\n" + "  \"values\" : [ \n" + "    \"" + LANDING_PAGES.get(0) + "\",\n" + "    \"" + LANDING_PAGES.get(1) + "\"\n" + "  ]" + "}";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 

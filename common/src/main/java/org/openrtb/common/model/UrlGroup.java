@@ -49,11 +49,11 @@ import java.util.TreeSet;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"groupName", "landingPageTLDs"})
+@JsonPropertyOrder({"name", "values"})
 public class UrlGroup {
-	@JsonProperty
+	@JsonProperty("name")
 	private String groupName;
-	@JsonProperty("landingPageTLDs")
+	@JsonProperty("values")
 	private TreeSet<String> landingPages;
 
 	protected UrlGroup() {
@@ -66,6 +66,7 @@ public class UrlGroup {
 		setLandingPages(landingPages);
 	}
 
+	@JsonIgnore
 	public String getGroupName() {
 		return groupName;
 	}
