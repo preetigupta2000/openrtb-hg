@@ -77,7 +77,7 @@ public class AdvertiserSupplySideServerTest {
 	}
 
 	private static final String DSP = "The_DSP";
-	private static final String REQUEST = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + DSP + "\",\n" + "    \"timestamp\" : " + System.currentTimeMillis() + ",\n" + "        \"token\" : \"1234567890\"\n" + "  },\n" + "  \"advertisers\" : [{" + "    \"landingPageTLD\" : \"acmeluxuryfurniture.com\",\n" + "    \"name\" : \"Acme_Luxury_Furniture\"" + "  }]" + "}";
+	private static final String REQUEST = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + DSP + "\",\n" + "    \"timestamp\" : " + System.currentTimeMillis() + "\n" + "  },\n" + "  \"advertisers\" : [{" + "    \"landingPageTLD\" : \"acmeluxuryfurniture.com\",\n" + "    \"name\" : \"Acme_Luxury_Furniture\"" + "  }]" + "}";
 
 	private AdvertiserSupplySideService ssp;
 	private AdvertiserSupplySideServer server;
@@ -89,20 +89,7 @@ public class AdvertiserSupplySideServerTest {
 	}
 
 	@Test
-	public void invalidMD5ChecksumRequest() throws JsonMappingException, JsonParseException, IOException {
-		String jsonRequest = REQUEST.replaceAll("[ \n]", "");
-
-		String jsonResponse = server.process(jsonRequest);
-		System.out.println(" IN:" + jsonRequest);
-		System.out.println("OUT:" + jsonResponse);
-
-		AdvertiserBlocklistResponseTranslator resTrans = new AdvertiserBlocklistResponseTranslator();
-		AdvertiserBlocklistResponse response = resTrans.fromJSON(jsonResponse);
-		assertTrue("expected AUTH error (invalid signature)", response.getStatus().getCode() == Status.AUTH_ERROR_CODE);
-	}
-
-	@Test
-	public void validMD5ChecksumRequest() throws JsonMappingException, JsonParseException, IOException {
+	public void validRequest() throws JsonMappingException, JsonParseException, IOException {
 		AdvertiserBlocklistRequestTranslator reqTrans = new AdvertiserBlocklistRequestTranslator();
 		AdvertiserBlocklistResponseTranslator resTrans = new AdvertiserBlocklistResponseTranslator();
 		String digest;
@@ -110,7 +97,6 @@ public class AdvertiserSupplySideServerTest {
 		//set the request checksum
 		String jsonRequest = REQUEST.replaceAll("[ \n]", "");
 		AdvertiserBlocklistRequest request = reqTrans.fromJSON(jsonRequest);
-		request.sign(ssp.getSharedSecret(DSP), reqTrans);
 		jsonRequest = reqTrans.toJSON(request);
 
 		//request --> response
@@ -121,9 +107,6 @@ public class AdvertiserSupplySideServerTest {
 		//validate success
 		AdvertiserBlocklistResponse response = resTrans.fromJSON(jsonResponse);
 		assertTrue("expected success status code", response.getStatus().getCode() == Status.SUCCESS_CODE);
-
-		//verify the response checksum
-		assertTrue("expected successful verification", response.verify(ssp.getSharedSecret(DSP), resTrans));
 	}
 
 	@Test
@@ -136,7 +119,7 @@ public class AdvertiserSupplySideServerTest {
 
 		AdvertiserBlocklistResponseTranslator resTrans = new AdvertiserBlocklistResponseTranslator();
 		AdvertiserBlocklistResponse response = resTrans.fromJSON(jsonResponse);
-		assertTrue("bad MD5 status code", response.getStatus().getCode() == Status.OTHER_ERROR_CODE);
+		assertTrue("bad status code", response.getStatus().getCode() == Status.OTHER_ERROR_CODE);
 	}
 
 }

@@ -55,141 +55,121 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
 /**
- * There are multiple ways to request {@link Blocklist}s from SSPs. This class
- * currently supports the following mechanisms of requesting {@link Advertiser}
- * {@link Blocklist}:
- * 
- * <ul>
- * <li>Complete Blocklist Refresh<br/>
- * For all SSPs configured to provide blocklists to the DSP, a list of
- * Advertisers will be sent to the SSP based upon the DSP's implementation of
- * the {@link AdvertiserService#getAdvertiserList()} implementation. For more
- * information, please refer to the {@link #requestAllBlocklists()} method.</li>
- * </ul>
- * 
+ * There are multiple ways to request {@link Blocklist}s from SSPs. This class currently supports the following
+ * mechanisms of requesting {@link Advertiser} {@link Blocklist}:
+ * <p/>
+ * <ul> <li>Complete Blocklist Refresh<br/> For all SSPs configured to provide blocklists to the DSP, a list of
+ * Advertisers will be sent to the SSP based upon the DSP's implementation of the {@link
+ * AdvertiserService#getAdvertiserList()} implementation. For more information, please refer to the {@link
+ * #requestAllBlocklists()} method.</li> </ul>
+ *
  * @since 1.0
  */
 public class AdvertiserBlocklistRequester {
 
-    public static final String SPRING_NAME = "dsp.core.AdvertiserBlocklistRequester";
+	public static final String SPRING_NAME = "dsp.core.AdvertiserBlocklistRequester";
 
-    private static final Logger logger = LoggerFactory.getLogger(AdvertiserBlocklistRequester.class);
+	private static final Logger logger = LoggerFactory.getLogger(AdvertiserBlocklistRequester.class);
 
-    private static final AdvertiserBlocklistRequestTranslator REQUEST_TRANSFORM;
-    private static final AdvertiserBlocklistResponseTranslator RESPONSE_TRANSFORM;
-    static {
-        REQUEST_TRANSFORM = new AdvertiserBlocklistRequestTranslator();
-        RESPONSE_TRANSFORM = new AdvertiserBlocklistResponseTranslator();
-    }
+	private static final AdvertiserBlocklistRequestTranslator REQUEST_TRANSFORM;
+	private static final AdvertiserBlocklistResponseTranslator RESPONSE_TRANSFORM;
 
-    private AdvertiserService advertiserService;
-    private IdentificationService identificationService;
+	static {
+		REQUEST_TRANSFORM = new AdvertiserBlocklistRequestTranslator();
+		RESPONSE_TRANSFORM = new AdvertiserBlocklistResponseTranslator();
+	}
 
-    public AdvertiserBlocklistRequester(AdvertiserService advertiserService,
-                                        IdentificationService identificationService) {
-        this.advertiserService = advertiserService;
-        this.identificationService = identificationService;
-    }
+	private AdvertiserService advertiserService;
+	private IdentificationService identificationService;
 
-    /**
-     * Perform a complete refresh for all {@link Advertiser} {@link Blocklist}
-     * for the available {@link SupplySidePlatform}s. This action is intended to
-     * delete any/all data that was previously retrieved for the requested
-     * {@link Advertiser}s.
-     */
-    public void requestAllBlocklists() {
-        Collection<Advertiser> advertisers = advertiserService.getAdvertiserList();
-        if (advertisers == null || advertisers.isEmpty()) {
-            logger.info("Unable to sync blocklists with supply-side platforms; no advertisers returned from AdvertiserService#getAdvertiserList().");
-            return;
-        }
+	public AdvertiserBlocklistRequester(AdvertiserService advertiserService, IdentificationService identificationService) {
+		this.advertiserService = advertiserService;
+		this.identificationService = identificationService;
+	}
 
-        for(SupplySidePlatform ssp : identificationService.getServiceEndpoints()) {
+	/**
+	 * Perform a complete refresh for all {@link Advertiser} {@link Blocklist} for the available {@link
+	 * SupplySidePlatform}s. This action is intended to delete any/all data that was previously retrieved for the
+	 * requested {@link Advertiser}s.
+	 */
+	public void requestAllBlocklists() {
+		Collection<Advertiser> advertisers = advertiserService.getAdvertiserList();
+		if (advertisers == null || advertisers.isEmpty()) {
+			logger.info("Unable to sync blocklists with supply-side platforms; no advertisers returned from AdvertiserService#getAdvertiserList().");
+			return;
+		}
 
-            String organization = ssp.getDemandSideName();
-            if (organization == null) {
-                organization = identificationService.getOrganizationIdentifier();
-            }
-            if (organization == null) {
-            	logger.error("An organization is not available for supply-side platform w/ name: " + ssp.getOrganization());
-            	continue;
-            }
-            Identification dsp = new Identification(organization);
-            
+		for (SupplySidePlatform ssp : identificationService.getServiceEndpoints()) {
 
-            AdvertiserBlocklistRequest request = new AdvertiserBlocklistRequest(dsp, advertisers);
-            try {
-                request.sign(ssp.getSharedSecret(), REQUEST_TRANSFORM);
-            } catch (IOException e) {
-                logger.error("Unable to sign json request for ["+ssp.getOrganization()+"] due to exception", e);
-                continue;
-            }
+			String organization = ssp.getDemandSideName();
+			if (organization == null) {
+				organization = identificationService.getOrganizationIdentifier();
+			}
+			if (organization == null) {
+				logger.error("An organization is not available for supply-side platform w/ name: " + ssp.getOrganization());
+				continue;
+			}
+			Identification dsp = new Identification(organization);
 
-            AdvertiserBlocklistResponse response = null;
-            try {
-                response = makeRequest(ssp, REQUEST_TRANSFORM.toJSON(request));
-                if (response != null) {
-                    if (response.verify(ssp.getSharedSecret(), RESPONSE_TRANSFORM)) {
-                        advertiserService.replaceBlocklists(ssp, response.getAdvertisers());
-                    } else {
-                        logger.error("Verification of response from ["+ssp.getOrganization()+"] failed");
-                        continue;
-                    }
-                }
-            } catch (IOException e) {
-                logger.error("Unable to verify json response from ["+ssp.getOrganization()+"] due to exception", e);
-                continue;
-            }
-        }
-    }
 
-    /**
-     * @param ssp
-     * @param request
-     * @return
-     */
-    AdvertiserBlocklistResponse makeRequest(SupplySidePlatform ssp, String request) {
+			AdvertiserBlocklistRequest request = new AdvertiserBlocklistRequest(dsp, advertisers);
+			AdvertiserBlocklistResponse response = null;
+			try {
+				response = makeRequest(ssp, REQUEST_TRANSFORM.toJSON(request));
+				if (response != null) {
+					advertiserService.replaceBlocklists(ssp, response.getAdvertisers());
+				}
+			} catch (IOException e) {
+				logger.error("Unable to verify json response from [" + ssp.getOrganization() + "] due to exception", e);
+				continue;
+			}
+		}
+	}
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Organization Name ["+ssp.getOrganization()+"]");
-            logger.debug("Organization Endpoint ["+ssp.getAdvertiserBatchServiceUrl()+"]");
-            logger.debug("Organization Secret ["+new String(ssp.getSharedSecret())+"]");
-            logger.debug("Organization Request: " + request);
-        }
+	/**
+	 * @param ssp
+	 * @param request
+	 * @return
+	 */
+	AdvertiserBlocklistResponse makeRequest(SupplySidePlatform ssp, String request) {
 
-        HttpClient client = new HttpClient();
-        PostMethod post = new PostMethod(ssp.getAdvertiserBatchServiceUrl());
-        try {
-            post.setRequestEntity(new StringRequestEntity(request, "application/json", null));
-        } catch (UnsupportedEncodingException e) {
-            logger.error("Unable to set ["+ssp.getOrganization()+"] request's encoding type: application/json", e);
-            return null;
-        }
+		if (logger.isDebugEnabled()) {
+			logger.debug("Organization Name [" + ssp.getOrganization() + "]");
+			logger.debug("Organization Endpoint [" + ssp.getAdvertiserBatchServiceUrl() + "]");
+			logger.debug("Organization Secret [" + new String(ssp.getSharedSecret()) + "]");
+			logger.debug("Organization Request: " + request);
+		}
 
-        AdvertiserBlocklistResponse response = null;
-        try {
-            int statusCode = client.executeMethod(post);
-            if (statusCode != HttpStatus.SC_OK) {
-                logger.error("Request for blocklists failed w/ code ["+statusCode+"] " +
-                             "for supply-side platform ["+ssp.getOrganization()+"] " +
-                             "w/ url ["+ssp.getAdvertiserBatchServiceUrl()+"]");
-                return null;
-            }
-            response = RESPONSE_TRANSFORM.fromJSON(new InputStreamReader(post.getResponseBodyAsStream()));
-            if (logger.isDebugEnabled()) {
-                logger.debug("Organization Response: " + RESPONSE_TRANSFORM.toJSON(response));
-            }
-        } catch (HttpException e) {
-            logger.error("Unable to send JSON request to ["+ssp.getOrganization()+"] " +
-                         "at ["+ssp.getAdvertiserBatchServiceUrl()+"]", e);
-            return null;
-        } catch (IOException e) {
-            logger.error("Unable to process JSON response from ["+ssp.getOrganization()+"]", e);
-            return null;
-        } finally {
-            post.releaseConnection();
-        }
+		HttpClient client = new HttpClient();
+		PostMethod post = new PostMethod(ssp.getAdvertiserBatchServiceUrl());
+		try {
+			post.setRequestEntity(new StringRequestEntity(request, "application/json", null));
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Unable to set [" + ssp.getOrganization() + "] request's encoding type: application/json", e);
+			return null;
+		}
 
-        return response;
-    }
+		AdvertiserBlocklistResponse response = null;
+		try {
+			int statusCode = client.executeMethod(post);
+			if (statusCode != HttpStatus.SC_OK) {
+				logger.error("Request for blocklists failed w/ code [" + statusCode + "] " + "for supply-side platform [" + ssp.getOrganization() + "] " + "w/ url [" + ssp.getAdvertiserBatchServiceUrl() + "]");
+				return null;
+			}
+			response = RESPONSE_TRANSFORM.fromJSON(new InputStreamReader(post.getResponseBodyAsStream()));
+			if (logger.isDebugEnabled()) {
+				logger.debug("Organization Response: " + RESPONSE_TRANSFORM.toJSON(response));
+			}
+		} catch (HttpException e) {
+			logger.error("Unable to send JSON request to [" + ssp.getOrganization() + "] " + "at [" + ssp.getAdvertiserBatchServiceUrl() + "]", e);
+			return null;
+		} catch (IOException e) {
+			logger.error("Unable to process JSON response from [" + ssp.getOrganization() + "]", e);
+			return null;
+		} finally {
+			post.releaseConnection();
+		}
+
+		return response;
+	}
 }

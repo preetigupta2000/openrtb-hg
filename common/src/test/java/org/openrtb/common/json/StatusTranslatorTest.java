@@ -31,66 +31,57 @@
  */
 package org.openrtb.common.json;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.openrtb.common.model.Status;
 
 import java.io.IOException;
 
-import org.junit.Test;
-import org.openrtb.common.model.Status;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Verified the {@link Status}'s translation to/from JSON.
  */
 public class StatusTranslatorTest {
 
-    private static final Status STATUS =
-        new Status("5449a6a03be7022b74215c34e32d4f82", 0, "success");
+	private static final Status STATUS = new Status(0, "success");
 
-    private static final String PRETTY_VALUE =
-        "{" +
-        "  \"requestToken\" : \""+STATUS.getRequestToken()+"\",\n" +
-        "  \"statusCode\" : "+STATUS.getCode()+",\n" +
-        "  \"statusMessage\" : \""+STATUS.getMessage()+"\"\n" +
-        "}";
+	private static final String PRETTY_VALUE = "{" + "  \"statusCode\" : " + STATUS.getCode() + ",\n" + "  \"statusMessage\" : \"" + STATUS.getMessage() + "\"\n" + "}";
 
-    private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
+	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 
-    private StatusTranslator test = new StatusTranslator();
+	private StatusTranslator test = new StatusTranslator();
 
-    public static void validateObject(Status expectedObject, Status actualObject) {
-        assertEquals("unable to deserialize the request token",
-                     expectedObject.getRequestToken(), actualObject.getRequestToken());
-        assertEquals("unable to deserialize the code value",
-                     expectedObject.getCode(), actualObject.getCode());
-        assertEquals("unable to deserialize the message value",
-                     expectedObject.getMessage(), actualObject.getMessage());
-    }
+	public static void validateObject(Status expectedObject, Status actualObject) {
+		assertEquals("unable to deserialize the code value", expectedObject.getCode(), actualObject.getCode());
+		assertEquals("unable to deserialize the message value", expectedObject.getMessage(), actualObject.getMessage());
+	}
 
-    @Test
-    public void serializeObject() throws IOException {
-        assertEquals(EXPECTED_VALUE, test.toJSON(STATUS));
-    }
+	@Test
+	public void serializeObject() throws IOException {
+		assertEquals(EXPECTED_VALUE, test.toJSON(STATUS));
+	}
 
-    @Test
-    public void deserializeObject() throws IOException {
-        validateObject(STATUS, test.fromJSON(PRETTY_VALUE));
-    }
+	@Test
+	public void deserializeObject() throws IOException {
+		validateObject(STATUS, test.fromJSON(PRETTY_VALUE));
+	}
 
-    @Test
-    public void serializeEmptyObject() throws IOException {
-        assertEquals("{}", test.toJSON(new TestObject()));
-    }
+	@Test
+	public void serializeEmptyObject() throws IOException {
+		assertEquals("{}", test.toJSON(new TestObject()));
+	}
 
-    @Test
-    public void deserializeEmptyObject() throws IOException {
-        validateObject(new TestObject(), test.fromJSON("{}"));
-    }
+	@Test
+	public void deserializeEmptyObject() throws IOException {
+		validateObject(new TestObject(), test.fromJSON("{}"));
+	}
 
-    private static class StatusTranslator extends AbstractJsonTranslator<Status> {
-        public StatusTranslator() {
-            super(StatusTranslator.class);
-        }
-    }
+	private static class StatusTranslator extends AbstractJsonTranslator<Status> {
+		public StatusTranslator() {
+			super(StatusTranslator.class);
+		}
+	}
 
-    private static class TestObject extends Status { }
+	private static class TestObject extends Status {
+	}
 }

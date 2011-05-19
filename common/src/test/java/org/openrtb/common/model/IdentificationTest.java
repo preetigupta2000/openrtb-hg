@@ -29,69 +29,56 @@
  */
 package org.openrtb.common.model;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.GregorianCalendar;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Validation tests for {@link Identification}'s method behavior.
  */
 public class IdentificationTest {
 
-    public static final String ORGANIZATION = "Organization_Name";
-    private Identification test;
+	public static final String ORGANIZATION = "Organization_Name";
+	private Identification test;
 
-    @Before
-    public void setup() {
-        test = new Identification(ORGANIZATION);
-    }
+	@Before
+	public void setup() {
+		test = new Identification(ORGANIZATION);
+	}
 
-    /**
-     * Verify <code>null</code> and empty organization identification values.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void cannotInitializeNullOrganization() {
-        new Identification(null);
-    }
+	/**
+	 * Verify <code>null</code> and empty organization identification values.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void cannotInitializeNullOrganization() {
+		new Identification(null);
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void cannotInitializeEmptyOrganization() {
-        new Identification("");
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void cannotInitializeEmptyOrganization() {
+		new Identification("");
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void cannotSetNullOrganization() {
-        test.setOrganization(null);
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void cannotSetNullOrganization() {
+		test.setOrganization(null);
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void cannotSetEmptyOrganization() {
-        test.setOrganization("");
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void cannotSetEmptyOrganization() {
+		test.setOrganization("");
+	}
 
-    /**
-     * The identification object should default the timestamp to the current
-     * time when none is specified.
-     */
-    @Test
-    public void validateTimestampValue() {
-        GregorianCalendar calendar = new GregorianCalendar();
-        assertTrue("difference between default timestamp and now is greater than 1 seconds",
-                   (1L*1000) > (calendar.getTime().getTime() - test.getTimestamp()));
-    }
-
-    /**
-     * While a token is required for the request to be valid, the initial value
-     * of the {@link Identification#getToken()} should be null.
-     */
-    @Test
-    public void startWithNullToken() {
-        assertNull("token value should be null on newly created identificaiton object",
-                   test.getToken());
-    }
+	/**
+	 * The identification object should default the timestamp to the current time when none is specified.
+	 */
+	@Test
+	public void validateTimestampValue() {
+		GregorianCalendar calendar = new GregorianCalendar();
+		assertTrue("difference between default timestamp and now is greater than 1 seconds", (1L * 1000) > (calendar.getTime().getTime() - test.getTimestamp()));
+	}
 
 }

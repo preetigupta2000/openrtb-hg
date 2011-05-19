@@ -31,120 +31,99 @@
  */
 package org.openrtb.common.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Test;
 import org.openrtb.common.model.Advertiser;
 import org.openrtb.common.model.AdvertiserBlocklistResponse;
 import org.openrtb.common.model.Identification;
 import org.openrtb.common.model.Status;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 /**
  * Verifies the {@link AdvertiserBlocklistResponse}'s translation to/from JSON.
  */
 public class AdvertiserBlocklistResponseTranslatorTest {
 
-    private static final Identification IDENT;
-    static {
-        IDENT = new Identification("The_SSP", System.currentTimeMillis());
-        IDENT.setToken("5d0a8172ff6630e098e813fe4abbb3e5");
-    }
+	private static final Identification IDENT;
 
-    private static final Status STATUS = new Status("44ab444914088e855ad1f948ec4a1fc7");
-    private static final Advertiser ADVERTISER1 = new Advertiser("CoolComputer.com");
-    private static final Advertiser ADVERTISER2 = new Advertiser("http://www.MyCarCompany.com",
-                                                                 "My_Car_Company");
+	static {
+		IDENT = new Identification("The_SSP", System.currentTimeMillis());
+	}
 
-    private static final AdvertiserBlocklistResponse RESPONSE = new AdvertiserBlocklistResponse(IDENT, STATUS);
-    static {
-        RESPONSE.addAdvertiser(ADVERTISER1);
-        RESPONSE.addAdvertiser(ADVERTISER2);
-    }
+	private static final Status STATUS = new Status(Status.SUCCESS_CODE, Status.SUCCESS_MESSAGE);
+	private static final Advertiser ADVERTISER1 = new Advertiser("CoolComputer.com");
+	private static final Advertiser ADVERTISER2 = new Advertiser("http://www.MyCarCompany.com", "My_Car_Company");
 
-    private static final String PRETTY_VALUE =
-        "{" +
-        "  \"identification\" : {" +
-        "    \"organization\" : \""+IDENT.getOrganization()+"\",\n" +
-        "    \"timestamp\" : "+IDENT.getTimestamp()+",\n" +
-        "    \"token\" : \""+IDENT.getToken()+"\"\n" +
-        "  },\n" +
-        "  \"status\" : {\n" +
-        "    \"requestToken\" : \"44ab444914088e855ad1f948ec4a1fc7\",\n" +
-        "    \"statusCode\" : 0,\n" +
-        "    \"statusMessage\" : \"success\"\n" +
-        "  },\n" +
-        "  \"advertisers\" : [{" +
-        "    \"landingPageTLD\" : \""+ADVERTISER1.getLandingPage()+"\"\n" +
-        "  }, {" +
-        "    \"landingPageTLD\" : \""+ADVERTISER2.getLandingPage()+""+"\",\n" +
-        "    \"name\" : \""+ADVERTISER2.getName()+"\"" +
-        "  }]" +
-        "}";
+	private static final AdvertiserBlocklistResponse RESPONSE = new AdvertiserBlocklistResponse(IDENT, STATUS);
 
-    private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
+	static {
+		RESPONSE.addAdvertiser(ADVERTISER1);
+		RESPONSE.addAdvertiser(ADVERTISER2);
+	}
 
-    private AdvertiserBlocklistResponseTranslator test =
-                                    new AdvertiserBlocklistResponseTranslator();
+	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + "\n" + "  },\n" + "  \"status\" : {\n" + "    \"statusCode\" : 0,\n" + "    \"statusMessage\" : \"success\"\n" + "  },\n" + "  \"advertisers\" : [{" + "    \"landingPageTLD\" : \"" + ADVERTISER1.getLandingPage() + "\"\n" + "  }, {" + "    \"landingPageTLD\" : \"" + ADVERTISER2.getLandingPage() + "" + "\",\n" + "    \"name\" : \"" + ADVERTISER2.getName() + "\"" + "  }]" + "}";
 
-    @Test
-    public void serializeObject() throws IOException {
-        assertEquals(EXPECTED_VALUE, test.toJSON(RESPONSE));
-    }
+	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 
-    @Test
-    public void deserializeObject() throws IOException {
-        validateObject(RESPONSE, test.fromJSON(PRETTY_VALUE));
-    }
+	private AdvertiserBlocklistResponseTranslator test = new AdvertiserBlocklistResponseTranslator();
 
-    @Test
-    public void serializeEmptyObject() throws IOException {
-        assertEquals("{}", test.toJSON(new TestRequest()));
-    }
+	@Test
+	public void serializeObject() throws IOException {
+		assertEquals(EXPECTED_VALUE, test.toJSON(RESPONSE));
+	}
 
-    @Test
-    public void deserializeEmptyObject() throws IOException {
-        validateObject(new TestRequest(), test.fromJSON("{}"));
-    }
+	@Test
+	public void deserializeObject() throws IOException {
+		validateObject(RESPONSE, test.fromJSON(PRETTY_VALUE));
+	}
 
-    private void validateObject(AdvertiserBlocklistResponse expectedValue, AdvertiserBlocklistResponse actualValue) {
-        if (expectedValue.getIdentification() == null) {
-            assertNull("actual identification value should be null",
-                       actualValue.getIdentification());
-        } else {
-            IdentificationJsonTranslatorTest.validateObject(expectedValue.getIdentification(),
-                                                            actualValue.getIdentification());
-        }
+	@Test
+	public void serializeEmptyObject() throws IOException {
+		assertEquals("{}", test.toJSON(new TestRequest()));
+	}
 
-        Map<String, Advertiser> expectedAdvertisers = convertListToMap(expectedValue.getAdvertisers());
-        for(Advertiser advertiser : actualValue.getAdvertisers()) {
-            Advertiser expectedAdvertiser = expectedAdvertisers.get(advertiser.getLandingPage());
-            assertNotNull("unexpected advertiser value in returned request", expectedAdvertiser);
-            AdvertiserTranslatorTest.validateObject(expectedAdvertiser, advertiser);
-        }
-    }
+	@Test
+	public void deserializeEmptyObject() throws IOException {
+		validateObject(new TestRequest(), test.fromJSON("{}"));
+	}
 
-    private Map<String, Advertiser> convertListToMap(List<Advertiser> list) {
-        Map<String, Advertiser> retval = new HashMap<String, Advertiser>();
+	private void validateObject(AdvertiserBlocklistResponse expectedValue, AdvertiserBlocklistResponse actualValue) {
+		if (expectedValue.getIdentification() == null) {
+			assertNull("actual identification value should be null", actualValue.getIdentification());
+		} else {
+			IdentificationJsonTranslatorTest.validateObject(expectedValue.getIdentification(), actualValue.getIdentification());
+		}
 
-        for(Advertiser advertiser : list) {
-            retval.put(advertiser.getLandingPage(), advertiser);
-        }
-        return retval;
-    }
+		Map<String, Advertiser> expectedAdvertisers = convertListToMap(expectedValue.getAdvertisers());
+		for (Advertiser advertiser : actualValue.getAdvertisers()) {
+			Advertiser expectedAdvertiser = expectedAdvertisers.get(advertiser.getLandingPage());
+			assertNotNull("unexpected advertiser value in returned request", expectedAdvertiser);
+			AdvertiserTranslatorTest.validateObject(expectedAdvertiser, advertiser);
+		}
+	}
 
-    /**
-     * Class is used to get access to the default constructor in the request.
-     *
-     * It should not be possible otherwise to create a request without an
-     * identification object.
-     */
-    private static class TestRequest extends AdvertiserBlocklistResponse { }
+	private Map<String, Advertiser> convertListToMap(List<Advertiser> list) {
+		Map<String, Advertiser> retval = new HashMap<String, Advertiser>();
+
+		for (Advertiser advertiser : list) {
+			retval.put(advertiser.getLandingPage(), advertiser);
+		}
+		return retval;
+	}
+
+	/**
+	 * Class is used to get access to the default constructor in the request.
+	 * <p/>
+	 * It should not be possible otherwise to create a request without an identification object.
+	 */
+	private static class TestRequest extends AdvertiserBlocklistResponse {
+	}
 
 }

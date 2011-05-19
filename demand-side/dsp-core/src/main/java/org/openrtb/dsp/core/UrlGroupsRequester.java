@@ -120,21 +120,9 @@ public class UrlGroupsRequester {
 		UrlGroupsResponse response = null;
 
 		try {
-			request.sign(ssp.getSharedSecret(), REQUEST_TRANSFORM);
-		} catch (IOException e) {
-			logger.error("Unable to sign json request for [" + ssp.getOrganization() + "] due to exception", e);
-			return;
-		}
-
-		try {
 			response = makeRequest(ssp, REQUEST_TRANSFORM.toJSON(request));
 			if (response != null) {
-				if (!response.verify(ssp.getSharedSecret(), RESPONSE_TRANSFORM)) {
-					logger.error("Verification of response from [" + ssp.getOrganization() + "] failed");
-					return;
-				} else {
-					urlGroupService.replaceUrlGroups(ssp, response.getUrlGroups());
-				}
+				urlGroupService.replaceUrlGroups(ssp, response.getUrlGroups());
 			} else {
 				logger.error("Response from [" + ssp.getOrganization() + "] was null");
 			}

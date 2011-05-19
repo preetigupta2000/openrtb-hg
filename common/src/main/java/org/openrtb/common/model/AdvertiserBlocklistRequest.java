@@ -53,7 +53,7 @@ import java.util.List;
 @JsonSerialize(include = Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"identification", "advertisers"})
-public class AdvertiserBlocklistRequest extends Signable implements Request {
+public class AdvertiserBlocklistRequest extends Identifiable implements Request {
 
 	@JsonProperty
 	private Identification identification;

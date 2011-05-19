@@ -49,13 +49,12 @@ public class UrlGroupsRequestTranslatorTest {
 
 	static {
 		IDENT = new Identification("The_DSP", System.currentTimeMillis());
-		IDENT.setToken("44ab444914088e855ad1f948ec4a1fc7");
 	}
 
 
 	private static final UrlGroupsRequest URL_GROUPS_REQUEST = new UrlGroupsRequest(IDENT, 0L);
 
-	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + ",\n" + "    \"token\" : \"" + IDENT.getToken() + "\"\n" + "  },\n" + "\"sinceThisTimestamp\": " + 0L + "    }";
+	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + "\n" + "  },\n" + "\"sinceThisTimestamp\": " + 0L + "    }";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 

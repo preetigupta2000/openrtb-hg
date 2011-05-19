@@ -60,7 +60,7 @@ public abstract class SupplySideServer<TService extends SupplySideService, TRequ
 	public String process(String jsonRequest) {
 		TRequest request = null;
 		TResponse response = null;
-		Status status = new Status("n/a");
+		Status status = new Status();
 		String requestToken = null;
 		String jsonResponse = null;
 		String dsp = null;
@@ -71,12 +71,9 @@ public abstract class SupplySideServer<TService extends SupplySideService, TRequ
 			AbstractJsonTranslator<TRequest> requestTranslator = getRequestTranslator();
 			request = requestTranslator.fromJSON(jsonRequest);
 			dsp = request.getIdentification().getOrganization();
-			if (dsp == null || !request.verify(service.getSharedSecret(dsp), requestTranslator)) {
-				throw new IllegalArgumentException("Invalid MD5 checksum");
+			if (dsp == null) {
+				throw new IllegalArgumentException("Invalid Organization Identity");
 			}
-			requestToken = request.getIdentification().getToken();
-			status.setRequestToken(requestToken);
-
 			response = processRequest(request);
 			//set success code
 			status.setResponseCode(Status.SUCCESS_CODE, Status.SUCCESS_MESSAGE);
@@ -99,12 +96,9 @@ public abstract class SupplySideServer<TService extends SupplySideService, TRequ
 			response.setStatus(status);
 		}
 
-		//translate response and add a MD5 token
+		//translate response
 		try {
 			AbstractJsonTranslator<TResponse> responseTranslator = getResponseTranslator();
-			if (dsp != null) {
-				response.sign(service.getSharedSecret(dsp), responseTranslator);
-			}
 			jsonResponse = responseTranslator.toJSON(response);
 		} catch (Exception e) {
 			//what to do in this case? ... HTTP error?

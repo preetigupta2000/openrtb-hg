@@ -37,10 +37,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 /**
- * Verification of the message content is handled inline with each request. Every request contains an identification
- * object. The identifier's token is constructed by computing the MD5 checksum of the JSON request message, less the
- * token attribute, concatenated with a shared secret. The receiver of the request must remove the token from the
- * request and generate an MD5 checksum with the same shared secret to confirm the message contents.
  * <p/>
  * The shared secret may take any form (i.e. text string or key encryption) and is communicated between the parties
  * outside of this protocol.
@@ -51,15 +47,13 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
  * @since 1.0
  */
 @JsonSerialize(include = Inclusion.NON_DEFAULT)
-@JsonPropertyOrder({"organization", "timestamp", "token"})
+@JsonPropertyOrder({"organization", "timestamp"})
 public class Identification {
 
 	@JsonProperty
 	private String organization;
 	@JsonProperty
 	private long timestamp;
-	@JsonProperty
-	private String token;
 
 	public Identification() {
 	}
@@ -105,17 +99,6 @@ public class Identification {
 		this.timestamp = timestamp;
 	}
 
-	/**
-	 * The associated MD5 token used to confirm the authenticity of and uniquely identify the request.
-	 */
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o) {
@@ -133,10 +116,6 @@ public class Identification {
 		if (organization != null ? !organization.equals(that.organization) : that.organization != null) {
 			return false;
 		}
-		if (token != null ? !token.equals(that.token) : that.token != null) {
-			return false;
-		}
-
 		return true;
 	}
 
@@ -144,7 +123,6 @@ public class Identification {
 	public int hashCode() {
 		int result = organization != null ? organization.hashCode() : 0;
 		result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
-		result = 31 * result + (token != null ? token.hashCode() : 0);
 		return result;
 	}
 
@@ -154,7 +132,6 @@ public class Identification {
 		sb.append("Identification");
 		sb.append("{organization='").append(organization).append('\'');
 		sb.append(", timestamp=").append(timestamp);
-		sb.append(", token='").append(token).append('\'');
 		sb.append('}');
 		return sb.toString();
 	}

@@ -46,7 +46,7 @@ import java.util.List;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"identification", "status", "urlGroups"})
-public class UrlGroupsResponse extends Signable implements Response {
+public class UrlGroupsResponse extends Identifiable implements Response {
 	@JsonProperty
 	private Identification identification;
 	@JsonProperty

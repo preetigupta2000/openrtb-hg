@@ -112,20 +112,8 @@ public class PublisherPreferencesRequester {
 		PublisherPreferencesResponse response = null;
 
 		try {
-			request.sign(ssp.getSharedSecret(), REQUEST_TRANSFORM);
-		} catch (IOException e) {
-			logger.error("Unable to sign json request for [" + ssp.getOrganization() + "] due to exception", e);
-			return;
-		}
-
-		try {
 			response = makeRequest(ssp, REQUEST_TRANSFORM.toJSON(request));
 			if (response != null) {
-				if (!response.verify(ssp.getSharedSecret(), RESPONSE_TRANSFORM)) {
-					logger.error("Verification of response from [" + ssp.getOrganization() + "] failed");
-					return;
-				}
-
 				if (response.getPublisherPreferences() != null && !response.getPublisherPreferences().isEmpty()) {
 					publisherService.replacePublisherPreferencesList(ssp, response.getPublisherPreferences());
 				} else {

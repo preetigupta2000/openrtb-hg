@@ -37,9 +37,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 /**
- * All request responses include the {@link Identification} object in addition
- * to the status object. The status object contains the necessary error messages
- * and status for its associated request.
+ * All request responses include the {@link Identification} object in addition to the status object. The status object
+ * contains the necessary error messages and status for its associated request.
  *
  * @since 1.0
  */
@@ -47,87 +46,61 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 @JsonPropertyOrder({"requestToken", "statusCode", "statusMessage"})
 public class Status {
 
-    public static final int SUCCESS_CODE = 0;
-    public static final String SUCCESS_MESSAGE = "success";
-    public static final int AUTH_ERROR_CODE = 1;
-    public static final int DUPLICATE_TXN_ERROR_CODE = 2;
-    public static final int OTHER_ERROR_CODE = 3;
+	public static final int SUCCESS_CODE = 0;
+	public static final String SUCCESS_MESSAGE = "success";
+	public static final int AUTH_ERROR_CODE = 1;
+	public static final int DUPLICATE_TXN_ERROR_CODE = 2;
+	public static final int OTHER_ERROR_CODE = 3;
 
-    @JsonProperty
-    private String requestToken;
+	@JsonProperty("statusCode")
+	private Integer code;
 
-    @JsonProperty("statusCode")
-    private Integer code;
+	@JsonProperty("statusMessage")
+	private String message;
 
-    @JsonProperty("statusMessage")
-    private String message;
-
-    protected Status() { }
-
-    public Status(String requestToken) {
-        this(requestToken, SUCCESS_CODE, SUCCESS_MESSAGE);
-    }
-
-    public Status(String requestToken, Integer code, String message) {
-        setRequestToken(requestToken);
-        setResponseCode(code, message);
-    }
-
-    /**
-     * The identifier associated with the original request.
-     */
-    public String getRequestToken() {
-        return requestToken;
-    }
-    public void setRequestToken(String requestToken) {
-        if (requestToken == null) {
-            throw new IllegalArgumentException("requestToken passed to Status#setRequestToken() must be non-null");
-        }
-        this.requestToken = requestToken;
-    }
+	public Status() {
+	}
 
 
-    public void setResponseCode(int code, String message) {
-        if (code == SUCCESS_CODE && message != SUCCESS_MESSAGE) {
-            if (message != null) {
-                throw new IllegalArgumentException("code of 0 (zero) requires the message be set to 'success' (Status#SUCCESS_MESSAGE)");
-            }
-            message = SUCCESS_MESSAGE;
-        }
-        if (message == null) {
-            throw new IllegalArgumentException("message passed to Status#setResponseCode() must be non-null");
-        }
+	public Status(Integer code, String message) {
+		setResponseCode(code, message);
+	}
 
-        this.code = code;
-        this.message = message;
-    }
-    /**
-     * An integral status code associated with the request.
-     * <ul>
-     * <li><code>0</code>: indicates no error.</li>
-     * <li><code>1</code>: indicates authentication error.</li>
-     * <li><code>2</code>: indicates a duplicate transaction.</li>
-     * <li><code>3</code>: indicates other error (refer to {@link #message}).</li>
-     * </ul>
-     *
-     * Individual requests may introduce their own, unique, specific error codes
-     * outside of these values. Request specific values are greater than or
-     * equal to 100.
-     */
-    @JsonProperty("statusCode")
-    public Integer getCode() {
-        return code;
-    }
+	public void setResponseCode(int code, String message) {
+		if (code == SUCCESS_CODE && message != SUCCESS_MESSAGE) {
+			if (message != null) {
+				throw new IllegalArgumentException("code of 0 (zero) requires the message be set to 'success' (Status#SUCCESS_MESSAGE)");
+			}
+			message = SUCCESS_MESSAGE;
+		}
+		if (message == null) {
+			throw new IllegalArgumentException("message passed to Status#setResponseCode() must be non-null");
+		}
 
-    /**
-     * For status codes of <code>0</code>, "<tt>success</tt>" is returned;
-     * otherwise and error message is present describing the issue with
-     * validation (for example, "<tt>incorrect password</tt>", or
-     * "<tt>user not found</tt>")
-     */
-    @JsonProperty("statusMessage")
-    public String getMessage() {
-        return message;
-    }
+		this.code = code;
+		this.message = message;
+	}
+
+	/**
+	 * An integral status code associated with the request. <ul> <li><code>0</code>: indicates no error.</li>
+	 * <li><code>1</code>: indicates authentication error.</li> <li><code>2</code>: indicates a duplicate
+	 * transaction.</li> <li><code>3</code>: indicates other error (refer to {@link #message}).</li> </ul>
+	 * <p/>
+	 * Individual requests may introduce their own, unique, specific error codes outside of these values. Request
+	 * specific values are greater than or equal to 100.
+	 */
+	@JsonProperty("statusCode")
+	public Integer getCode() {
+		return code;
+	}
+
+	/**
+	 * For status codes of <code>0</code>, "<tt>success</tt>" is returned; otherwise and error message is present
+	 * describing the issue with validation (for example, "<tt>incorrect password</tt>", or "<tt>user not found</tt>")
+	 */
+	@JsonProperty("statusMessage")
+	public String getMessage() {
+		return message;
+	}
 
 }

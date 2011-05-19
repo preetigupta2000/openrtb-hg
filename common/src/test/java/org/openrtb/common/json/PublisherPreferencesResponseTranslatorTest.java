@@ -62,10 +62,9 @@ public class PublisherPreferencesResponseTranslatorTest {
 
 	static {
 		IDENT = new Identification("The_DSP", System.currentTimeMillis());
-		IDENT.setToken("44ab444914088e855ad1f948ec4a1fc7");
 	}
 
-	private static final Status STATUS = new Status("44ab444914088e855ad1f948ec4a1fc7", 0, "success");
+	private static final Status STATUS = new Status(0, "success");
 
 	private static final List<Object> VALUES1 = new LinkedList<Object>();
 
@@ -110,7 +109,7 @@ public class PublisherPreferencesResponseTranslatorTest {
 		RESPONSE.setStatus(STATUS);
 	}
 
-	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + ",\n" + "    \"token\" : \"" + IDENT.getToken() + "\"\n" + "  },\n" + "  \"status\" : {\n" + "    \"requestToken\" : \"" + STATUS.getRequestToken() + "\",\n" + "    \"statusCode\" : " + STATUS.getCode() + ",\n" + "    \"statusMessage\" : \"" + STATUS.getMessage() + "\"\n" + "  },\n" + "  \"publisherPreferences\" : [{\n" + "    \"publisherID\" : \"" + PUBLISHER_PREFERENCE1.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER_PREFERENCE1.getSiteID() + "\",\n" + "    \"siteTLD\" : \"" + PUBLISHER_PREFERENCE1.getSiteTLD() + "\",\n" + "    \"rules\": [\n" + "      {\n" + "        \"operator\": \"" + RULE1.getOperator() + "\",\n" + "        \"type\": \"" + RULE1.getType() + "\",\n" + "        \"values\": [\"" + VALUES1.get(0) + "\",\"" + VALUES1.get(1) + "\"]\n" + "      }\n" + "    ]\n" + "  },\n" + "  {\n" + "    \"publisherID\" : \"" + PUBLISHER_PREFERENCE2.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER_PREFERENCE2.getSiteID() + "\",\n" + "    \"siteTLD\" : \"" + PUBLISHER_PREFERENCE2.getSiteTLD() + "\",\n" + "    \"rules\": [\n" + "      {\n" + "        \"operator\": \"" + RULE2.getOperator() + "\",\n" + "        \"type\": \"" + RULE2.getType() + "\",\n" + "        \"values\": [" + VALUES2.get(0) + ", " + VALUES2.get(1) + "]\n" + "      }\n" + "    ]\n" + "  }]\n" + "}";
+	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + "\n" + "  },\n" + "  \"status\" : {\n" + "    \"statusCode\" : " + STATUS.getCode() + ",\n" + "    \"statusMessage\" : \"" + STATUS.getMessage() + "\"\n" + "  },\n" + "  \"publisherPreferences\" : [{\n" + "    \"publisherID\" : \"" + PUBLISHER_PREFERENCE1.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER_PREFERENCE1.getSiteID() + "\",\n" + "    \"siteTLD\" : \"" + PUBLISHER_PREFERENCE1.getSiteTLD() + "\",\n" + "    \"rules\": [\n" + "      {\n" + "        \"operator\": \"" + RULE1.getOperator() + "\",\n" + "        \"type\": \"" + RULE1.getType() + "\",\n" + "        \"values\": [\"" + VALUES1.get(0) + "\",\"" + VALUES1.get(1) + "\"]\n" + "      }\n" + "    ]\n" + "  },\n" + "  {\n" + "    \"publisherID\" : \"" + PUBLISHER_PREFERENCE2.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER_PREFERENCE2.getSiteID() + "\",\n" + "    \"siteTLD\" : \"" + PUBLISHER_PREFERENCE2.getSiteTLD() + "\",\n" + "    \"rules\": [\n" + "      {\n" + "        \"operator\": \"" + RULE2.getOperator() + "\",\n" + "        \"type\": \"" + RULE2.getType() + "\",\n" + "        \"values\": [" + VALUES2.get(0) + ", " + VALUES2.get(1) + "]\n" + "      }\n" + "    ]\n" + "  }]\n" + "}";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 

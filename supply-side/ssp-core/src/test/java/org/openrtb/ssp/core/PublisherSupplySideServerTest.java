@@ -88,7 +88,7 @@ public class PublisherSupplySideServerTest {
 	}
 
 	private static final String DSP = "The_DSP";
-	private static final String REQUEST = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + DSP + "\",\n" + "    \"timestamp\" : " + System.currentTimeMillis() + ",\n" + "	 \"token\" : \"1234567890\"\n" + "  },\n" + "  \"publishers\" : [{" + "    \"publisherID\" : \"0\",\n" + "    \"preferenceTypes\" : [\"URL\"]" + "  }]" + "}";
+	private static final String REQUEST = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + DSP + "\",\n" + "    \"timestamp\" : " + System.currentTimeMillis() + "\n" + "  },\n" + "  \"publishers\" : [{" + "    \"publisherID\" : \"0\",\n" + "    \"preferenceTypes\" : [\"URL\"]" + "  }]" + "}";
 
 	private PublisherSupplySideService ssp;
 	private PublisherSupplySideServer server;
@@ -100,20 +100,7 @@ public class PublisherSupplySideServerTest {
 	}
 
 	@Test
-	public void invalidMD5ChecksumRequest() throws IOException {
-		String jsonRequest = REQUEST.replaceAll("[ \n]", "");
-
-		String jsonResponse = server.process(jsonRequest);
-		System.out.println(" IN:" + jsonRequest);
-		System.out.println("OUT:" + jsonResponse);
-
-		PublisherPreferencesResponseTranslator resTrans = new PublisherPreferencesResponseTranslator();
-		PublisherPreferencesResponse response = resTrans.fromJSON(jsonResponse);
-		assertTrue("expected AUTH error (invalid signature)", response.getStatus().getCode() == Status.AUTH_ERROR_CODE);
-	}
-
-	@Test
-	public void validMD5ChecksumRequest() throws IOException {
+	public void validRequest() throws IOException {
 		PublisherPreferencesRequestTranslator reqTrans = new PublisherPreferencesRequestTranslator();
 		PublisherPreferencesResponseTranslator resTrans = new PublisherPreferencesResponseTranslator();
 		String digest;
@@ -121,7 +108,6 @@ public class PublisherSupplySideServerTest {
 		//set the request checksum
 		String jsonRequest = REQUEST.replaceAll("[ \n]", "");
 		PublisherPreferencesRequest request = reqTrans.fromJSON(jsonRequest);
-		request.sign(ssp.getSharedSecret(DSP), reqTrans);
 		jsonRequest = reqTrans.toJSON(request);
 
 		//request --> response
@@ -132,9 +118,6 @@ public class PublisherSupplySideServerTest {
 		//validate success
 		PublisherPreferencesResponse response = resTrans.fromJSON(jsonResponse);
 		assertTrue("expected success status code", response.getStatus().getCode() == Status.SUCCESS_CODE);
-
-		//verify the response checksum
-		assertTrue("expected successful verification", response.verify(ssp.getSharedSecret(DSP), resTrans));
 	}
 
 	@Test
@@ -147,7 +130,7 @@ public class PublisherSupplySideServerTest {
 
 		PublisherPreferencesResponseTranslator resTrans = new PublisherPreferencesResponseTranslator();
 		PublisherPreferencesResponse response = resTrans.fromJSON(jsonResponse);
-		assertTrue("bad MD5 status code", response.getStatus().getCode() == Status.OTHER_ERROR_CODE);
+		assertTrue("bad status code", response.getStatus().getCode() == Status.OTHER_ERROR_CODE);
 	}
 
 }

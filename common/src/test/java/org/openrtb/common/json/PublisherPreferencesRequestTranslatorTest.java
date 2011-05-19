@@ -58,7 +58,6 @@ public class PublisherPreferencesRequestTranslatorTest {
 
 	static {
 		IDENT = new Identification("The_DSP", System.currentTimeMillis());
-		IDENT.setToken("44ab444914088e855ad1f948ec4a1fc7");
 	}
 
 	private static final List<PreferenceType> PREFERENCE_TYPES = Arrays.asList(PreferenceType.URL, PreferenceType.creativeAttributes);
@@ -73,7 +72,7 @@ public class PublisherPreferencesRequestTranslatorTest {
 		REQUEST.addPublisher(PUBLISHER2);
 	}
 
-	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + ",\n" + "    \"token\" : \"" + IDENT.getToken() + "\"\n" + "  },\n" + "  \"publishers\" : [{" + "    \"publisherID\" : \"" + PUBLISHER1.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER1.getSiteID() + "\"\n" + "  }, {" + "    \"publisherID\" : \"" + PUBLISHER2.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER2.getSiteID() + "\",\n" + "    \"siteTLD\" : \"" + PUBLISHER2.getSiteTLD() + "\",\n" + "    \"preferenceTypes\" : [\"" + PREFERENCE_TYPES.get(0) + "\", \"" + PREFERENCE_TYPES.get(1) + "\"]," + "    \"sinceThisTimestamp\" : " + PUBLISHER2.getTimestamp() + "\n" + "  }]" + "}";
+	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + "\n" + "  },\n" + "  \"publishers\" : [{" + "    \"publisherID\" : \"" + PUBLISHER1.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER1.getSiteID() + "\"\n" + "  }, {" + "    \"publisherID\" : \"" + PUBLISHER2.getPublisherID() + "\",\n" + "    \"siteID\" : \"" + PUBLISHER2.getSiteID() + "\",\n" + "    \"siteTLD\" : \"" + PUBLISHER2.getSiteTLD() + "\",\n" + "    \"preferenceTypes\" : [\"" + PREFERENCE_TYPES.get(0) + "\", \"" + PREFERENCE_TYPES.get(1) + "\"]," + "    \"sinceThisTimestamp\" : " + PUBLISHER2.getTimestamp() + "\n" + "  }]" + "}";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 

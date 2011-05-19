@@ -79,7 +79,7 @@ public class UrlGroupSupplySideServerTest {
 	}
 
 	private static final String DSP = "The_DSP";
-	private static final String REQUEST = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + DSP + "\",\n" + "    \"timestamp\" : " + System.currentTimeMillis() + ",\n" + "    \"token\" : \"1234567890\"\n" + "  },\n" + "\"sinceThisTimestamp\": " + 0L + "    }";
+	private static final String REQUEST = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + DSP + "\",\n" + "    \"timestamp\" : " + System.currentTimeMillis() + "\n" + "  },\n" + "\"sinceThisTimestamp\": " + 0L + "    }";
 
 	private UrlGroupSupplySideService service;
 	private UrlGroupSupplySideServer server;
@@ -91,20 +91,7 @@ public class UrlGroupSupplySideServerTest {
 	}
 
 	@Test
-	public void invalidMD5ChecksumRequest() throws IOException {
-		String jsonRequest = REQUEST.replaceAll("[ \n]", "");
-
-		String jsonResponse = server.process(jsonRequest);
-		System.out.println(" IN:" + jsonRequest);
-		System.out.println("OUT:" + jsonResponse);
-
-		UrlGroupsResponseTranslator resTrans = new UrlGroupsResponseTranslator();
-		UrlGroupsResponse response = resTrans.fromJSON(jsonResponse);
-		assertTrue("expected AUTH error (invalid signature)", response.getStatus().getCode() == Status.AUTH_ERROR_CODE);
-	}
-
-	@Test
-	public void validMD5ChecksumRequest() throws IOException {
+	public void validRequest() throws IOException {
 		PublisherPreferencesRequestTranslator reqTrans = new PublisherPreferencesRequestTranslator();
 		UrlGroupsResponseTranslator resTrans = new UrlGroupsResponseTranslator();
 		String digest;
@@ -112,7 +99,6 @@ public class UrlGroupSupplySideServerTest {
 		//set the request checksum
 		String jsonRequest = REQUEST.replaceAll("[ \n]", "");
 		PublisherPreferencesRequest request = reqTrans.fromJSON(jsonRequest);
-		request.sign(service.getSharedSecret(DSP), reqTrans);
 		jsonRequest = reqTrans.toJSON(request);
 
 		//request --> response
@@ -123,9 +109,6 @@ public class UrlGroupSupplySideServerTest {
 		//validate success
 		UrlGroupsResponse response = resTrans.fromJSON(jsonResponse);
 		assertTrue("expected success status code", response.getStatus().getCode() == Status.SUCCESS_CODE);
-
-		//verify the response checksum
-		assertTrue("expected successful verification", response.verify(service.getSharedSecret(DSP), resTrans));
 	}
 
 	@Test
@@ -138,6 +121,6 @@ public class UrlGroupSupplySideServerTest {
 
 		UrlGroupsResponseTranslator resTrans = new UrlGroupsResponseTranslator();
 		UrlGroupsResponse response = resTrans.fromJSON(jsonResponse);
-		assertTrue("bad MD5 status code", response.getStatus().getCode() == Status.OTHER_ERROR_CODE);
+		assertTrue("bad status code", response.getStatus().getCode() == Status.OTHER_ERROR_CODE);
 	}
 }

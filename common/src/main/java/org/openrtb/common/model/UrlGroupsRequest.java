@@ -45,7 +45,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"identification", "sinceThisTimestamp"})
-public class UrlGroupsRequest extends Signable implements Request {
+public class UrlGroupsRequest extends Identifiable implements Request {
 	@JsonProperty
 	private Identification identification;
 	@JsonProperty("sinceThisTimestamp")

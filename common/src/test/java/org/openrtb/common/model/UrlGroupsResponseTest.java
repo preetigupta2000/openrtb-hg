@@ -46,7 +46,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class UrlGroupsResponseTest {
 	private static final Identification IDENTIFICATION = new Identification("test");
-	private static final Status STATUS = new Status("44ab444914088e855ad1f948ec4a1fc7", 0, "success");
+	private static final Status STATUS = new Status(0, "success");
 	private static final List<UrlGroup> URL_GROUPS = new LinkedList<UrlGroup>();
 
 	static {

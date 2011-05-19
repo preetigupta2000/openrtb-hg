@@ -47,7 +47,7 @@ import java.util.List;
  */
 @JsonSerialize(include = Inclusion.NON_DEFAULT)
 @JsonPropertyOrder({"identification", "status", "advertisers"})
-public class AdvertiserBlocklistResponse extends Signable implements Response {
+public class AdvertiserBlocklistResponse extends Identifiable implements Response {
 
 	@JsonProperty
 	private Identification identification;

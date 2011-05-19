@@ -31,74 +31,64 @@
  */
 package org.openrtb.common.json;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.openrtb.common.model.Identification;
 
 import java.io.IOException;
 
-import org.junit.Test;
-import org.openrtb.common.model.Identification;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Verifies the {@link Identification} object's translation to/from JSON.
  */
 public class IdentificationJsonTranslatorTest {
 
-    private static final Identification IDENT;
-    static {
-        IDENT = new Identification("The_DSP", System.currentTimeMillis());
-        IDENT.setToken("4a49b3cab1374931bbb0a5af11eeef43");
-    }
+	private static final Identification IDENT;
 
-    private static final String PRETTY_VALUE =
-        "{\n" +
-        "  \"organization\" : \""+IDENT.getOrganization()+"\",\n" +
-        "  \"timestamp\" : "+IDENT.getTimestamp()+",\n" +
-        "  \"token\" : \""+IDENT.getToken()+"\"\n" +
-        "}\n";
+	static {
+		IDENT = new Identification("The_DSP", System.currentTimeMillis());
+	}
 
-    private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
+	private static final String PRETTY_VALUE = "{\n" + "  \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "  \"timestamp\" : " + IDENT.getTimestamp() + "\n" + "}\n";
 
-    AbstractJsonTranslator<Identification> test = new IdentificationJsonTranslator();
+	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 
-    public static void validateObject(Identification expectedValue, Identification actualValue) {
-        assertEquals("unable to deserialize the organization value",
-                     expectedValue.getOrganization(), actualValue.getOrganization());
-        assertEquals("unable to deserialize the timestamp value",
-                     expectedValue.getTimestamp(), actualValue.getTimestamp());
-        assertEquals("unable to deserialize the token value",
-                     expectedValue.getToken(), actualValue.getToken());
-    }
+	AbstractJsonTranslator<Identification> test = new IdentificationJsonTranslator();
 
-    @Test
-    public void serializeObject() throws Exception {
-        assertEquals(EXPECTED_VALUE, test.toJSON(IDENT));
-    }
+	public static void validateObject(Identification expectedValue, Identification actualValue) {
+		assertEquals("unable to deserialize the organization value", expectedValue.getOrganization(), actualValue.getOrganization());
+		assertEquals("unable to deserialize the timestamp value", expectedValue.getTimestamp(), actualValue.getTimestamp());
+	}
 
-    @Test
-    public void deserializeObject() throws Exception {
-        validateObject(IDENT, test.fromJSON(EXPECTED_VALUE));
-    }
+	@Test
+	public void serializeObject() throws Exception {
+		assertEquals(EXPECTED_VALUE, test.toJSON(IDENT));
+	}
 
-    @Test
-    public void serializeEmptyObject() throws IOException {
-        assertEquals("{}", test.toJSON(new Identification()));
-    }
+	@Test
+	public void deserializeObject() throws Exception {
+		validateObject(IDENT, test.fromJSON(EXPECTED_VALUE));
+	}
 
-    @Test
-    public void deserializeEmptyObject() throws IOException {
-        validateObject(new Identification(), test.fromJSON("{}"));
-    }
+	@Test
+	public void serializeEmptyObject() throws IOException {
+		assertEquals("{}", test.toJSON(new Identification()));
+	}
 
-    /**
-     * This class is used internally for the test to verify the serialization
-     * and de-serialization of the {@link Identification} object to and from
-     * JSON.
-     *
-     * @see AbstractJsonTranslator
-     */
-    private static class IdentificationJsonTranslator extends AbstractJsonTranslator<Identification> {
-        public IdentificationJsonTranslator() {
-            super(IdentificationJsonTranslator.class);
-        }
-    }
+	@Test
+	public void deserializeEmptyObject() throws IOException {
+		validateObject(new Identification(), test.fromJSON("{}"));
+	}
+
+	/**
+	 * This class is used internally for the test to verify the serialization and de-serialization of the {@link
+	 * Identification} object to and from JSON.
+	 *
+	 * @see AbstractJsonTranslator
+	 */
+	private static class IdentificationJsonTranslator extends AbstractJsonTranslator<Identification> {
+		public IdentificationJsonTranslator() {
+			super(IdentificationJsonTranslator.class);
+		}
+	}
 }

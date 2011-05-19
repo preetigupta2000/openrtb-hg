@@ -45,12 +45,14 @@ public class PublisherPreferencesResponseTest {
 
 	private static final PublisherPreference PUBLISHER_PREFERENCE = new PublisherPreference();
 	private static final Collection<PublisherPreference> PUBLISHER_PREFERENCES;
+
 	static {
 		PUBLISHER_PREFERENCES = new LinkedList<PublisherPreference>();
 		PUBLISHER_PREFERENCES.add(PUBLISHER_PREFERENCE);
 	}
+
 	private static final Identification IDENTIFICATION = new Identification("test");
-	private static final Status STATUS = new Status("44ab444914088e855ad1f948ec4a1fc7", 0, "success");
+	private static final Status STATUS = new Status(0, "success");
 	private PublisherPreferencesResponse test = new PublisherPreferencesResponse(IDENTIFICATION);
 
 	/*
@@ -78,7 +80,7 @@ public class PublisherPreferencesResponseTest {
 	*/
 	@Test
 	public void createResponse2() {
-		PublisherPreferencesResponse response = new PublisherPreferencesResponse(IDENTIFICATION,STATUS);
+		PublisherPreferencesResponse response = new PublisherPreferencesResponse(IDENTIFICATION, STATUS);
 		assertNotNull("Identification is required", response.getIdentification());
 		assertNotNull("Status is required", response.getStatus());
 		assertNotNull("PublisherPreferences is required", response.getPublisherPreferences());
@@ -103,34 +105,34 @@ public class PublisherPreferencesResponseTest {
 	}
 
 	@Test
-	public void setIdentification(){
+	public void setIdentification() {
 		test.setIdentification(IDENTIFICATION);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void setIdentification_Null(){
+	public void setIdentification_Null() {
 		Identification identification = null;
 		test.setIdentification(identification);
 	}
 
 	@Test
-	public void setStatus(){
+	public void setStatus() {
 		test.setStatus(STATUS);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void setStatus_Null(){
+	public void setStatus_Null() {
 		Status status = null;
 		test.setStatus(status);
 	}
 
 	@Test
-	public void addPublisherPreference(){
+	public void addPublisherPreference() {
 		test.addPublisherPreference(PUBLISHER_PREFERENCE);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void addPublisherPreference_Null(){
+	public void addPublisherPreference_Null() {
 		PublisherPreference publisherPreference = null;
 		test.addPublisherPreference(publisherPreference);
 	}

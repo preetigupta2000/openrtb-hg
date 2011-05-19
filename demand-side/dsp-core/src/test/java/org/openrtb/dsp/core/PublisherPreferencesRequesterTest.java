@@ -32,8 +32,6 @@
 package org.openrtb.dsp.core;
 
 import org.junit.Test;
-import org.openrtb.common.json.PublisherPreferencesRequestTranslator;
-import org.openrtb.common.json.PublisherPreferencesResponseTranslator;
 import org.openrtb.common.model.Identification;
 import org.openrtb.common.model.Publisher;
 import org.openrtb.common.model.PublisherPreference;
@@ -175,11 +173,8 @@ public class PublisherPreferencesRequesterTest {
 
 		Identification dsp = new Identification("test");
 		PublisherPreferencesRequest request = new PublisherPreferencesRequest(dsp, publishers);
-		request.sign("test".getBytes(), new PublisherPreferencesRequestTranslator());
-		String requestToken = request.getIdentification().getToken();
 
-		PublisherPreferencesResponse response = new PublisherPreferencesResponse(dsp, new Status(requestToken));
-		response.sign("test".getBytes(), new PublisherPreferencesResponseTranslator());
+		PublisherPreferencesResponse response = new PublisherPreferencesResponse(dsp, new Status());
 		response.setPublisherPreferences(publisherPreferences);
 
 		PublisherService publisherService = mock(PublisherService.class);
@@ -205,11 +200,8 @@ public class PublisherPreferencesRequesterTest {
 
 		Identification dsp = new Identification("test");
 		PublisherPreferencesRequest request = new PublisherPreferencesRequest(dsp, publishers);
-		request.sign("test".getBytes(), new PublisherPreferencesRequestTranslator());
-		String requestToken = request.getIdentification().getToken();
 
-		PublisherPreferencesResponse response = new PublisherPreferencesResponse(dsp, new Status(requestToken));
-		response.sign("test".getBytes(), new PublisherPreferencesResponseTranslator());
+		PublisherPreferencesResponse response = new PublisherPreferencesResponse(dsp, new Status());
 		response.setPublisherPreferences(publisherPreferences);
 
 		PublisherService publisherService = mock(PublisherService.class);

@@ -29,20 +29,32 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.openrtb.common.util;
+package org.openrtb.common.model;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MD5Checksum {
+/**
+ * This interface is used to aide in the creation of identifiable/verifiable tokens for the various requests and
+ * response between the DSP and SSP.
+ *
+ * @since 1.0
+ */
+public abstract class Identifiable implements Message {
 
+	@SuppressWarnings(value = "unused")
+	private static final Logger log = LoggerFactory.getLogger(Identifiable.class);
 
-	public static byte[] createChecksum(String input) {
-	    return DigestUtils.md5(input);
-   }
-
-	// convert a byte array to a HEX string
-	public static String getMD5Checksum(String input) {
-	    return DigestUtils.md5Hex(input);
-   }
+	/**
+	 * Make sure the <tt>identification</tt> supplied to the method is non- <tt>null</tt>.
+	 *
+	 * @param identification {@link Identification} object to be validated.
+	 * @throws IllegalArgumentException if the identification object supplied is <tt>null</tt>.
+	 */
+	protected void validateIdentification(Identification identification) {
+		if (identification == null) {
+			throw new IllegalArgumentException("Identification is required and must be non-null");
+		}
+	}
 
 }

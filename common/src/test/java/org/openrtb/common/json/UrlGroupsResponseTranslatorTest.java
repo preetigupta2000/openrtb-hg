@@ -53,10 +53,9 @@ public class UrlGroupsResponseTranslatorTest {
 
 	static {
 		IDENT = new Identification("The_DSP", System.currentTimeMillis());
-		IDENT.setToken("44ab444914088e855ad1f948ec4a1fc7");
 	}
 
-	private static final Status STATUS = new Status("44ab444914088e855ad1f948ec4a1fc7", 0, "success");
+	private static final Status STATUS = new Status(0, "success");
 
 	private static final String GROUP_NAME = "Test_Group";
 	private static final List<String> LANDING_PAGES = new LinkedList<String>();
@@ -92,7 +91,7 @@ public class UrlGroupsResponseTranslatorTest {
 		URL_GROUPS_RESPONSE.setUrlGroups(URL_GROUPS);
 	}
 
-	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + ",\n" + "    \"token\" : \"" + IDENT.getToken() + "\"\n" + "  },\n" + "  \"status\" : {\n" + "    \"requestToken\" : \"44ab444914088e855ad1f948ec4a1fc7\",\n" + "    \"statusCode\" : 0,\n" + "    \"statusMessage\" : \"success\"\n" + "  },\n" + "  \"urlGroups\" : [" + "    {" + "      \"name\" : \"" + GROUP_NAME + "\",\n" + "      \"values\" : [ \n" + "        \"" + LANDING_PAGES.get(0) + "\",\n" + "        \"" + LANDING_PAGES.get(1) + "\"\n" + "      ]" + "    }," + "    {" + "      \"name\" : \"" + GROUP_NAME2 + "\",\n" + "      \"values\" : [ \n" + "        \"" + LANDING_PAGES2.get(0) + "\",\n" + "        \"" + LANDING_PAGES2.get(1) + "\",\n" + "        \"" + LANDING_PAGES2.get(2) + "\"\n" + "      ]" + "} ] }";
+	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + "\n" + "  },\n" + "  \"status\" : {\n" + "    \"statusCode\" : 0,\n" + "    \"statusMessage\" : \"success\"\n" + "  },\n" + "  \"urlGroups\" : [" + "    {" + "      \"name\" : \"" + GROUP_NAME + "\",\n" + "      \"values\" : [ \n" + "        \"" + LANDING_PAGES.get(0) + "\",\n" + "        \"" + LANDING_PAGES.get(1) + "\"\n" + "      ]" + "    }," + "    {" + "      \"name\" : \"" + GROUP_NAME2 + "\",\n" + "      \"values\" : [ \n" + "        \"" + LANDING_PAGES2.get(0) + "\",\n" + "        \"" + LANDING_PAGES2.get(1) + "\",\n" + "        \"" + LANDING_PAGES2.get(2) + "\"\n" + "      ]" + "} ] }";
 
 	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 

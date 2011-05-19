@@ -31,112 +31,96 @@
  */
 package org.openrtb.common.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.junit.Test;
+import org.openrtb.common.model.Advertiser;
+import org.openrtb.common.model.AdvertiserBlocklistRequest;
+import org.openrtb.common.model.Identification;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-import org.openrtb.common.model.Advertiser;
-import org.openrtb.common.model.AdvertiserBlocklistRequest;
-import org.openrtb.common.model.Identification;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Verifies the {@link AdvertiserBlocklistRequest}'s translation to/from JSON.
  */
 public class AdvertiserBlocklistRequestTranslatorTest {
 
-    private static final Identification IDENT;
-    static {
-        IDENT = new Identification("The_DSP", System.currentTimeMillis());
-        IDENT.setToken("44ab444914088e855ad1f948ec4a1fc7");
-    }
+	private static final Identification IDENT;
 
-    private static final Advertiser ADVERTISER1 = new Advertiser("CoolComputer.com");
-    private static final Advertiser ADVERTISER2 = new Advertiser("http://www.MyCarCompany.com",
-                                                                 "My_Car_Company");
+	static {
+		IDENT = new Identification("The_DSP", System.currentTimeMillis());
+	}
 
-    private static final AdvertiserBlocklistRequest REQUEST = new AdvertiserBlocklistRequest(IDENT);
-    static {
-        REQUEST.addAdvertiser(ADVERTISER1);
-        REQUEST.addAdvertiser(ADVERTISER2);
-    }
+	private static final Advertiser ADVERTISER1 = new Advertiser("CoolComputer.com");
+	private static final Advertiser ADVERTISER2 = new Advertiser("http://www.MyCarCompany.com", "My_Car_Company");
 
-    private static final String PRETTY_VALUE =
-        "{" +
-        "  \"identification\" : {" +
-        "    \"organization\" : \""+IDENT.getOrganization()+"\",\n" +
-        "    \"timestamp\" : "+IDENT.getTimestamp()+",\n" +
-        "    \"token\" : \""+IDENT.getToken()+"\"\n" +
-        "  },\n" +
-        "  \"advertisers\" : [{" +
-        "    \"landingPageTLD\" : \""+ADVERTISER1.getLandingPage()+"\"\n" +
-        "  }, {" +
-        "    \"landingPageTLD\" : \""+ADVERTISER2.getLandingPage()+""+"\",\n" +
-        "    \"name\" : \""+ADVERTISER2.getName()+"\"" +
-        "  }]" +
-        "}";
+	private static final AdvertiserBlocklistRequest REQUEST = new AdvertiserBlocklistRequest(IDENT);
 
-    private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
+	static {
+		REQUEST.addAdvertiser(ADVERTISER1);
+		REQUEST.addAdvertiser(ADVERTISER2);
+	}
 
-    private AdvertiserBlocklistRequestTranslator test =
-                                    new AdvertiserBlocklistRequestTranslator();
+	private static final String PRETTY_VALUE = "{" + "  \"identification\" : {" + "    \"organization\" : \"" + IDENT.getOrganization() + "\",\n" + "    \"timestamp\" : " + IDENT.getTimestamp() + "\n" + "  },\n" + "  \"advertisers\" : [{" + "    \"landingPageTLD\" : \"" + ADVERTISER1.getLandingPage() + "\"\n" + "  }, {" + "    \"landingPageTLD\" : \"" + ADVERTISER2.getLandingPage() + "" + "\",\n" + "    \"name\" : \"" + ADVERTISER2.getName() + "\"" + "  }]" + "}";
 
-    @Test
-    public void serializeObject() throws IOException {
-        assertEquals(EXPECTED_VALUE, test.toJSON(REQUEST));
-    }
+	private static final String EXPECTED_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
 
-    @Test
-    public void deserializeObject() throws IOException {
-        validateObject(REQUEST, test.fromJSON(PRETTY_VALUE));
-    }
+	private AdvertiserBlocklistRequestTranslator test = new AdvertiserBlocklistRequestTranslator();
 
-    @Test
-    public void serializeEmptyObject() throws IOException {
-        assertEquals("{}", test.toJSON(new TestRequest()));
-    }
+	@Test
+	public void serializeObject() throws IOException {
+		assertEquals(EXPECTED_VALUE, test.toJSON(REQUEST));
+	}
 
-    @Test
-    public void deserializeEmptyObject() throws IOException {
-        validateObject(new TestRequest(), test.fromJSON("{}"));
-    }
+	@Test
+	public void deserializeObject() throws IOException {
+		validateObject(REQUEST, test.fromJSON(PRETTY_VALUE));
+	}
 
-    private void validateObject(AdvertiserBlocklistRequest expectedValue, AdvertiserBlocklistRequest actualValue) {
-        if (expectedValue.getIdentification() == null) {
-            assertNull("actual identification value should be null",
-                       actualValue.getIdentification());
-        } else {
-            IdentificationJsonTranslatorTest.validateObject(expectedValue.getIdentification(),
-                                                            actualValue.getIdentification());
-        }
+	@Test
+	public void serializeEmptyObject() throws IOException {
+		assertEquals("{}", test.toJSON(new TestRequest()));
+	}
 
-        Map<String, Advertiser> expectedAdvertisers = convertListToMap(expectedValue.getAdvertisers());
-        for(Advertiser advertiser : actualValue.getAdvertisers()) {
-            Advertiser expectedAdvertiser = expectedAdvertisers.get(advertiser.getLandingPage());
-            assertNotNull("unexpected advertiser value in returned request", expectedAdvertiser);
-            AdvertiserTranslatorTest.validateObject(expectedAdvertiser, advertiser);
-        }
-    }
+	@Test
+	public void deserializeEmptyObject() throws IOException {
+		validateObject(new TestRequest(), test.fromJSON("{}"));
+	}
 
-    private Map<String, Advertiser> convertListToMap(Collection<Advertiser> list) {
-        Map<String, Advertiser> retval = new HashMap<String, Advertiser>();
+	private void validateObject(AdvertiserBlocklistRequest expectedValue, AdvertiserBlocklistRequest actualValue) {
+		if (expectedValue.getIdentification() == null) {
+			assertNull("actual identification value should be null", actualValue.getIdentification());
+		} else {
+			IdentificationJsonTranslatorTest.validateObject(expectedValue.getIdentification(), actualValue.getIdentification());
+		}
 
-        for(Advertiser advertiser : list) {
-            retval.put(advertiser.getLandingPage(), advertiser);
-        }
-        return retval;
-    }
+		Map<String, Advertiser> expectedAdvertisers = convertListToMap(expectedValue.getAdvertisers());
+		for (Advertiser advertiser : actualValue.getAdvertisers()) {
+			Advertiser expectedAdvertiser = expectedAdvertisers.get(advertiser.getLandingPage());
+			assertNotNull("unexpected advertiser value in returned request", expectedAdvertiser);
+			AdvertiserTranslatorTest.validateObject(expectedAdvertiser, advertiser);
+		}
+	}
 
-    /**
-     * Class is used to get access to the default constructor in the request.
-     *
-     * It should not be possible otherwise to create a request without an
-     * identification object.
-     */
-    private static class TestRequest extends AdvertiserBlocklistRequest { }
+	private Map<String, Advertiser> convertListToMap(Collection<Advertiser> list) {
+		Map<String, Advertiser> retval = new HashMap<String, Advertiser>();
+
+		for (Advertiser advertiser : list) {
+			retval.put(advertiser.getLandingPage(), advertiser);
+		}
+		return retval;
+	}
+
+	/**
+	 * Class is used to get access to the default constructor in the request.
+	 * <p/>
+	 * It should not be possible otherwise to create a request without an identification object.
+	 */
+	private static class TestRequest extends AdvertiserBlocklistRequest {
+	}
 }
