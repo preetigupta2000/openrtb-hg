@@ -61,18 +61,15 @@ public abstract class SupplySideServer<TService extends SupplySideService, TRequ
 		TRequest request = null;
 		TResponse response = null;
 		Status status = new Status();
-		String requestToken = null;
 		String jsonResponse = null;
-		String dsp = null;
 
 		//process request
 		try {
 			//translate and verify request
 			AbstractJsonTranslator<TRequest> requestTranslator = getRequestTranslator();
 			request = requestTranslator.fromJSON(jsonRequest);
-			dsp = request.getIdentification().getOrganization();
-			if (dsp == null) {
-				throw new IllegalArgumentException("Invalid Organization Identity");
+			if (request.getIdentification() == null || request.getIdentification().getOrganization() == null) {
+				throw new IllegalArgumentException("Invalid Identity");
 			}
 			response = processRequest(request);
 			//set success code

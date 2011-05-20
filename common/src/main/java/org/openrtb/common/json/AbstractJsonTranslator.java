@@ -31,6 +31,13 @@
  */
 package org.openrtb.common.json;
 
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.MappingJsonFactory;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -38,113 +45,95 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.ParameterizedType;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.MappingJsonFactory;
-import org.codehaus.jackson.map.ObjectMapper;
-
 /**
- * This generic class is responsible for converting JSON formatted inputs into
- * instances of <code>T</code>. All transformation configuration data is
- * expected to be set on <code>T</code> in the form of annotations.
+ * This generic class is responsible for converting JSON formatted inputs into instances of <code>T</code>. All
+ * transformation configuration data is expected to be set on <code>T</code> in the form of annotations.
+ * <p/>
+ * For examples on how to use this class, please refer to the unit tests for specific examples.
  *
- * For examples on how to use this class, please refer to the unit tests for
- * specific examples.
- *
- * @param <T>
- *            The class to serialize and deserialize to and from JSON.
+ * @param <T> The class to serialize and deserialize to and from JSON.
  */
 public abstract class AbstractJsonTranslator<T> {
 
-    private Class<?> clazz;
-    private boolean usePrettyPrinter;
+	private Class<?> clazz;
+	private boolean usePrettyPrinter;
+	private ObjectMapper objectMapper;
 
+	public AbstractJsonTranslator(Class<? extends AbstractJsonTranslator<?>> subclass) {
+		ParameterizedType pType = (ParameterizedType) subclass.getGenericSuperclass();
+		clazz = (Class<?>) pType.getActualTypeArguments()[0];
+		objectMapper = new ObjectMapper();
+		objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	}
 
-    public AbstractJsonTranslator(Class<? extends AbstractJsonTranslator<?>> subclass) {
-        ParameterizedType pType = (ParameterizedType) subclass.getGenericSuperclass();
-        clazz = (Class<?>)pType.getActualTypeArguments()[0];
-    }
+	/**
+	 * Attempts to convert the <code>json</code> {@link String} into an instance of the parameterized type
+	 * <code>T</code>.
+	 * <p/>
+	 * If the parser is unsuccessful, this method will throw one of {@link JsonMappingException}, {@link
+	 * JsonParseException}, or an {@link IOException} as specified in {@link #fromJSON(Reader)}.
+	 *
+	 * @param json The JSON formatted {@link String} to construct an object instance from.
+	 * @return An instance of parameterized type <code>T</code>.
+	 *
+	 * @throws JsonMappingException Refer to {@link #fromJSON(Reader)} for more information.
+	 * @throws JsonParseException   Refer to {@link #fromJSON(Reader)} for more information.
+	 * @throws IOException		  Refer to {@link #fromJSON(Reader)} for more information.
+	 */
+	public T fromJSON(String json) throws JsonMappingException, JsonParseException, IOException {
+		return fromJSON(new StringReader(json));
+	}
 
-    /**
-     * Attempts to convert the <code>json</code> {@link String} into an instance
-     * of the parameterized type <code>T</code>.
-     *
-     * If the parser is unsuccessful, this method will throw one of
-     * {@link JsonMappingException}, {@link JsonParseException}, or an
-     * {@link IOException} as specified in {@link #fromJSON(Reader)}.
-     *
-     * @param json
-     *            The JSON formatted {@link String} to construct an object
-     *            instance from.
-     * @return An instance of parameterized type <code>T</code>.
-     * @throws JsonMappingException
-     *             Refer to {@link #fromJSON(Reader)} for more information.
-     * @throws JsonParseException
-     *             Refer to {@link #fromJSON(Reader)} for more information.
-     * @throws IOException
-     *             Refer to {@link #fromJSON(Reader)} for more information.
-     */
-    public T fromJSON(String json)
-            throws JsonMappingException, JsonParseException, IOException {
-        return fromJSON(new StringReader(json));
-    }
+	/**
+	 * Attempts to convert the <code>json</code> {@link String} into an instance of the parameterized type
+	 * <code>T</code>.
+	 * <p/>
+	 * If the parser is unsuccessful, this method will throw one of {@link JsonMappingException}, {@link
+	 * JsonParseException}, or an {@link IOException} as specified in {@link #fromJSON(Reader)}.
+	 *
+	 * @param reader
+	 * @return An instance of parameterized type <code>T</code>.
+	 *
+	 * @throws JsonMappingException Refer to {@link #fromJSON(Reader)} for more information.
+	 * @throws JsonParseException   Refer to {@link #fromJSON(Reader)} for more information.
+	 * @throws IOException		  Refer to {@link #fromJSON(Reader)} for more information.
+	 */
+	@SuppressWarnings("unchecked")
+	public T fromJSON(Reader reader) throws JsonMappingException, JsonParseException, IOException {
+		return (T) objectMapper.readValue(reader, clazz);
+	}
 
-    /**
-     * Attempts to convert the <code>json</code> {@link String} into an instance
-     * of the parameterized type <code>T</code>.
-     *
-     * If the parser is unsuccessful, this method will throw one of
-     * {@link JsonMappingException}, {@link JsonParseException}, or an
-     * {@link IOException} as specified in {@link #fromJSON(Reader)}.
-     *
-     * @param reader
-     * @return An instance of parameterized type <code>T</code>.
-     * @throws JsonMappingException
-     *             Refer to {@link #fromJSON(Reader)} for more information.
-     * @throws JsonParseException
-     *             Refer to {@link #fromJSON(Reader)} for more information.
-     * @throws IOException
-     *             Refer to {@link #fromJSON(Reader)} for more information.
-     */
-    @SuppressWarnings("unchecked")
-    public T fromJSON(Reader reader)
-            throws JsonMappingException, JsonParseException, IOException {
-        return (T)new ObjectMapper().readValue(reader, clazz);
-    }
+	public String toJSON(T value) throws IOException {
+		Writer writer = new StringWriter();
+		toJSON(writer, value);
+		return writer.toString();
+	}
 
-    public String toJSON(T value) throws IOException {
-        Writer writer = new StringWriter();
-        toJSON(writer, value);
-        return writer.toString();
-    }
+	public void toJSON(Writer writer, T value) throws IOException {
+		MappingJsonFactory factory = new MappingJsonFactory();
+		JsonGenerator generator = factory.createJsonGenerator(writer);
 
-    public void toJSON(Writer writer, T value) throws IOException {
-        MappingJsonFactory factory = new MappingJsonFactory();
-        JsonGenerator generator = factory.createJsonGenerator(writer);
+		if (usePrettyPrinter) {
+			generator.useDefaultPrettyPrinter();
+		}
+		objectMapper.writeValue(generator, value);
+	}
 
-        if (usePrettyPrinter) {
-            generator.useDefaultPrettyPrinter();
-        }
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(generator, value);
-    }
+	public void usePrettyPrinter() {
+		usePrettyPrinter = true;
+	}
 
-    public void usePrettyPrinter() {
-        usePrettyPrinter = true;
-    }
-    public void disablePrettyPrint() {
-        usePrettyPrinter = false;
-    }
+	public void disablePrettyPrint() {
+		usePrettyPrinter = false;
+	}
 
-    /**
-     * Returns the {@link Class} that this converter object is responsible for
-     * translating. Used for testing.
-     *
-     * This is primarily used for testing purposes.
-     */
-    Class<?> getTranslatedType() {
-        return clazz;
-    }
+	/**
+	 * Returns the {@link Class} that this converter object is responsible for translating. Used for testing.
+	 * <p/>
+	 * This is primarily used for testing purposes.
+	 */
+	Class<?> getTranslatedType() {
+		return clazz;
+	}
 
 }
