@@ -94,10 +94,9 @@ public class UrlGroupsResponse extends Identifiable implements Response {
 		return urlGroups;
 	}
 
-	//TODO: we should probably remove this check as we can respond with empty list of url groups
 	public void setUrlGroups(Collection<UrlGroup> urlGroups) {
-		if (urlGroups == null || urlGroups.size() < 1) {
-			throw new IllegalArgumentException("At least one url group must be present for call to UrlGroupsRequest#setUrlGroups()");
+		if (urlGroups == null) {
+			throw new IllegalArgumentException("Url groups cannot be null; UrlGroupsRequest#setUrlGroups()");
 		} else {
 			this.urlGroups.clear();
 			this.urlGroups.addAll(urlGroups);
