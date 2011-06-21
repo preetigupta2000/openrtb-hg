@@ -98,8 +98,8 @@ public class Rule {
 	}
 
 	private void checkValues(Collection<Object> values) {
-		if (values == null || values.size() == 0) {
-			throw new IllegalArgumentException("Values passed to Rule#setValues() must be non-null and contain at least one item");
+		if (values == null) {
+			throw new IllegalArgumentException("Values passed to Rule#setValues() must be non-null");
 		}
 
 		for (Object val : values) {

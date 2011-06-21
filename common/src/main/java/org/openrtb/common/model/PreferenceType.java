@@ -6,5 +6,5 @@ package org.openrtb.common.model;
  * @author isrsal
  */
 public enum PreferenceType {
-	URL, creativeAttributes, creativeCategories, richmediaVendors, trackingVendors
+	URL, creativeAttributes, creativeCategories, richmediaVendors, trackingVendors, urlGroup
 }

@@ -120,12 +120,6 @@ public class RuleTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void setValues_SizeIs0() {
-		Collection<Object> values = new LinkedList<Object>();
-		test.setValues(values);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
 	public void setValues_OtherThanStringOrInteger() {
 		Collection<Object> values = new LinkedList<Object>();
 		values.add(1L);
