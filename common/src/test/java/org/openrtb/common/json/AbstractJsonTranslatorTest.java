@@ -51,20 +51,35 @@ public class AbstractJsonTranslatorTest {
     private static final SubType SUBTYPE = new SubType("subtype-value");
     private static final ParentType PARENT = new ParentType(SUBTYPE, 1234L, "parent-value");
 
+    // The JSON generator (Jackson) has a prettyprint option that we test here
+    // However, by default it uses class org.codehaus.jackson.impl.DefaultPrettyPrinter.Lf2SpacesIndenter
+    // and the line separators that it generates are specific to the OS and 
+    // therefore we need to check the line separators used in order to 
+    // generate the correct PRETTY_VALUE to compare against
+    final static String lf;
+    static {
+        String SYSTEM_LINE_SEPARATOR = null;
+        try {
+        	SYSTEM_LINE_SEPARATOR = System.getProperty("line.separator");
+        } catch (Throwable t) { } // access exception?
+        lf = (SYSTEM_LINE_SEPARATOR == null) ? "\n" : SYSTEM_LINE_SEPARATOR;
+    }
+    
     private static final String PRETTY_VALUE =
-        "{\n"+
-        "  \"object\" : {\n"+
-        "    \"value\" : \"subtype-value\"\n"+
-        "  },\n"+
-        "  \"long\" : 1234,\n"+
-        "  \"string\" : \"parent-value\"\n"+
+        "{"+lf+
+        "  \"object\" : {"+lf+
+        "    \"value\" : \"subtype-value\""+lf+
+        "  },"+lf+
+        "  \"long\" : 1234,"+lf+
+        "  \"string\" : \"parent-value\""+lf+
         "}";
+    
+    // generate the "unpretty" version of the JSON by removing spaces and line separators
+    private static final String DEFAULT_VALUE = PRETTY_VALUE.replaceAll("[ "+lf+"]", "");
 
-    private static final String DEFAULT_VALUE = PRETTY_VALUE.replaceAll("[ \n]", "");
-
-
+    
     private JsonTestTranslator test= new JsonTestTranslator();
-
+    
     @Before
     public void before() {
         test = new JsonTestTranslator();
@@ -122,7 +137,7 @@ public class AbstractJsonTranslatorTest {
     private static class JsonTestTranslator extends AbstractJsonTranslator<ParentType> {
         JsonTestTranslator() {super(JsonTestTranslator.class);}
     }
-
+    
     /**
      * This class demonstrates creating an immutable object.
      */
